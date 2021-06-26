@@ -4,10 +4,19 @@ version = "0.1.0"
 description = ""
 authors = ["Relativity74205 <arkadius@schuchhardt.com>"]
 
+[tool.poetry.scripts]
+murkelhausen = "murkelhausen.cli.cli:cli"
+
 [tool.poetry.dependencies]
 python = "^3.9"
+pydantic = "^1.8.2"
+toml = "^0.10.2"
+click = "^8.0.1"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+mypy = "^0.910"
+black = "^21.6b0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,0 +1,24 @@
+# binaries
+build
+dist
+wheelhouse
+
+# caches
+docs/autodoc
+.mypy_cache
+.pytest_cache
+.coverage
+
+# tool artifacts
+pip-wheel-metadata
+*.py[cod]
+*.egg-info
+requirements.txt
+poetry.lock
+.python-version
+
+# dev stuff
+.idea
+
+# user config
+user.toml
