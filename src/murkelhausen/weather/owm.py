@@ -5,13 +5,13 @@ from typing import Dict
 
 import requests
 
-from murkelhausen.config import WeatherOWM
+from murkelhausen.config import WeatherOWM, City
 
 
-def query_one_call_api(owm_settings: WeatherOWM) -> Dict:
+def query_one_call_api(city: City, owm_settings: WeatherOWM) -> Dict:
     query_params = {
-        "lat": owm_settings.gps_lat,
-        "lon": owm_settings.gps_lon,
+        "lat": city.gps_lat,
+        "lon": city.gps_lon,
         "appid": owm_settings.api_key,
         "units": owm_settings.units,
 
@@ -22,7 +22,7 @@ def query_one_call_api(owm_settings: WeatherOWM) -> Dict:
         return r.json()
     else:
         raise RuntimeError(
-            f"Query to openweatherapi one call api returned non 200 status code: "
+            f"Query to openweatherapi one call api returned non 200 status code for city {city.name}: "
             f"status_code: {r.status_code}"
             f"response_text: {r.text}"
         )

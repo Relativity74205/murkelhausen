@@ -2,10 +2,10 @@ from collections import defaultdict
 import os
 from logging import getLogger
 from pathlib import Path
-from typing import Literal, Dict, Any
+from typing import Literal, Dict, Any, List
 import importlib.resources
 
-from pydantic import BaseSettings, BaseModel
+from pydantic import BaseSettings, BaseModel, validator
 import toml
 
 log = getLogger(__name__)
@@ -13,17 +13,35 @@ log = getLogger(__name__)
 loglevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
-class WeatherOWM(BaseModel, validate_assignment=True):
-    url: str
+class City(BaseModel, validate_assignment=True):
+    name: str
     gps_lat: float
     gps_lon: float
+
+
+class WeatherOWM(BaseModel, validate_assignment=True):
+    url: str
     units: Literal["metric", "imperial", "standard"]
     api_key: str
 
 
+class WeatherNMI(BaseModel, validate_assignment=True):
+    url: str
+
+
 class Settings(BaseSettings):
     loglevel: loglevels
+    cities: List[City]
     weather_owm: WeatherOWM
+    weather_nmi: WeatherNMI
+
+    @validator("cities")
+    def check_cities(cls, cities):
+        city_names = [city.name for city in cities]
+        if len(set(city_names)) != len(city_names):
+            raise ValueError("Found non unique city names.")
+
+        return cities
 
     class Config:
         validate_assignment = True
