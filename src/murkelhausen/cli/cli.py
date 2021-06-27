@@ -1,9 +1,12 @@
 from logging import getLogger
+import json
 
 import click
 
 from murkelhausen import __version__, cfg
+from murkelhausen.config import cli_loader
 from murkelhausen.util import logger
+from murkelhausen.weather import owm
 
 log = getLogger(__name__)
 
@@ -37,7 +40,7 @@ def cli(ctx, version: bool, cli_config: str):
     logger.setup_logging()
 
 
-@cli.command()
-def test():
-    click.echo("TEST")
-    log.info("TEST.")
+@cli.command("query-owm")
+def query_owm():
+    owm_data = owm.query_one_call_api(cfg.weather_owm)
+    print(json.dumps(owm_data, indent=4))

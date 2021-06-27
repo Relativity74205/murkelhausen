@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Literal, Dict, Any
 import importlib.resources
 
-from pydantic import BaseSettings
+from pydantic import BaseSettings, BaseModel
 import toml
 
 log = getLogger(__name__)
@@ -13,8 +13,17 @@ log = getLogger(__name__)
 loglevels = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
+class WeatherOWM(BaseModel, validate_assignment=True):
+    url: str
+    gps_lat: float
+    gps_lon: float
+    units: Literal["metric", "imperial", "standard"]
+    api_key: str
+
+
 class Settings(BaseSettings):
     loglevel: loglevels
+    weather_owm: WeatherOWM
 
     class Config:
         validate_assignment = True

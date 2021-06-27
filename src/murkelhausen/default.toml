@@ -1,1 +1,8 @@
 loglevel = "DEBUG"
+
+[weather_owm]
+url = "http://api.openweathermap.org/data/2.5/onecall"
+gps_lat = 51.418568
+gps_lon = 6.884523
+units = "metric"
+api_key = ""
