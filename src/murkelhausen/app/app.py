@@ -13,7 +13,7 @@ logger.setup_logging()
 
 @app.get("/")
 def root():
-    return {"version": __version__}
+    return {"message": __version__}
 
 
 @app.get("/health")
