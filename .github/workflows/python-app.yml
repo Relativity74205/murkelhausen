@@ -27,25 +27,12 @@ jobs:
       run: |
         poetry config virtualenvs.create false
         poetry install --no-interaction --no-ansi
-
-  linting:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
     - name: Lint with mypy
       run: |
-        echo $PATH
-        export PATH="${PATH}:${HOME}/.poetry/bin"
-        echo $PATH
         poetry run mypy src/
     - name: Lint with black
       run: |
         poetry run black src/ tests/
-
-  tests:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
     - name: Test with pytest
       run: |
         poetry run pytest tests/
