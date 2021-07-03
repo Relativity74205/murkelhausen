@@ -2,12 +2,14 @@ import logging
 from logging.config import dictConfig
 
 from murkelhausen import cfg
+from murkelhausen.util.misc import run_once
 
 log = logging.getLogger(__name__)
 
 ONELINE_FORMATTER = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 
 
+@run_once
 def setup_logging():
     """Set up basic logging to stdout."""
     logging.config.dictConfig(
@@ -33,6 +35,11 @@ def setup_logging():
                     "level": cfg.loglevel,
                     "propagate": True,
                 },
+                "uvicorn": {
+                    "handlers": ["console"],
+                    "level": cfg.loglevel,
+                    "propagate": False,
+                }
             },
         }
     )

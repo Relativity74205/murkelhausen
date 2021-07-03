@@ -5,7 +5,7 @@ import click
 
 from murkelhausen import __version__, cfg
 from murkelhausen.config import cli_loader
-from murkelhausen.util import logger
+from murkelhausen.util import logger, backend
 from murkelhausen.weather import owm, nmi
 
 log = getLogger(__name__)
@@ -40,23 +40,46 @@ def cli(ctx, version: bool, cli_config: str):
     logger.setup_logging()
 
 
+@cli.command()
+@click.option("-p", "--port", default=5000, type=int, help="Set the port to serve on.")
+@click.option("-h", "--host", default="localhost", help="Set the address to serve on.")
+def serve(port, host):
+    """Starts a server that serves the murkelhausen app code.
+
+   Notes:
+    * uvicorn will overwrite our logging config if we do not specify it as
+      something falsey - do not delete that setting, since everything will
+      still work, but we won't see any logs.
+    """
+    import uvicorn
+
+    try:
+        uvicorn.run(
+            "murkelhausen.app.app:app",
+            port=port,
+            host=host,
+            log_config=None,  # do not touch
+            log_level=cfg.loglevel.lower(),
+        )
+    except:
+        log.critical("Could not start server, aborting...", exc_info=True)
+        raise
+
+
 @cli.command("query-owm")
 @click.argument("city_name")
 def query_owm(city_name: str):
-    cities = [city for city in cfg.cities if city.name == city_name]
-    if len(cities) == 1:
-        owm_data = owm.query_one_call_api(cities[0], cfg.weather_owm)
-    else:
-        raise ValueError(f"{city_name=} not found in config.")
+    """Queries the API of OpenWeatherMap for the given city name."""
+    city = backend.get_city_object(city_name)
+    owm_data = owm.query_one_call_api(city, cfg.weather_owm)
+
     print(json.dumps(owm_data, indent=4))
 
 
 @cli.command("query-nmi")
 @click.argument("city_name")
 def query_nmi(city_name: str):
-    cities = [city for city in cfg.cities if city.name == city_name]
-    if len(cities) == 1:
-        nmi_data = nmi.query_locationforecast(cities[0], cfg.weather_nmi)
-    else:
-        raise ValueError(f"{city_name=} not found in config.")
+    """Queries the API of the NMI for the given city name."""
+    city = backend.get_city_object(city_name)
+    nmi_data = nmi.query_locationforecast(city, cfg.weather_owm)
     print(json.dumps(nmi_data, indent=4))
