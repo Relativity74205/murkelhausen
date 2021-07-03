@@ -16,8 +16,8 @@ log = getLogger(__name__)
     "-c",
     "--cli_config",
     help="Config can be overridden with this option. The config parameters have to be "
-         "passed according to the following syntax: "
-         "'-c app__loglevel=ERROR'.",
+    "passed according to the following syntax: "
+    "'-c app__loglevel=ERROR'.",
 )
 @click.option(
     "-v", "--version", is_flag=True, help="Print murkelhausen' version number and exit."
@@ -46,10 +46,10 @@ def cli(ctx, version: bool, cli_config: str):
 def serve(port, host):
     """Starts a server that serves the murkelhausen app code.
 
-   Notes:
-    * uvicorn will overwrite our logging config if we do not specify it as
-      something falsey - do not delete that setting, since everything will
-      still work, but we won't see any logs.
+    Notes:
+     * uvicorn will overwrite our logging config if we do not specify it as
+       something falsey - do not delete that setting, since everything will
+       still work, but we won't see any logs.
     """
     import uvicorn
 
@@ -81,5 +81,5 @@ def query_owm(city_name: str):
 def query_nmi(city_name: str):
     """Queries the API of the NMI for the given city name."""
     city = backend.get_city_object(city_name)
-    nmi_data = nmi.query_locationforecast(city, cfg.weather_owm)
+    nmi_data = nmi.query_locationforecast(city, cfg.weather_nmi)
     print(json.dumps(nmi_data, indent=4))

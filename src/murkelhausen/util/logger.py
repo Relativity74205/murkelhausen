@@ -17,9 +17,7 @@ def setup_logging():
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": {
-                "oneline": {
-                    "format": ONELINE_FORMATTER
-                },
+                "oneline": {"format": ONELINE_FORMATTER},
             },
             "handlers": {
                 "console": {
@@ -39,7 +37,7 @@ def setup_logging():
                     "handlers": ["console"],
                     "level": cfg.loglevel,
                     "propagate": False,
-                }
+                },
             },
         }
     )

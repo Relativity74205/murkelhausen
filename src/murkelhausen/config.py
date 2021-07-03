@@ -2,7 +2,7 @@ from collections import defaultdict
 import os
 from logging import getLogger
 from pathlib import Path
-from typing import Literal, Dict, Any, List
+from typing import Literal, Dict, Any, List, MutableMapping
 import importlib.resources
 
 from pydantic import BaseSettings, BaseModel, validator
@@ -50,24 +50,28 @@ class Settings(BaseSettings):
         def customise_sources(cls, init_settings, env_settings, file_secret_settings):
             return env_loader, user_toml_loader, default_toml_loader
 
-        env_prefix = 'murkelhausen_'
+        env_prefix = "murkelhausen_"
 
 
 def env_loader(settings: BaseSettings):
     """Load environment variables into the config."""
     length_app_name = len("murkelhausen")
     env_updates = {
-        k[length_app_name + 1:]: v for k, v in os.environ.items() if k.startswith("MURKELHAUSEN")
+        k[length_app_name + 1 :]: v
+        for k, v in os.environ.items()
+        if k.startswith("MURKELHAUSEN")
     }
     log.info(f"Reading the following config variables from env: {[*env_updates]}")
 
-    env_dict = defaultdict(dict)
+    env_dict: Dict[str, Dict] = defaultdict(dict)
     for env_var, env_val in env_updates.items():
         # parse something like MURKELHAUSEN_APP__LOGLEVEL into section=app and key=loglevel
         try:
             section, key = [s.lower() for s in env_var.split("__", 1)]
         except ValueError:
-            log.warning(f"Tried to parse environment variable '{env_var}', but couldn't.")
+            log.warning(
+                f"Tried to parse environment variable '{env_var}', but couldn't."
+            )
             continue
         if section not in settings.__fields__.keys():
             log.warning(
@@ -86,14 +90,16 @@ def env_loader(settings: BaseSettings):
     return env_dict
 
 
-def default_toml_loader(settings: BaseSettings) -> Dict[str, Any]:
+def default_toml_loader(settings: BaseSettings) -> MutableMapping[str, Any]:
     """Loads default variables from src/murkelhausen/default.toml to config"""
     try:
         with importlib.resources.path("murkelhausen", "default.toml") as default_config:
             with default_config.open() as f:
                 return toml.load(f)
     except FileNotFoundError:
-        log.error(f"Default config expected at src/murkelhausen/default.toml, but not found.")
+        log.error(
+            f"Default config expected at src/murkelhausen/default.toml, but not found."
+        )
         raise RuntimeError("Config not found, aborting!")
 
 
