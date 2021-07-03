@@ -24,10 +24,10 @@ jobs:
       run: |
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py > get-poetry.py
         python get-poetry.py --version 1.1.6
-        export PATH="${PATH}:${HOME}/.poetry/bin"
         echo $PATH
     - name: Install dependencies
       run: |
+        export PATH="${PATH}:${HOME}/.poetry/bin"
         echo $PATH
         poetry config virtualenvs.create false
         poetry install --no-interaction --no-ansi
