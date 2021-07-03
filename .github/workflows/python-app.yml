@@ -36,9 +36,9 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run pytest tests/
-#    - name: Build and Publish head Docker image
-#      uses: DrSkunk/gp-docker-action@1.1.9
-#      with:
-#        github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
-#        image-name: my-cool-service # Provide Docker image name
-#        image-tag: head # Provide Docker image tag
+    - name: Build and Publish head Docker image
+      uses: DrSkunk/gp-docker-action@1.1.9
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }} # Provide GITHUB_TOKEN to login into the GitHub Packages
+        image-name: my-cool-service # Provide Docker image name
+        image-tag: head # Provide Docker image tag
