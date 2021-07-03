@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -27,14 +25,24 @@ jobs:
         echo "PATH=${PATH}:${HOME}/.poetry/bin" >> $GITHUB_ENV
     - name: Install dependencies
       run: |
-        echo $PATH
-        export PATH="${PATH}:${HOME}/.poetry/bin"
-        echo $PATH
         poetry config virtualenvs.create false
         poetry install --no-interaction --no-ansi
+
+  linting:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     - name: Lint with mypy
       run: |
-        poetry run mypy
+        poetry run mypy src/
+    - name: Lint with black
+      run: |
+        poetry run black src/ tests/
+
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     - name: Test with pytest
       run: |
-        pytest
+        poetry run pytest tests/
