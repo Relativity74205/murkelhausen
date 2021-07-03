@@ -24,7 +24,7 @@ jobs:
       run: |
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py > get-poetry.py
         python get-poetry.py --version 1.1.6
-        export PATH="${PATH}:/root/.poetry/bin"
+        source /root/.poetry/env
     - name: Install dependencies
       run: |
         poetry config virtualenvs.create false
