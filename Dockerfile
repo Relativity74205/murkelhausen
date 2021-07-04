@@ -1,5 +1,5 @@
 # https://stackoverflow.com/questions/53835198/integrating-python-poetry-with-docker
-FROM python:3.8-slim
+FROM python:3.9-slim
 
 COPY requirements.txt requirements.txt
 COPY dist/* dist/

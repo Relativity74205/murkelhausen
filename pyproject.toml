@@ -8,7 +8,7 @@ authors = ["Relativity74205 <arkadius@schuchhardt.com>"]
 murkelhausen = "murkelhausen.cli.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 pydantic = "^1.8.2"
 toml = "^0.10.2"
 click = "^8.0.1"
