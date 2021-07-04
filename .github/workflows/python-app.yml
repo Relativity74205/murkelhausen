@@ -49,8 +49,14 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
-    - name: Build and Push docker image to github docker repo
+    - name: Build docker container
       run: |
         docker build -t murkelhausen .
+    - name: Push docker image to github docker repo
+      run: |
+        DOCKER_IMAGE_NAME=murkelhausen
+        DOCKER_IMAGE_TAG=latest
+        DOCKER_IMAGE_NAME=$(echo docker.pkg.github.com/${GITHUB_REPOSITORY}/${DOCKER_IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
+        DOCKER_IMAGE_NAME_WITH_TAG=$(echo ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} | tr '[:upper:]' '[:lower:]')
         docker login ghcr.io -u arkadius@schuchhardt.com -p ${{ secrets.GITHUB_TOKEN }}
-        docker push murkelhausen:latest
+        docker push $DOCKER_IMAGE_NAME_WITH_TAG
