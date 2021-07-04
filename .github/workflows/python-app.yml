@@ -51,7 +51,11 @@ jobs:
         python-version: 3.9
     - name: Build docker container
       run: |
-        docker build -t murkelhausen .
+        DOCKER_IMAGE_NAME=murkelhausen
+        DOCKER_IMAGE_TAG=latest
+        DOCKER_IMAGE_NAME=$(echo docker.pkg.github.com/${GITHUB_REPOSITORY}/${DOCKER_IMAGE_NAME} | tr '[:upper:]' '[:lower:]')
+        DOCKER_IMAGE_NAME_WITH_TAG=$(echo ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} | tr '[:upper:]' '[:lower:]')
+        docker build -t $DOCKER_IMAGE_NAME_WITH_TAG .
     - name: Push docker image to github docker repo
       run: |
         DOCKER_IMAGE_NAME=murkelhausen
