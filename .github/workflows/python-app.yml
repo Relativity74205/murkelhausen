@@ -60,7 +60,7 @@ jobs:
       env:
         REPO_NAME: $(echo ${{env.GITHUB_REPOSITORY}} | tr '[:upper:]' '[:lower:]')
         #  DOCKER_IMAGE_NAME_FULL: $(echo ghcr.io/${GITHUB_REPOSITORY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} | tr '[:upper:]' '[:lower:]')
-        DOCKER_IMAGE_NAME_FULL: ghcr.io/${{REPO_NAME}}/${{env.DOCKER_IMAGE_NAME}}:${{env.DOCKER_IMAGE_TAG}}
+        DOCKER_IMAGE_NAME_FULL: ghcr.io/${{env.REPO_NAME}}/${{env.DOCKER_IMAGE_NAME}}:${{env.DOCKER_IMAGE_TAG}}
     - name: Publish docker container to registry
       run: |
         docker login ghcr.io -u publisher -p ${{ secrets.GITHUB_TOKEN }}
