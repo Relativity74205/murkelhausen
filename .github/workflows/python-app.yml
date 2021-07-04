@@ -36,10 +36,20 @@ jobs:
     - name: Test with pytest
       run: |
         poetry run pytest tests/
+
+
     # https://github.com/marketplace/actions/build-and-publish-docker-image-to-new-github-packages-registry
     # https://github.com/VaultVulp/gp-docker-action/blob/master/entrypoint.sh#L10
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
     - name: Build and Push docker image to github docker repo
       run: |
         docker build -t murkelhausen .
-        docker login -u arkadius@schuchhardt.com -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+        docker login -u publisher -p ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
         docker push murkelhausen
