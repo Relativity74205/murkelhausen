@@ -61,10 +61,10 @@ jobs:
         poetry install
         poetry build -f wheel
         poetry export -f requirements.txt --without-hashes -o requirements.txt
-        mkdir -p ${ARTIFACTS}
-        poetry run pip wheel -w ${ARTIFACTS}/wheelhouse -r requirements.txt
-        mv dist/* ${ARTIFACTS}/wheelhouse
-        cp poetry.lock ${ARTIFACTS}
+        mkdir -p wheelhouse
+        poetry run pip wheel -w wheelhouse -r requirements.txt
+        mv dist/* wheelhouse
+#        cp poetry.lock ${ARTIFACTS}
         docker buildx build -t $DOCKER_IMAGE_NAME_FULL --platform linux/amd64,linux/arm/v7 .
     - name: Publish docker container to registry
       run: |
