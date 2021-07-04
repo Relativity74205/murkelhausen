@@ -7,9 +7,7 @@ FROM python:3.9-slim
 RUN pip install poetry
 ENV PATH="${PATH}:/root/.poetry/bin"
 
-WORKDIR /app
-
-COPY pyproject.toml src/ /app/
+COPY pyproject.toml src/ ./
 
 RUN pip install pydantic && \
     poetry config virtualenvs.create false && \
