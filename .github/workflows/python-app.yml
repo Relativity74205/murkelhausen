@@ -46,9 +46,9 @@ jobs:
     env:
       DOCKER_IMAGE_NAME: murkelhausen
       DOCKER_IMAGE_TAG: latest
-      REPO_NAME: echo ${GITHUB_REPOSITORY} | tr '[:upper:]' '[:lower:]'
+      REPO_NAME: echo ${{ env.GITHUB_REPOSITORY }} | tr '[:upper:]' '[:lower:]'
       # DOCKER_IMAGE_NAME_FULL: $(echo ghcr.io/${GITHUB_REPOSITORY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} | tr '[:upper:]' '[:lower:]')
-      DOCKER_IMAGE_NAME_FULL: ghcr.io/${REPO_NAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+      DOCKER_IMAGE_NAME_FULL: ghcr.io/$ {{ env.REPO_NAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
