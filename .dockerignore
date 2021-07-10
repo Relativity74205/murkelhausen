@@ -1,0 +1,13 @@
+tests
+
+# pipeline
+user.toml
+.dockerignore
+.gitignore
+Dockerfile
+mypy.ini
+.github
+
+# caches
+.mypy_cache
+.pytest_cache

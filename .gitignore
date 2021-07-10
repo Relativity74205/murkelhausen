@@ -13,7 +13,6 @@ docs/autodoc
 pip-wheel-metadata
 *.py[cod]
 *.egg-info
-poetry.lock
 .python-version
 
 # dev stuff
