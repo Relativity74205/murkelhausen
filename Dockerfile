@@ -9,12 +9,14 @@ RUN apt-get update && \
     python get-poetry.py --version 1.1.6
 ENV PATH="${PATH}:/root/.poetry/bin"
 
-# WORKDIR /app
+WORKDIR /usr/app
 
-COPY pyproject.toml poerty.lock src/ ./
+COPY pyproject.toml poetry.lock src/ /usr/app/
 
 RUN poetry config virtualenvs.create false && \
     poetry install --no-dev --no-interaction --no-ansi
+
+USER 1000
 
 EXPOSE 5000
 
