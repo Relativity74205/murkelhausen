@@ -1,3 +1,24 @@
+"""Config parser module.
+
+This module cascades through the different ways in which configuration
+parameters for the clv application can be set. They follow the
+standard priority of
+
+ - default parameters (src/clv/resources/default.ini)
+ - config file parameters (user.ini in top project path)
+ - environment variable parameters
+ - command line parameters
+
+Parameters set through a method lower down the priority chain will
+overwrite settings from higher up.
+
+Command line parameters need to start with the section which they
+will belong to, and have the key name follow after a double-
+underscore, e.g. "app__loglevel", and
+environment variables need to additionally start with CLV and
+a single underscore before that, e.g. CLV_APP__LOGLEVEL.
+"""
+
 from collections import defaultdict
 import os
 from logging import getLogger
