@@ -21,7 +21,7 @@ def setup_logging():
             },
             "handlers": {
                 "console": {
-                    "level": cfg.loglevel,
+                    "level": cfg.app.loglevel,
                     "formatter": "oneline",
                     "class": "logging.StreamHandler",
                     "stream": "ext://sys.stdout",
@@ -30,12 +30,12 @@ def setup_logging():
             "loggers": {
                 "": {
                     "handlers": ["console"],
-                    "level": cfg.loglevel,
+                    "level": cfg.app.loglevel,
                     "propagate": True,
                 },
                 "uvicorn": {
                     "handlers": ["console"],
-                    "level": cfg.loglevel,
+                    "level": cfg.app.loglevel,
                     "propagate": False,
                 },
             },

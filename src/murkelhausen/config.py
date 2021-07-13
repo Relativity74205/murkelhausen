@@ -50,11 +50,16 @@ class WeatherNMI(BaseModel, validate_assignment=True):
     url: str
 
 
-class Settings(BaseSettings):
+class S3(BaseModel, validate_assignment=True):
+    bucket: str
+    aws_access_key_id: str
+    aws_secret_access_key: str
+
+
+class App(BaseModel):
     loglevel: loglevels
+    app_reload: bool
     cities: List[City]
-    weather_owm: WeatherOWM
-    weather_nmi: WeatherNMI
 
     @validator("cities")
     def check_cities(cls, cities):
@@ -63,6 +68,13 @@ class Settings(BaseSettings):
             raise ValueError("Found non unique city names.")
 
         return cities
+
+
+class Settings(BaseSettings):
+    app: App
+    weather_owm: WeatherOWM
+    weather_nmi: WeatherNMI
+    s3: S3
 
     class Config:
         validate_assignment = True

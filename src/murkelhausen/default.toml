@@ -1,5 +1,7 @@
+[app]
 loglevel = "DEBUG"
-[[cities]]
+app_reload = false
+[[app.cities]]
     name = "Mülheim"
     gps_lat = 51.418568
     gps_lon = 6.884523
@@ -11,3 +13,8 @@ api_key = ""
 
 [weather_nmi]
 url = "https://api.met.no/weatherapi/locationforecast/2.0/complete"
+
+[s3]
+bucket = "murkelhausen-weather"
+aws_access_key_id = "AKIAYNIWNYJNLYTLAPGG"
+aws_secret_access_key = ""

@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - '5000:5000'
+    volumes:
+      - /usr/app/wheels
+      - .:/usr/app
+    environment:
+      - MURKELHAUSEN_APP__APP_RELOAD=true
+#    profiles:
+#      - dev
+  prod:
+    ports:
+      - '5000:5000'
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+#    profiles:
+#      - prod
+
+# docker-compose run dev poetry run black src
+# docker-compose run dev poetry update
+# docker-compose up -d prod
+# COMPOSE_PROFILES=dev docker-compose up
+# docker-compose --profile prod build
