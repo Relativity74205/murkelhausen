@@ -12,9 +12,9 @@ WORKDIR /usr/app
 
 COPY . .
 
+RUN poetry install
 RUN pip install --upgrade pip && \
-    poetry install
-RUN poetry build -f wheel && \
+    poetry build -f wheel && \
     poetry export -f requirements.txt --without-hashes -o requirements.txt && \
     poetry run pip wheel -w wheels -r requirements.txt && \
     mv dist/* wheels

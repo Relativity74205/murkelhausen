@@ -4,8 +4,6 @@ tests
 user.toml
 .dockerignore
 .gitignore
-Dockerfile
-mypy.ini
 .github
 
 # caches
