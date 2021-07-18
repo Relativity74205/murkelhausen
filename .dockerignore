@@ -7,3 +7,5 @@ user.toml
 # caches
 .mypy_cache
 .pytest_cache
+dist
+wheels
