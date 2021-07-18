@@ -60,7 +60,7 @@ def serve(port, host):
             host=host,
             log_config=None,  # do not touch
             log_level=cfg.app.loglevel.lower(),
-            reload=cfg.app.app_reload
+            reload=cfg.app.app_reload,
         )
     except:
         log.critical("Could not start server, aborting...", exc_info=True)
