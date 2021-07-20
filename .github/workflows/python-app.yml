@@ -21,15 +21,12 @@ jobs:
     - name: Docker Compose
       run: |
         docker-compose build
-#        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py > get-poetry.py
-#        python get-poetry.py --version 1.1.6
-#        echo "PATH=${PATH}:${HOME}/.poetry/bin" >> $GITHUB_ENV
     - name: Lint with mypy
       run: |
         docker run murkelhausen_dev poetry run mypy src/
     - name: Lint with black
       run: |
-        docker run murkelhausen_dev poetry run black src/ tests/
+        docker run murkelhausen_dev poetry run black src/ tests/ --check
     - name: Test with pytest
       run: |
         docker run murkelhausen_dev poetry run pytest tests/
