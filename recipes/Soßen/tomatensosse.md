@@ -1,4 +1,4 @@
-## Tomatensoße
+# Tomatensoße
 
 ### Zutaten
 
@@ -15,4 +15,3 @@
 1. Tomatenmark, Salz und Pfeffer zu den passierten Tomaten geben
 2. Sobald es leicht köchelt, Zucker und Kräuter zugeben
 3. Zum Schluss das Olivenöl einrühren
-4. 

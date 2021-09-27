@@ -1,4 +1,4 @@
-## Porridge
+# Porridge
 
 ### Zutaten
 
@@ -16,4 +16,3 @@
 3. (fast) aufkochen, dann auf leichte-mittlere Hitze (ca. Stufe 4) runterstellen
 4. 15 Minuten unter dauernden Umrühren kochen
 5. auf den gewürfelten Apfel geben
-
