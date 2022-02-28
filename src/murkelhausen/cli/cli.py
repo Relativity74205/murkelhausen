@@ -1,11 +1,11 @@
 from logging import getLogger
-import json
 
 import click
 
 from murkelhausen import __version__, cfg
-from murkelhausen.config import cli_loader
+from murkelhausen.config import cli_loader, City
 from murkelhausen.util import logger, backend
+from murkelhausen.util.backend import save_json
 from murkelhausen.weather import owm, nmi
 
 log = getLogger(__name__)
@@ -55,7 +55,7 @@ def serve(port, host):
 
     try:
         uvicorn.run(
-            "murkelhausen.app.app:app",
+            "murkelhausen.app:app",
             port=port,
             host=host,
             log_config=None,  # do not touch
@@ -71,10 +71,10 @@ def serve(port, host):
 @click.argument("city_name")
 def query_owm(city_name: str):
     """Queries the API of OpenWeatherMap for the given city name."""
-    city = backend.get_city_object(city_name)
-    owm_data = owm.query_one_call_api(city, cfg.weather_owm)
-
-    print(json.dumps(owm_data, indent=4))
+    city: City = backend.get_city_object(city_name)
+    owm_data: dict = owm.query_one_call_api(city, cfg.weather_owm)
+    save_json(f"weather_owm_{city.name}", owm_data)
+    return owm_data
 
 
 @cli.command("query-nmi")
@@ -83,4 +83,5 @@ def query_nmi(city_name: str):
     """Queries the API of the NMI for the given city name."""
     city = backend.get_city_object(city_name)
     nmi_data = nmi.query_locationforecast(city, cfg.weather_nmi)
-    print(json.dumps(nmi_data, indent=4))
+
+    save_json(f"weather_nmi_{city.name}", nmi_data)

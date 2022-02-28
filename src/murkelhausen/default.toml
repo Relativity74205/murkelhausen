@@ -1,18 +1,20 @@
 [app]
 loglevel = "DEBUG"
-app_reload = false
+data_path = "data"
 [[app.cities]]
     name = "Mülheim"
     gps_lat = 51.418568
     gps_lon = 6.884523
 
 [weather_owm]
-url = "http://api.openweathermap.org/data/2.5/onecall"
+url_short = "http://api.openweathermap.org/data/2.5/weather"
+url_complete = "http://api.openweathermap.org/data/2.5/onecall"
 units = "metric"
 api_key = ""
 
 [weather_nmi]
-url = "https://api.met.no/weatherapi/locationforecast/2.0/complete"
+url_short = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
+url_complete = "https://api.met.no/weatherapi/locationforecast/2.0/complete"
 
 [s3]
 bucket = "murkelhausen-weather"

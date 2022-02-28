@@ -41,13 +41,15 @@ class City(BaseModel, validate_assignment=True):
 
 
 class WeatherOWM(BaseModel, validate_assignment=True):
-    url: str
+    url_complete: str
+    url_short: str
     units: Literal["metric", "imperial", "standard"]
     api_key: str
 
 
 class WeatherNMI(BaseModel, validate_assignment=True):
-    url: str
+    url_complete: str
+    url_short: str
 
 
 class S3(BaseModel, validate_assignment=True):
@@ -58,7 +60,7 @@ class S3(BaseModel, validate_assignment=True):
 
 class App(BaseModel):
     loglevel: loglevels
-    app_reload: bool
+    data_path: str
     cities: List[City]
 
     @validator("cities")

@@ -1,24 +1,22 @@
 """
 https://openweathermap.org/api/one-call-api
 """
-from typing import Dict, Any
-
 import requests
 
 from murkelhausen.config import WeatherOWM, City
 
 
-def query_one_call_api(city: City, owm_settings: WeatherOWM) -> Dict:
-    query_params: Dict[str, Any] = {
+def query_one_call_api(city: City, owm_settings: WeatherOWM) -> dict:
+    query_params: dict = {
         "lat": city.gps_lat,
         "lon": city.gps_lon,
         "appid": owm_settings.api_key,
         "units": owm_settings.units,
     }
-    r = requests.get(owm_settings.url, params=query_params)
+    r = requests.get(owm_settings.url_short, params=query_params)
 
     if r.status_code == 200:
-        return_dict: Dict = r.json()
+        return_dict: dict = r.json()
         return return_dict
     else:
         raise RuntimeError(

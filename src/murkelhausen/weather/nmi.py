@@ -18,7 +18,7 @@ def query_locationforecast(city: City, nmi_settings: WeatherNMI) -> Dict:
         "lon": city.gps_lon,
     }
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64)"}
-    r = requests.get(nmi_settings.url, params=query_params, headers=headers)
+    r = requests.get(nmi_settings.url_short, params=query_params, headers=headers)
     log.debug(f"Following URL is used for querying NMI API: {r.url}.")
 
     if r.status_code == 200:
