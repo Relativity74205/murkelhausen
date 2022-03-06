@@ -41,15 +41,15 @@ class City(BaseModel, validate_assignment=True):
 
 
 class WeatherOWM(BaseModel, validate_assignment=True):
-    url_complete: str
-    url_short: str
+    url_weather: str
+    url_onecall: str
     units: Literal["metric", "imperial", "standard"]
     api_key: str
 
 
 class WeatherNMI(BaseModel, validate_assignment=True):
+    url_compact: str
     url_complete: str
-    url_short: str
 
 
 class S3(BaseModel, validate_assignment=True):

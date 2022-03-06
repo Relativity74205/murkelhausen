@@ -2,18 +2,33 @@
 https://openweathermap.org/api/one-call-api
 """
 import requests
+from prefect import task
 
 from murkelhausen.config import WeatherOWM, City
 
 
+@task
 def query_one_call_api(city: City, owm_settings: WeatherOWM) -> dict:
+    return _query_owm(
+        owm_settings.url_onecall, city, owm_settings.api_key, owm_settings.units
+    )
+
+
+@task
+def query_weather(city: City, owm_settings: WeatherOWM) -> dict:
+    return _query_owm(
+        owm_settings.url_weather, city, owm_settings.api_key, owm_settings.units
+    )
+
+
+def _query_owm(url: str, city: City, api_key: str, units: str) -> dict:
     query_params: dict = {
         "lat": city.gps_lat,
         "lon": city.gps_lon,
-        "appid": owm_settings.api_key,
-        "units": owm_settings.units,
+        "appid": api_key,
+        "units": units,
     }
-    r = requests.get(owm_settings.url_short, params=query_params)
+    r = requests.get(url, params=query_params)
 
     if r.status_code == 200:
         return_dict: dict = r.json()

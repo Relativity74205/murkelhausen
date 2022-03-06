@@ -7,13 +7,13 @@ data_path = "data"
     gps_lon = 6.884523
 
 [weather_owm]
-url_short = "http://api.openweathermap.org/data/2.5/weather"
-url_complete = "http://api.openweathermap.org/data/2.5/onecall"
 units = "metric"
 api_key = ""
+url_weather = "http://api.openweathermap.org/data/2.5/weather"
+url_onecall = "http://api.openweathermap.org/data/2.5/onecall"
 
 [weather_nmi]
-url_short = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
+url_compact = "https://api.met.no/weatherapi/locationforecast/2.0/compact"
 url_complete = "https://api.met.no/weatherapi/locationforecast/2.0/complete"
 
 [s3]

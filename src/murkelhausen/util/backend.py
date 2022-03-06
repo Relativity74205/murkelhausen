@@ -2,6 +2,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+from prefect import task
+
 from murkelhausen import cfg
 from murkelhausen.config import City
 
@@ -18,6 +20,7 @@ def get_city_object(city_name: str) -> City:
         raise ValueError(f"{city_name=} not found in config.")
 
 
+@task
 def save_json(base_name: str, data: dict):
     now = datetime.now().isoformat(timespec="seconds")
     base_path = Path(__file__).parent.parent.parent.parent / cfg.app.data_path
