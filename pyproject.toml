@@ -10,6 +10,7 @@ toml = "^0.10.2"
 requests = "^2.27.1"
 prefect = "^1.0.0"
 pydantic = "^1.9.0"
+fire = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0.1"
