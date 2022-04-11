@@ -2,8 +2,8 @@
 
 ### Zutaten
 
-- 500 g Rindergehacktes
-- 500 g Zucchini
+- 600 g Rindergehacktes
+- 400 g Zucchini
 - 1 große Dose geschälte Tomaten
 - 1 große Zwiebel
 - 3 EL Tomatenmark
@@ -15,7 +15,7 @@
 
 ### Zubereitung
 
-1. Eine große Zwiebel schälen und fein hacken, danach Öl andünsten
+1. Eine große Zwiebel schälen und fein hacken, danach in Öl andünsten
 2. Das Gehackte dazugeben und anbraten. Salzen und pfeffern
 3. Die Strünke der Tomaten entfernen und das Fruchtfleisch fein würfeln
 4. Tomatenwürfel, Tomatenmark und Saft zu dem Gehackten geben
