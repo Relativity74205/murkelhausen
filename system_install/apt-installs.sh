@@ -15,3 +15,7 @@ print_color "green" "Installing wget curl git nano htop complete."
 print_color "green" "Installing pavucontrol..."
 sudo apt install pavucontrol
 print_color "green" "Installing pavucontrol complete."
+
+print_color "green" "Installing graphviz..."
+sudo apt install graphviz
+print_color "green" "Installing graphviz complete."
