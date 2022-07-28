@@ -27,5 +27,11 @@ else
   print_color "yellow" "oh-my-zsh already installed"
 fi
 
+sudo apt-get install fonts-powerline
+sudo apt install tmux
+echo  "export TERM=xterm-256color" >> ~/.zshrc
 
+#ZSH_THEME="agnoster"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+DEFAULT_USER="aschuchhardt"
 #  plugins=(aws docker docker-compose)
