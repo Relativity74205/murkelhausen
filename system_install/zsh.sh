@@ -28,8 +28,7 @@ else
 fi
 
 sudo apt-get install fonts-powerline
-sudo apt install tmux
-echo  "export TERM=xterm-256color" >> ~/.zshrc
+echo "export TERM=xterm-256color" >> ~/.zshrc
 
 #ZSH_THEME="agnoster"
 ZSH_THEME="powerlevel10k/powerlevel10k"
