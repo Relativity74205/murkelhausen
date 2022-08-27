@@ -1,0 +1,58 @@
+#sudo apt install net-tools
+- name: My first play
+  become: True
+  hosts: beowulf
+  vars:
+    docker_user: 'arkadius'
+  tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - unzip
+          - python3.10-venv
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: latest
+        update_cache: true
+
+    - name: install docker-compose
+      apt:
+        name: docker-compose
+        state: latest
+
+    - name: users | adding docker users (for use without sudo)
+      user:
+        name: "{{ docker_user }}"
+        append: yes
+        groups: docker
