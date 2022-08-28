@@ -1,25 +1,24 @@
-- name: My first play
+- name: My Ubuntu WSL setup
   become: True
   hosts: localhost
   connection: local
   vars:
     docker_user: 'arkadius'
   tasks:
-    - name: Install aptitude
-      apt:
-        name: aptitude
-        state: latest
-        update_cache: true
+    - name: Install common
+      include_role:
+        name: common
 
     - name: Install docker
       include_role:
         name: docker
 
-    - name: install some system packages required for various stuff
-      apt:
-        pkg:
-          - unzip
-          - net-tools
-          - python3.10-venv
-        state: latest
-        update_cache: true
+    - name: Install zsh + oh_my_zsh + powerlevel10k
+      include_role:
+        name: gantsign.oh-my-zsh
+        users:
+          - username: arkadius
+            oh_my_zsh:
+              theme: robbyrussell
+              plugins:
+                - git
