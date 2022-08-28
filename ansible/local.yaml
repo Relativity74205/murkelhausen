@@ -43,14 +43,21 @@
       command: 'git clone https://github.com/zsh-users/zsh-autosuggestions /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
       when: zsh_autosuggestions_path.stat.exists == false
 
-    - name: check if zsh-autosuggestions in .zshrc
-      command: grep -x 'plugins=.*zsh-autosuggestions.*' /home/{{ user }}/.zshrc
-      register: zshrc_content
-      ignore_errors: true
-
     - name: add zsh-autosuggestions to .zshrc
-      lineinfile:
-        path: /home/{{ user }}/.zshrc
-        regexp: 'plugins=\((.*)\)'
-        line: 'plugins=(\1 zsh-autosuggestions)'
-      when: zshrc_content.rc == 0
+      include_role:
+        name: add_plugin_to_zshrc
+      vars:
+        new_plugin: zsh-autosuggestions
+
+#    - name: check if zsh-autosuggestions in .zshrc
+#      command: grep -x 'plugins=.*zsh-autosuggestions.*' /home/{{ user }}/.zshrc
+#      register: zshrc_content
+#      ignore_errors: true
+#
+#    - name: add zsh-autosuggestions to .zshrc
+#      lineinfile:
+#        path: /home/{{ user }}/.zshrc
+#        regexp: 'plugins=\((.*)\)'
+#        line: 'plugins=(\1 zsh-autosuggestions)'
+#        backrefs: yes
+#      when: zshrc_content.rc == 1
