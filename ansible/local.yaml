@@ -27,7 +27,7 @@
                 - pyenv
                 - docker
                 - docker-compose
-                - task-warrior
+                - tasks-warrior
 
     - name: .zshrc PATH
       lineinfile:
@@ -45,9 +45,9 @@
 
     - name: add zsh-autosuggestions to .zshrc
       include_role:
-        name: addplugintozshrc
-#      vars:
-#        new_plugin: zsh-autosuggestions
+        name: add_plugin_to_zshrc
+      vars:
+        new_plugin: zsh-autosuggestions
 
 #    - name: check if zsh-autosuggestions in .zshrc
 #      command: grep -x 'plugins=.*zsh-autosuggestions.*' /home/{{ user }}/.zshrc
