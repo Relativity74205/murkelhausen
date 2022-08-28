@@ -36,7 +36,7 @@
 
     - name: zsh autosuggestions folder exists
       stat:
-        path: /home/{{ user }}/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+        path: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
       register: zsh_autosuggestions_path
 
     - name: zsh autosuggestions
