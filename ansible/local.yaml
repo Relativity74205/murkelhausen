@@ -16,9 +16,16 @@
     - name: Install zsh + oh_my_zsh + powerlevel10k
       include_role:
         name: gantsign.oh-my-zsh
+      vars:
         users:
           - username: arkadius
             oh_my_zsh:
               theme: robbyrussell
               plugins:
                 - git
+                - zsh-autosuggestions
+                - pip
+                - pyenv
+                - docker
+                - docker-compose
+                - task-warrior

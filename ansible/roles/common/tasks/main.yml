@@ -9,7 +9,6 @@
 
 - name: install some system packages required for various stuff
   apt:
-    name: install common packages
     pkg:
       - unzip
       - net-tools
