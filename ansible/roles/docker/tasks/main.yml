@@ -38,6 +38,6 @@
 
 - name: users | adding docker users (for use without sudo)
   user:
-    name: "{{ docker_user }}"
+    name: "{{ user }}"
     append: yes
     groups: docker

@@ -3,7 +3,7 @@
   hosts: localhost
   connection: local
   vars:
-    docker_user: 'arkadius'
+    user: 'arkadius'
   tasks:
     - name: Install common
       include_role:
@@ -29,3 +29,8 @@
                 - docker
                 - docker-compose
                 - task-warrior
+
+    - name: .zshrc PATH
+      lineinfile:
+        path: /home/{{ user }}/.zshrc
+        line: 'export PATH=/home/arkadius/.local/bin:$PATH'
