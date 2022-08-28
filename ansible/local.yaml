@@ -46,10 +46,11 @@
     - name: check if zsh-autosuggestions in .zshrc
       command: grep -x 'plugins=.*zsh-autosuggestions.*' /home/{{ user }}/.zshrc
       register: zshrc_content
+      ignore_errors: true
 
     - name: add zsh-autosuggestions to .zshrc
       lineinfile:
         path: /home/{{ user }}/.zshrc
         regexp: 'plugins=\((.*)\)'
         line: 'plugins=(\1 zsh-autosuggestions)'
-      when: zshrc_content.stdout == ""
+      when: zshrc_content.rc == 0
