@@ -23,7 +23,6 @@
               theme: robbyrussell
               plugins:
                 - git
-                - zsh-autosuggestions
                 - pip
                 - pyenv
                 - docker
@@ -34,3 +33,23 @@
       lineinfile:
         path: /home/{{ user }}/.zshrc
         line: 'export PATH=/home/arkadius/.local/bin:$PATH'
+
+    - name: zsh autosuggestions folder exists
+      stat:
+        path: /home/{{ user }}/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+      register: zsh_autosuggestions_path
+
+    - name: zsh autosuggestions
+      command: 'git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-/home/{{ user }}/.oh-my-zsh/custom}/plugins/zsh-autosuggestions'
+      when: zsh_autosuggestions_path.stat.exists == false
+
+    - name: check if zsh-autosuggestions in .zshrc
+      command: grep -x "plugins=.*git.*" .zshrc
+      register: zshrc_content
+
+    - name: add zsh-autosuggestions to .zshrc
+      lineinfile:
+        path: /home/{{ user }}/.zshrc
+        regexp: "plugins=\((.*)\)"
+        line: 'plugins=(\1 zsh-autosuggestions)'
+      when: zshrc_content == ""
