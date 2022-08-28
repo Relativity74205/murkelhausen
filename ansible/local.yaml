@@ -45,7 +45,7 @@
 
     - name: add zsh-autosuggestions to .zshrc
       include_role:
-        name: add_plugin_to_zshrc
+        name: addplugintozshrc
 #      vars:
 #        new_plugin: zsh-autosuggestions
 
