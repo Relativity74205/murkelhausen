@@ -1,0 +1,71 @@
+- name: Create fonts directory
+  become: true
+  file:
+    path: "{{ fonts_path }}"
+    mode: '0755'
+    state: directory
+
+- name: Copy powerlevel10k recommanded fonts
+  become: true
+  copy:
+    src: "fonts/{{ item }}"
+    dest: "{{ fonts_path }}/{{ item }}"
+    mode: '0644'
+  loop:
+    - MesloLGS NF Bold Italic.ttf
+    - MesloLGS NF Bold.ttf
+    - MesloLGS NF Italic.ttf
+    - MesloLGS NF Regular.ttf
+
+- name: Install powerlevel10k.
+  git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: /home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k
+    depth: '1'
+    update: no
+    version: 'master'
+
+- name: Add powerlevel10k to zsh plugin
+  lineinfile:
+    path: /home/{{ user }}/.zshrc
+    regexp: ^ZSH_THEME=
+    line: ZSH_THEME="powerlevel10k/powerlevel10k"
+    mode: '0644'
+    create: yes
+
+- name: Enable powerlevel10 instant prompt
+  blockinfile:
+    path: /home/{{ user }}/.zshrc
+    block: |
+      if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+        source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+      fi
+    insertbefore: BOF
+    marker_begin: "BEGIN P10K INSTANT PROMPT"
+    marker_end: "END P10K INSTANT PROMPT"
+
+- name: Enable powerlevel10k config file
+  blockinfile:
+    path: "{{ p10k_zshrc_config[zsh_plugin]['zsh_file'] }}"
+    block: |
+      [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+    insertafter: EOF
+    marker_begin: "BEGIN P10K CONFIG FILE"
+    marker_end: "END P10K CONFIG FILE"
+
+- name: Setup powerlevel10k
+  template:
+    src: "files/fonts/.p10k.zsh"
+    dest: '/home/{{ user }}/.p10k.zsh'
+    mode: '0644'
+
+
+p10k_zshrc_config:
+  zsh:
+   regexp: '^source '
+   line: 'source ~/powerlevel10k/powerlevel10k.zsh-theme'
+   zsh_file: ~/.zshrc
+  ohmyzsh:
+    regexp: '^ZSH_THEME='
+    line: 'ZSH_THEME="powerlevel10k/powerlevel10k"'
+    zsh_file: ~/.zshrc

@@ -4,6 +4,7 @@
   connection: local
   vars:
     user: 'arkadius'
+    fonts_path: /usr/share/fonts/TTF
   tasks:
     - name: Install common
       include_role:
