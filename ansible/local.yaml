@@ -25,9 +25,10 @@
                 - pyenv
                 - docker
                 - docker-compose
-                - tasks-warrior
+                #- aws
+                #- tasks-warrior
 
-    - name: .zshrc PATH
+    - name: add ~/local/bin to PATH in .zshrc
       lineinfile:
         path: /home/{{ user }}/.zshrc
         line: 'export PATH=/home/arkadius/.local/bin:$PATH'
@@ -50,23 +51,12 @@
     - name: Install powerlevel10k theme
       include_tasks: powerlevel10k.yaml
 
-#    - name: Install atuin
-#      shell: bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
-#
-#    - name: Bin atuin to zsh
-#      lineinfile:
-#        path: /home/{{ arkadius }}/.zshrc
-#        line: echo 'eval "$(atuin init zsh)"' >> ~/.zshrc
+    - name: Install atuin
+      shell: bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
+      args:
+        executable: /bin/bash
 
-#    - name: check if zsh-autosuggestions in .zshrc
-#      command: grep -x 'plugins=.*zsh-autosuggestions.*' /home/{{ user }}/.zshrc
-#      register: zshrc_content
-#      ignore_errors: true
-#
-#    - name: add zsh-autosuggestions to .zshrc
-#      lineinfile:
-#        path: /home/{{ user }}/.zshrc
-#        regexp: 'plugins=\((.*)\)'
-#        line: 'plugins=(\1 zsh-autosuggestions)'
-#        backrefs: yes
-#      when: zshrc_content.rc == 1
+    - name: Bin atuin to zsh
+      lineinfile:
+        path: /home/{{ user }}/.zshrc
+        line: eval "$(atuin init zsh)"
