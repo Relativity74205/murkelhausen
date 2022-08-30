@@ -1,5 +1,4 @@
 - name: My Ubuntu WSL setup
-  become: True
   hosts: localhost
   connection: local
   vars:
@@ -7,12 +6,10 @@
     fonts_path: /usr/share/fonts/TTF
   tasks:
     - name: Install common
-      include_role:
-        name: common
+      include_tasks: common.yaml
 
     - name: Install docker
-      include_role:
-        name: docker
+      include_tasks: docker.yaml
 
     - name: Install zsh + oh_my_zsh + powerlevel10k
       include_role:
@@ -49,6 +46,17 @@
         name: add_plugin_to_zshrc
       vars:
         new_plugin: zsh-autosuggestions
+
+    - name: Install powerlevel10k theme
+      include_tasks: powerlevel10k.yaml
+
+#    - name: Install atuin
+#      shell: bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
+#
+#    - name: Bin atuin to zsh
+#      lineinfile:
+#        path: /home/{{ arkadius }}/.zshrc
+#        line: echo 'eval "$(atuin init zsh)"' >> ~/.zshrc
 
 #    - name: check if zsh-autosuggestions in .zshrc
 #      command: grep -x 'plugins=.*zsh-autosuggestions.*' /home/{{ user }}/.zshrc
