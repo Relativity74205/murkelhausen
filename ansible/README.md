@@ -77,3 +77,6 @@ export PATH=/home/arkadius/.local/bin/:$PATH
 source .bashrc
 ansible --version
 ```
+
+- Install fonts for Windows Terminal on host:
+https://github.com/romkatv/powerlevel10k#manual-font-installation
