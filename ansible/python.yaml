@@ -1,0 +1,80 @@
+- name: Install required system packages
+  apt:
+    pkg:
+      - make
+      - build-essential
+      - libssl-dev
+      - zlib1g-dev
+      - libbz2-dev
+      - libreadline-dev
+      - libsqlite3-dev
+      - wget
+      - curl
+      - llvm
+      - libncursesw5-dev
+      - xz-utils
+      - tk-dev
+      - libxml2-dev
+      - libxmlsec1-dev
+      - libffi-dev
+      - liblzma-dev
+    state: latest
+    update_cache: true
+  become: True
+
+- name: clone Pyenv for users
+  shell: 'curl https://pyenv.run | /bin/bash'
+  args:
+    creates: '~/.pyenv'
+    executable: /bin/bash
+
+- name: set permissions of pyenv for users
+  file:
+    path: '~/.pyenv'
+    mode: 'go-w'
+    recurse: yes
+
+- name: write .pyenvrc for users
+  copy:
+    src: files/.pyenvrc
+    dest: '~/.pyenvrc'
+    mode: 'u=rw,go=r'
+
+- name: add .pyenvrc to .profile
+  lineinfile:
+    path: '{{ item }}'
+    line: 'source ~/.pyenvrc'
+    create: yes
+    mode: 'u=rw,go=r'
+  with_items:
+    - '~/.profile'
+    - '~/.bash_profile'
+    - '~/.bashrc'
+    - '~/.zprofile'
+    - '~/.zshrc'
+
+- name: update pyenv
+  shell: pyenv update
+
+- name: install latest python3.10
+  shell: pyenv install 3.10:latest -s
+
+- name: install latest python3.9
+  shell: pyenv install 3.9:latest -s
+
+- name: install latest python3.8
+  shell: pyenv install 3.8:latest -s
+
+- name: get latest python_full_version
+  shell: pyenv versions | grep -oP '3.10.(\d{1,2})'
+  register: python_full_version
+
+- name: set python3.10 as global
+  lineinfile:
+    path: /home/{{ user }}/.pyenv/version
+    line: '{{ python_full_version.stdout }}'
+    create: yes
+
+- name: install pipx
+
+- name: install poetry
