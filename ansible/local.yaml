@@ -5,58 +5,61 @@
     user: 'arkadius'
     fonts_path: /usr/share/fonts/TTF
   tasks:
-    - name: Install common
-      include_tasks: common.yaml
+#    - name: Install common
+#      include_tasks: common.yaml
+#
+#    - name: Install docker
+#      include_tasks: docker.yaml
+#
+#    - name: Install zsh + oh_my_zsh + powerlevel10k
+#      include_role:
+#        name: gantsign.oh-my-zsh
+#      vars:
+#        users:
+#          - username: arkadius
+#            oh_my_zsh:
+#              theme: robbyrussell
+#              plugins:
+#                - git
+#                - pip
+#                - pyenv
+#                - docker
+#                - docker-compose
+#                #- aws
+#                #- tasks-warrior
+#
+#    - name: add ~/local/bin to PATH in .zshrc
+#      lineinfile:
+#        path: /home/{{ user }}/.zshrc
+#        line: 'export PATH=/home/arkadius/.local/bin:$PATH'
+#
+#    - name: zsh autosuggestions folder exists
+#      stat:
+#        path: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+#      register: zsh_autosuggestions_path
+#
+#    - name: zsh autosuggestions
+#      command: 'git clone https://github.com/zsh-users/zsh-autosuggestions /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
+#      when: zsh_autosuggestions_path.stat.exists == false
+#
+#    - name: add zsh-autosuggestions to .zshrc
+#      include_role:
+#        name: add_plugin_to_zshrc
+#      vars:
+#        new_plugin: zsh-autosuggestions
+#
+#    - name: Install powerlevel10k theme
+#      include_tasks: powerlevel10k.yaml
+#
+#    - name: Install atuin
+#      shell: bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
+#      args:
+#        executable: /bin/bash
+#
+#    - name: Bin atuin to zsh
+#      lineinfile:
+#        path: /home/{{ user }}/.zshrc
+#        line: eval "$(atuin init zsh)"
 
-    - name: Install docker
-      include_tasks: docker.yaml
-
-    - name: Install zsh + oh_my_zsh + powerlevel10k
-      include_role:
-        name: gantsign.oh-my-zsh
-      vars:
-        users:
-          - username: arkadius
-            oh_my_zsh:
-              theme: robbyrussell
-              plugins:
-                - git
-                - pip
-                - pyenv
-                - docker
-                - docker-compose
-                #- aws
-                #- tasks-warrior
-
-    - name: add ~/local/bin to PATH in .zshrc
-      lineinfile:
-        path: /home/{{ user }}/.zshrc
-        line: 'export PATH=/home/arkadius/.local/bin:$PATH'
-
-    - name: zsh autosuggestions folder exists
-      stat:
-        path: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-      register: zsh_autosuggestions_path
-
-    - name: zsh autosuggestions
-      command: 'git clone https://github.com/zsh-users/zsh-autosuggestions /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
-      when: zsh_autosuggestions_path.stat.exists == false
-
-    - name: add zsh-autosuggestions to .zshrc
-      include_role:
-        name: add_plugin_to_zshrc
-      vars:
-        new_plugin: zsh-autosuggestions
-
-    - name: Install powerlevel10k theme
-      include_tasks: powerlevel10k.yaml
-
-    - name: Install atuin
-      shell: bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
-      args:
-        executable: /bin/bash
-
-    - name: Bin atuin to zsh
-      lineinfile:
-        path: /home/{{ user }}/.zshrc
-        line: eval "$(atuin init zsh)"
+    - name: Install pyenv + python
+      include_tasks: python.yaml
