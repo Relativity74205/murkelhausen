@@ -1,0 +1,11 @@
+- name: Install atuin
+  shell: bash <(curl https://raw.githubusercontent.com/ellie/atuin/main/install.sh)
+  args:
+    executable: /bin/bash
+  register: atuin_install
+  changed_when: '"atuin is already the newest version" not in atuin_install.stdout'
+
+- name: Bin atuin to zsh
+  lineinfile:
+    path: /home/{{ user }}/.zshrc
+    line: eval "$(atuin init zsh)"

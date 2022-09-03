@@ -1,0 +1,50 @@
+- name: install dependencies
+  become: true
+  package:
+    name:
+      - zsh
+      - git
+    state: present
+
+- name: clone oh-my-zsh for users
+  command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/robbyrussell/oh-my-zsh.git .oh-my-zsh'
+  args:
+    chdir: /home/{{ user }}
+    creates: /home/{{ user }}/.oh-my-zsh
+
+- name: set permissions of oh-my-zsh for users
+  file:
+    path: /home/{{ user }}/.oh-my-zsh
+    mode: 'go-w'
+    recurse: yes
+
+- name: set default shell for users
+  user:
+    name: '{{ user }}'
+    shell: /bin/zsh
+
+- name: write .zshrc for users
+  template:
+    src: /home/{{ user}}/.oh-my-zsh/templates/zshrc.zsh-template
+    dest: /home/{{ user }}/.zshrc
+    backup: no
+    mode: 'u=rw,go=r'
+    force: no
+
+- name: add ~/local/bin to PATH in .zshrc
+  lineinfile:
+    path: /home/{{ user }}/.zshrc
+    line: 'export PATH=/home/arkadius/.local/bin:$PATH'
+    insertafter: EOF
+
+- name: zsh autosuggestions
+  command: 'git clone https://github.com/zsh-users/zsh-autosuggestions /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
+  args:
+    chdir: /home/{{ user }}
+    creates: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+- name: add zsh-autosuggestions to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: zsh-autosuggestions

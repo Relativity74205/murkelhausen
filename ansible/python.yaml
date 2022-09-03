@@ -22,19 +22,19 @@
     update_cache: true
   become: True
 
-- name: clone Pyenv for users
+- name: clone Pyenv
   shell: 'curl https://pyenv.run | /bin/bash'
   args:
     creates: '~/.pyenv'
     executable: /bin/bash
 
-- name: set permissions of pyenv for users
+- name: set directory permissions of pyenv
   file:
     path: '~/.pyenv'
     mode: 'go-w'
     recurse: yes
 
-- name: write .pyenvrc for users
+- name: write .pyenvrc
   copy:
     src: files/.pyenvrc
     dest: '~/.pyenvrc'
@@ -53,21 +53,25 @@
     - '~/.zprofile'
     - '~/.zshrc'
 
-- name: update pyenv
-  shell: pyenv update
-
 - name: install latest python3.10
   shell: pyenv install 3.10:latest -s
+  register: python310installed
+  changed_when: python310installed.stdout != ""
 
 - name: install latest python3.9
   shell: pyenv install 3.9:latest -s
+  register: python39installed
+  changed_when: python39installed.stdout != ""
 
 - name: install latest python3.8
   shell: pyenv install 3.8:latest -s
+  register: python38installed
+  changed_when: python38installed.stdout != ""
 
 - name: get latest python_full_version
   shell: pyenv versions | grep -oP '3.10.(\d{1,2})'
   register: python_full_version
+  changed_when: false
 
 - name: set python3.10 as global
   lineinfile:
@@ -76,5 +80,15 @@
     create: yes
 
 - name: install pipx
+  pip:
+    name: pipx
+    extra_args: --user
 
-- name: install poetry
+- name: check if pipx is on path
+  shell: pipx --version
+  changed_when: false
+
+- name: install cookiecutter with pipx
+  shell: pipx install cookiecutter
+  register: pipx_install
+  changed_when: '"already seems to be installed" not in pipx_install.stdout'

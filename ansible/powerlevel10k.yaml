@@ -31,7 +31,6 @@
     regexp: ^ZSH_THEME=
     line: ZSH_THEME="powerlevel10k/powerlevel10k"
     mode: '0644'
-    create: yes
 
 - name: Enable powerlevel10 instant prompt
   blockinfile:

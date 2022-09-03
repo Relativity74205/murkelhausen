@@ -1,6 +1,7 @@
 - name: check if zsh-autosuggestions in .zshrc
   shell: grep -x 'plugins=.*{{ new_plugin }}.*' /home/{{ user }}/.zshrc | cat
   register: zshrc_content
+  changed_when: false
 
 - name: add zsh-autosuggestions to .zshrc
   lineinfile:

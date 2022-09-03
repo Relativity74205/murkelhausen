@@ -58,6 +58,34 @@ default=${NEW_USER}
 _EOF
 ```
 
+Verwendung: wsl.exe [Argument] [Optionen...] [Befehlszeile]
+
+Argumente zum Ausführen von Linux-Binärdateien:
+
+    Wenn keine Befehlszeile angegeben wird, startet wsl.exe die Standardshell.
+
+    --exec,-e <Befehlszeile>
+        Führen Sie den angegebenen Befehl aus, ohne die Standard-Linux-Shell zu verwenden.
+
+    --
+        Übergeben Sie die restliche Befehlszeile ohne Änderung.
+
+Optionen:
+    --cd <Verzeichnis>
+        Legt das angegebene Verzeichnis als aktuelles Arbeitsverzeichnis fest.
+        Bei Angabe von „~“ wird der Startpfad des Linux-Benutzers verwendet. Wenn der Pfad mit einem
+        „/“-Zeichen beginnt, wird er als absoluter Linux-Pfad interpretiert.
+        Andernfalls muss der Wert ein absoluter Windows-Pfad sein.
+
+    --distribution,-d <Distribution>
+        Führt die angegebene Distribution aus.
+
+    --user,-u <Benutzername>
+        Verwendet für die Ausführung den angegebenen Benutzer.
+
+    --System
+        Startet eine Shell für die Systemverteilung.
+
 - Copy SSH keys (change permission of ssh keys to rw for current user)
 ```bash
 chmod 600 .ssh/*
