@@ -1,0 +1,33 @@
+- name: Download and unarchive pycharm
+  unarchive:
+    src: https://download.jetbrains.com/python/pycharm-professional-{{ pycharm_version }}.tar.gz
+    dest: /tmp
+    creates: /tmp/pycharm-{{ pycharm_version}}/bin/pycharm.sh
+    remote_src: yes
+
+- name: Copy pycharm to /opt
+  become: true
+  copy:
+    src: /tmp/pycharm-{{ pycharm_version}}/
+    dest: /opt/pycharm
+    directory_mode: true
+    remote_src: true
+
+- name: add pycharm directory to path
+  lineinfile:
+    path: /home/{{ user }}/.zshrc
+    line: export PATH=/opt/pycharm/bin/:$PATH
+
+- name: create desktop link
+  become: true
+  copy:
+    dest: /usr/share/applications/pycharm.desktop
+    force: true
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=PycharmUbuntu
+      Exec=/opt/pycharm/bin/pycharm.sh
+      Icon=/opt/pycharm/bin/pycharm.png
+
+# TODO pycharm plugins and config

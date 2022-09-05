@@ -1,3 +1,24 @@
+
+# TODO
+
+## check
+
+- docker without docker desktop
+
+
+## add
+
+- aws (+ oh-my-zsh plugin)
+- kubectl (+ oh-my-zsh plugin)
+- helm (+ oh-my-zsh plugin)
+- kubeseal
+- pycharm
+- goland
+- terraform (+ oh-my-zsh plugin)
+- taskwarrior (+ oh-my-zsh plugin)
+
+
+
 ```bash
 ansible-playbook -i inventory.yaml beowulf.yaml -K
 ```

@@ -1,9 +1,9 @@
-- name: check if zsh-autosuggestions in .zshrc
+- name: check if {{ new_plugin }} plugin is in .zshrc
   shell: grep -x 'plugins=.*{{ new_plugin }}.*' /home/{{ user }}/.zshrc | cat
   register: zshrc_content
   changed_when: false
 
-- name: add zsh-autosuggestions to .zshrc
+- name: add {{ new_plugin }} plugin to .zshrc
   lineinfile:
     path: /home/{{ user }}/.zshrc
     regexp: 'plugins=\((.*)\)'

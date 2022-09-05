@@ -9,3 +9,7 @@
   lineinfile:
     path: /home/{{ user }}/.zshrc
     line: eval "$(atuin init zsh)"
+
+# TODO shell completions
+# atuin gen-completions --shell zsh --out-dir .
+# sudo cp ~/tmp/_atuin . /usr/share/zsh/vendor-completions

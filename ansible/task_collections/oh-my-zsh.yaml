@@ -31,6 +31,13 @@
     mode: 'u=rw,go=r'
     force: no
 
+- name: add default plugins to .zshrc
+  replace:
+    path: /home/{{ user }}/.zshrc
+    regexp: plugins=(git)
+    # TODO move to vars, another options:  common-aliases
+    replace: plugins=(git python pip docker docker-compose ansible ubuntu rsync)
+
 - name: add ~/local/bin to PATH in .zshrc
   lineinfile:
     path: /home/{{ user }}/.zshrc
@@ -48,3 +55,4 @@
     name: add_plugin_to_zshrc
   vars:
     new_plugin: zsh-autosuggestions
+

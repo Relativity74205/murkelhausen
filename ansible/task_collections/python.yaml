@@ -53,6 +53,12 @@
     - '~/.zprofile'
     - '~/.zshrc'
 
+- name: add pyenv plugin to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: pyenv
+
 - name: install latest python3.10
   shell: pyenv install 3.10:latest -s
   register: python310installed
@@ -90,5 +96,24 @@
 
 - name: install cookiecutter with pipx
   shell: pipx install cookiecutter
-  register: pipx_install
-  changed_when: '"already seems to be installed" not in pipx_install.stdout'
+  register: cookiecutter_install
+  changed_when: '"already seems to be installed" not in cookiecutter_install.stdout'
+
+- name: check if cookiecutter is on path
+  shell: cookiecutter --version
+  changed_when: false
+
+- name: install poetry with pipx
+  shell: pipx install poetry
+  register: poetry_install
+  changed_when: '"already seems to be installed" not in poetry_install.stdout'
+
+- name: check if cookiecutter is on path
+  shell: poetry --version
+  changed_when: false
+
+- name: add poetry plugin to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: poetry
