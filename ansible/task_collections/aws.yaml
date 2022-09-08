@@ -1,0 +1,16 @@
+- name: Download and unarchive aws cli tool
+  unarchive:
+    src: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp
+    creates: /tmp/aws/install
+    remote_src: yes
+
+- name: check if aws cli tool is installed
+  stat:
+    path: /usr/local/bin/aws
+  register: aws_exists
+
+- name: install aws-cli
+  shell: /tmp/aws/install
+  become: true
+  when: not aws_exists.stat.exists

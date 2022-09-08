@@ -1,20 +1,34 @@
 - name: My Ubuntu WSL setup
   hosts: localhost
   connection: local
+  vars_files:
+    - passwd.yml
   vars:
     user: 'arkadius'
     fonts_path: /usr/share/fonts/TTF
     pycharm_version: 2022.2.1
+    goland_version: 2022.2.2
+    datagrip_version: 2022.2.2
+    oh_my_zsh_plugins:
+      - git
+      - python
+      - pip
+      - docker
+      - docker-compose
+      - ansible
+      - ubuntu
+      - rsync
+#      - task-warrior
   tasks:
     # https://askubuntu.com/questions/1404129/ubuntu-22-04-lts-on-wsl-failed-to-retrieve-available-kernel-versions-failed
-#    - name: Change needrestart config ob Ubuntu22.04 - kernelhints
-#      become: True
-#      replace:
-#        path: /etc/needrestart/needrestart.conf
-#        regexp: '.*\$nrconf{kernelhints}.*'
-#        replace: '$nrconf{kernelhints} = 0;'
-#      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']  == '22'
-#
+    - name: Change needrestart config ob Ubuntu22.04 - kernelhints
+      become: True
+      replace:
+        path: /etc/needrestart/needrestart.conf
+        regexp: '.*\$nrconf{kernelhints}.*'
+        replace: '$nrconf{kernelhints} = 0;'
+      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']  == '22'
+
 #    - name: Change needrestart config ob Ubuntu22.04 - ucodehints
 #      become: True
 #      replace:
@@ -35,8 +49,8 @@
 #    - name: Install powerlevel10k theme
 #      include_tasks: task_collections/powerlevel10k.yaml
 
-    - name: setup WSL GUI stuff
-      include_tasks: task_collections/wsl_gui.yaml
+#    - name: setup WSL GUI stuff
+#      include_tasks: task_collections/wsl_gui.yaml
 
 #    - name: Install atuin
 #      include_tasks: task_collections/atuin.yaml
@@ -44,5 +58,11 @@
 #    - name: Install pyenv + python
 #      include_tasks: task_collections/python.yaml
 
+#    - name: Install jetbrains products
+#      include_tasks: task_collections/jetbrains.yaml
+
     - name: Install jetbrains products
-      include_tasks: task_collections/jetbrains.yaml
+      include_tasks: task_collections/aws.yaml
+
+    - name: Install jetbrains products
+      include_tasks: task_collections/k8s.yaml

@@ -31,14 +31,25 @@
     mode: 'u=rw,go=r'
     force: no
 
+- name: get current .zshrc plugins
+  shell: cat .zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
+  register: plugins_old
+  changed_when: false
+
+- name: determine plugins
+  # removes duplicates
+  shell: echo {{ (plugins_old.stdout | split(' ') + oh_my_zsh_plugins) | unique | select | join(' ') }}
+  register: plugins_new
+  changed_when: false
+
 - name: add default plugins to .zshrc
   replace:
     path: /home/{{ user }}/.zshrc
-    regexp: plugins=(git)
-    # TODO move to vars, another options:  common-aliases
-    replace: plugins=(git python pip docker docker-compose ansible ubuntu rsync)
+    regexp: ^plugins=(.*)
+    replace: plugins=({{ plugins_new.stdout }})
+  changed_when: plugins_old.stdout != plugins_new.stdout
 
-- name: add ~/local/bin to PATH in .zshrc
+- name: add /home/{{ user }}/local/bin to PATH in .zshrc
   lineinfile:
     path: /home/{{ user }}/.zshrc
     line: 'export PATH=/home/arkadius/.local/bin:$PATH'
