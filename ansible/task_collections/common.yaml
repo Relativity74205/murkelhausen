@@ -23,9 +23,14 @@
     state: latest
   become: True
 
-# TODO: replace with git config module https://docs.ansible.com/ansible/latest/collections/community/general/git_config_module.html
 - name: git config user.name
-  shell: git config --global user.name "Arkadius Schuchhardt"
+  community.general.git_config:
+    name: user.name
+    value: Arkadius Schuchhardt
+    scope: global
 
 - name: git config user.email
-  shell: git config --global user.email "arkadius@schuchhardt.com"
+  community.general.git_config:
+    name: user.email
+    value: arkadius@schuchhardt.com
+    scope: global
