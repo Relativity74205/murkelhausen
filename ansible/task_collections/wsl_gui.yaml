@@ -8,6 +8,11 @@
     name:
     - libfuse2
     - xdg-utils
+    - libxrender1
+    - libxtst6
+    - libxi6
+    - libasound2
+    - libgbm-dev
     state: latest
   become: True
 
