@@ -12,20 +12,40 @@
 - kubectl (+ oh-my-zsh plugin)
 - helm (+ oh-my-zsh plugin)
 - kubeseal
-- pycharm
-- goland
 - terraform (+ oh-my-zsh plugin)
 - taskwarrior (+ oh-my-zsh plugin)
+- ansible-galaxy collection install community.general
+
+- name: Add a setting to ~/.gitconfig
+  community.general.git_config:
+    name: name
+    scope: global
+    value: Arkadius Schuchhardt
 
 
-
+Setup passwd vault:
 ```bash
-ansible-playbook -i inventory.yaml beowulf.yaml -K
+ansible-vault create passwd.yaml
+```
+
+with following entry
+```
+ansible_become_pass: <<my_pass>>
+```
+
+For local
+```bash
+ansible-playbook local.yaml
+```
+
+For Beowulf
+```bash
+ansible-playbook -i inventory.yaml beowulf.yaml
 ```
 
 Interesting options:
 - `--check`
-- `--verbose`
+- `--verbose` or `-v`
 
 ## Links
 
