@@ -127,7 +127,15 @@ Optionen:
     --System
         Startet eine Shell für die Systemverteilung.
 
-- Copy SSH keys (change permission of ssh keys to rw for current user)
+
+
+- Copy SSH keys 
+```powershell
+Copy-Item -Path C:\Users\arkad\OneDrive\Documents\wsl_dev\.ssh -Destination \\wsl.localhost\Ubuntu\home\arkadius\.ssh -Recurse
+Copy-Item -Path C:\Users\arkad\OneDrive\Documents\wsl_dev\initial_load.sh -Destination \\wsl.localhost\Ubuntu\home\arkadius\initial_load.sh
+```
+
+- change SSH key permissions of ssh keys to rw for current user
 ```bash
 chmod 600 .ssh/*
 eval `ssh-agent`
