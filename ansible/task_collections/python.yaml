@@ -53,6 +53,9 @@
     - '~/.zprofile'
     - '~/.zshrc'
 
+- name: source .bashrc
+  shell: source ~/.bashrc
+
 - name: add pyenv plugin to .zshrc
   include_role:
     name: add_plugin_to_zshrc

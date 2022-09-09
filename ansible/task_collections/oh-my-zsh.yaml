@@ -19,11 +19,12 @@
     recurse: yes
 
 - name: set default shell for users
+  become: true
   user:
     name: '{{ user }}'
     shell: /bin/zsh
 
-- name: write .zshrc for users
+- name: create .zshrc
   template:
     src: /home/{{ user}}/.oh-my-zsh/templates/zshrc.zsh-template
     dest: /home/{{ user }}/.zshrc

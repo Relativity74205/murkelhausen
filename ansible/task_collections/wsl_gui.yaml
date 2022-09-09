@@ -3,7 +3,7 @@
     update_cache: true
   become: True
 
-- name: Install aptitude
+- name: Install some wsl GUI stuff like xdg-open
   apt:
     name:
     - libfuse2

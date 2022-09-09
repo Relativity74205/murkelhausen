@@ -1,12 +1,30 @@
-- name: check if {{ new_plugin }} plugin is in .zshrc
-  shell: grep -x 'plugins=.*{{ new_plugin }}.*' /home/{{ user }}/.zshrc | cat
-  register: zshrc_content
+#- name: check if {{ new_plugin }} plugin is in .zshrc
+#  shell: grep -x 'plugins=.*{{ new_plugin }}.*' /home/{{ user }}/.zshrc | cat
+#  register: zshrc_content
+#  changed_when: false
+#
+#- name: add {{ new_plugin }} plugin to .zshrc
+#  lineinfile:
+#    path: /home/{{ user }}/.zshrc
+#    regexp: 'plugins=\((.*)\)'
+#    line: 'plugins=(\1 {{ new_plugin }})'
+#    backrefs: yes
+#  when: zshrc_content.stdout == ""
+
+- name: get current .zshrc plugins
+  shell: cat .zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
+  register: plugins_old
   changed_when: false
 
-- name: add {{ new_plugin }} plugin to .zshrc
-  lineinfile:
+- name: determine plugins
+  # removes duplicates
+  shell: echo {{ (plugins_old.stdout | split(' ') + new_plugin | split(' ') | unique | select | join(' ') }}
+  register: plugins_new
+  changed_when: false
+
+- name: add default plugins to .zshrc
+  replace:
     path: /home/{{ user }}/.zshrc
-    regexp: 'plugins=\((.*)\)'
-    line: 'plugins=(\1 {{ new_plugin }})'
-    backrefs: yes
-  when: zshrc_content.stdout == ""
+    regexp: ^plugins=(.*)
+    replace: plugins=({{ plugins_new.stdout }})
+  changed_when: plugins_old.stdout != plugins_new.stdout
