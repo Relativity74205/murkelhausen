@@ -119,10 +119,10 @@ git clone git@github.com:Relativity74205/murkelhausen.git
 - Install ansible
 ```bash
 sudo apt update
-sudo apt upgrade
-sudo apt install python3-pip
+sudo apt upgrade -y
+sudo apt install -y python3-pip
 python3 -m pip install --user ansible
-export PATH=/home/arkadius/.local/bin/:$PATH
+echo 'export PATH=/home/arkadius/.local/bin/:$PATH' >> .bashrc
 source .bashrc
 ansible --version
 ```

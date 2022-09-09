@@ -29,40 +29,40 @@
         replace: '$nrconf{kernelhints} = 0;'
       when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']  == '22'
 
-#    - name: Change needrestart config ob Ubuntu22.04 - ucodehints
-#      become: True
-#      replace:
-#        path: /etc/needrestart/needrestart.conf
-#        regexp: '.*\$nrconf{ucodehints}.*'
-#        replace: '$nrconf{ucodehints} = 0;'
-#      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']  == '22'
-#
-#    - name: Install common
-#      include_tasks: task_collections/common.yaml
-#
-#    - name: Install docker
-#      include_tasks: task_collections/docker.yaml
-#
-#    - name: Install zsh + oh_my_zsh
-#      include_tasks: task_collections/oh-my-zsh.yaml
-#
-#    - name: Install powerlevel10k theme
-#      include_tasks: task_collections/powerlevel10k.yaml
+    - name: Change needrestart config ob Ubuntu22.04 - ucodehints
+      become: True
+      replace:
+        path: /etc/needrestart/needrestart.conf
+        regexp: '.*\$nrconf{ucodehints}.*'
+        replace: '$nrconf{ucodehints} = 0;'
+      when: ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']  == '22'
 
-#    - name: setup WSL GUI stuff
-#      include_tasks: task_collections/wsl_gui.yaml
+    - name: Install common
+      include_tasks: task_collections/common.yaml
 
-#    - name: Install atuin
-#      include_tasks: task_collections/atuin.yaml
-#
-#    - name: Install pyenv + python
-#      include_tasks: task_collections/python.yaml
+    - name: Install docker
+      include_tasks: task_collections/docker.yaml
 
-#    - name: Install jetbrains products
-#      include_tasks: task_collections/jetbrains.yaml
+    - name: Install zsh + oh_my_zsh
+      include_tasks: task_collections/oh-my-zsh.yaml
+
+    - name: Install powerlevel10k theme
+      include_tasks: task_collections/powerlevel10k.yaml
+
+    - name: setup WSL GUI stuff
+      include_tasks: task_collections/wsl_gui.yaml
+
+    - name: Install atuin
+      include_tasks: task_collections/atuin.yaml
+
+    - name: Install pyenv + python
+      include_tasks: task_collections/python.yaml
 
     - name: Install jetbrains products
+      include_tasks: task_collections/jetbrains.yaml
+
+    - name: Install aws cli tool
       include_tasks: task_collections/aws.yaml
 
-    - name: Install jetbrains products
-      include_tasks: task_collections/k8s.yaml
+#    - name: Install k8s stuff
+#      include_tasks: task_collections/k8s.yaml
