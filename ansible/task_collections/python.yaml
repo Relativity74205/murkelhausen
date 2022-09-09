@@ -18,6 +18,7 @@
       - libxmlsec1-dev
       - libffi-dev
       - liblzma-dev
+      - python3-venv
     state: latest
     update_cache: true
   become: True
@@ -53,9 +54,6 @@
     - '~/.zprofile'
     - '~/.zshrc'
 
-- name: source .bashrc
-  shell: source ~/.bashrc
-
 - name: add pyenv plugin to .zshrc
   include_role:
     name: add_plugin_to_zshrc
@@ -63,22 +61,22 @@
     new_plugin: pyenv
 
 - name: install latest python3.10
-  shell: pyenv install 3.10:latest -s
+  shell: /home/{{ user }}/.pyenv/bin/pyenv install 3.10:latest -s
   register: python310installed
   changed_when: python310installed.stdout != ""
 
 - name: install latest python3.9
-  shell: pyenv install 3.9:latest -s
+  shell: /home/{{ user }}/.pyenv/bin/pyenv install 3.9:latest -s
   register: python39installed
   changed_when: python39installed.stdout != ""
 
 - name: install latest python3.8
-  shell: pyenv install 3.8:latest -s
+  shell: /home/{{ user }}/.pyenv/bin/pyenv install 3.8:latest -s
   register: python38installed
   changed_when: python38installed.stdout != ""
 
 - name: get latest python_full_version
-  shell: pyenv versions | grep -oP '3.10.(\d{1,2})'
+  shell: /home/{{ user }}/.pyenv/bin/pyenv versions | grep -oP '3.10.(\d{1,2})'
   register: python_full_version
   changed_when: false
 

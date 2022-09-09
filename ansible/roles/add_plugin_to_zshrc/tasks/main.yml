@@ -2,7 +2,7 @@
 #  shell: grep -x 'plugins=.*{{ new_plugin }}.*' /home/{{ user }}/.zshrc | cat
 #  register: zshrc_content
 #  changed_when: false
-#
+
 #- name: add {{ new_plugin }} plugin to .zshrc
 #  lineinfile:
 #    path: /home/{{ user }}/.zshrc
@@ -12,13 +12,13 @@
 #  when: zshrc_content.stdout == ""
 
 - name: get current .zshrc plugins
-  shell: cat .zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
+  shell: cat /home/{{ user }}/.zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
   register: plugins_old
   changed_when: false
 
 - name: determine plugins
   # removes duplicates
-  shell: echo {{ (plugins_old.stdout | split(' ') + new_plugin | split(' ') | unique | select | join(' ') }}
+  shell: echo {{ (plugins_old.stdout | split(' ') + new_plugin | split(' ')) | unique | select | join(' ') }}
   register: plugins_new
   changed_when: false
 

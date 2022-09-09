@@ -33,7 +33,7 @@
     force: no
 
 - name: get current .zshrc plugins
-  shell: cat .zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
+  shell: cat /home/{{ user }}/.zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
   register: plugins_old
   changed_when: false
 

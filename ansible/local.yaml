@@ -1,8 +1,8 @@
 - name: My Ubuntu WSL setup
   hosts: localhost
   connection: local
-  vars_files:
-    - passwd.yml
+#  vars_files:
+#    - passwd.yml
   vars:
     user: 'arkadius'
     fonts_path: /usr/share/fonts/TTF

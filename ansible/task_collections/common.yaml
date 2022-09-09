@@ -14,10 +14,18 @@
     pkg:
       - unzip
       - net-tools
-      - python3.10-venv
+#      - python3.10-venv
+      - python3-venv
       - git
       - nano
       - curl
       - wget
     state: latest
   become: True
+
+# TODO: replace with git config module https://docs.ansible.com/ansible/latest/collections/community/general/git_config_module.html
+- name: git config user.name
+  shell: git config --global user.name "Arkadius Schuchhardt"
+
+- name: git config user.email
+  shell: git config --global user.email "arkadius@schuchhardt.com"
