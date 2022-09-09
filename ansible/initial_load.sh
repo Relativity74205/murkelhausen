@@ -1,6 +1,7 @@
 #!/bin/bash
 
-sudo chmod 600 ~/.ssh/*
+sudo chown -R arkadius:arkadius ~/.ssh
+chmod 600 ~/.ssh/*
 eval `ssh-agent`
 ssh-add ~/.ssh/github
 mkdir -p ~/dev/murkelhausen
