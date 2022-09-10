@@ -45,6 +45,12 @@
     path: "/home/{{ user }}/.linuxbrew/bin"
     update_homebrew: yes
 
+- name: add brew plugin to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: brew
+
 - name: Install k9s
   community.general.homebrew:
     path: "/home/{{ user }}/.linuxbrew/bin"
