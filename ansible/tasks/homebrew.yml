@@ -1,0 +1,42 @@
+- name: Install prereq packages
+  apt:
+    update_cache: true
+    pkg:
+      - build-essential
+      - curl
+      - file
+      - git
+      - procps
+    state: latest
+  become: True
+
+- name: Clone Homebrew GitHub repo
+  ansible.builtin.git:
+    repo: https://github.com/Homebrew/brew
+    dest: "/home/{{ user }}/.linuxbrew/Homebrew"
+    version: master
+
+- name: Create bin directory for brew
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.linuxbrew/bin"
+    state: directory
+
+- name: Create a symbolic link for brew
+  ansible.builtin.file:
+    src: "/home/{{ user }}/.linuxbrew/Homebrew/bin/brew"
+    dest: "/home/{{ user }}/.linuxbrew/bin/brew"
+    state: link
+
+- name: Add homebrew path to system-wide $PATH for zsh shell.
+  lineinfile:
+    path: "/home/{{ user }}/.zprofile"
+    line: "PATH=$PATH:~/.linuxbrew/bin"
+    mode: 0644
+    create: yes
+
+- name: Install Formula
+  community.general.homebrew:
+    name: []
+    state: present
+    path: "/home/{{ user }}/.linuxbrew/bin"
+    update_homebrew: yes

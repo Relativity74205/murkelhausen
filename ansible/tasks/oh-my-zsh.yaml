@@ -4,7 +4,7 @@
     name:
       - zsh
       - git
-    state: present
+    state: latest
 
 - name: clone oh-my-zsh for users
   command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/robbyrussell/oh-my-zsh.git .oh-my-zsh'

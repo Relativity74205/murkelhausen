@@ -1,8 +1,8 @@
 - name: My Ubuntu WSL setup
   hosts: localhost
   connection: local
-#  vars_files:
-#    - passwd.yml
+  vars_files:
+    - passwd.yml
   vars:
     fullname: Arkadius Schuchhardt
     email: arkadius@schuchhardt.com
@@ -12,6 +12,7 @@
     datagrip_version: 2022.2.2
     kubectl_version: 1.22.8
     helm_version: 3.8.2
+    kubeseal_version: 0.17.5
     oh_my_zsh_plugins:
       - git
       - python
@@ -23,38 +24,42 @@
       - rsync
 #      - task-warrior
   tasks:
+#    - name: Modify Ubuntu22.04 config
+#      import_tasks: tasks/ubuntu22.04.yaml
+
+    - name: Install homebrew
+      import_tasks: tasks/homebrew.yml
+
 #    - name: Install common
-#      include_tasks: task_collections/ubuntu22.04.yaml
+#      import_tasks: tasks/common.yaml
 #
-#    - name: Install common
-#      include_tasks: task_collections/common.yaml
-#
-#    - name: Install common
-#      include_tasks: task_collections/git.yaml
+#    - name: Install git
+#      import_tasks: tasks/git.yaml
 #
 #    - name: Install docker
-#      include_tasks: task_collections/docker.yaml
+#      import_tasks: tasks/docker.yaml
 #
 #    - name: Install zsh + oh_my_zsh
-#      include_tasks: task_collections/oh-my-zsh.yaml
+#      import_tasks: tasks/oh-my-zsh.yaml
 #
 #    - name: Install powerlevel10k theme
-#      include_tasks: task_collections/powerlevel10k.yaml
+#      import_tasks: tasks/powerlevel10k.yaml
 #
 #    - name: setup WSL GUI stuff
-#      include_tasks: task_collections/wsl_gui.yaml
+#      import_tasks: tasks/wsl_gui.yaml
 #
 #    - name: Install atuin
-#      include_tasks: task_collections/atuin.yaml
+#      import_tasks: tasks/atuin.yaml
 #
 #    - name: Install pyenv + python
-#      include_tasks: task_collections/python.yaml
+#      import_tasks: tasks/python.yaml
 #
 #    - name: Install jetbrains products
-#      include_tasks: task_collections/jetbrains.yaml
+#      import_tasks: tasks/jetbrains.yaml
 #
 #    - name: Install aws cli tool
-#      include_tasks: task_collections/aws.yaml
+#      import_tasks: tasks/aws.yaml
 
-    - name: Install k8s stuff
-      import_tasks: task_collections/k8s.yaml
+#    - name: Install k8s stuff
+#      import_tasks: tasks/k8s.yml
+

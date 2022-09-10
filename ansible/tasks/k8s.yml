@@ -1,16 +1,16 @@
-- name: get installed kubectl version
+- name: kubectl - get installed version
   shell: kubectl version --client=true | sed 's/.*GitVersion:"v\([0-9.]*\)".*/\1/'
   register: kubectl_version_installed
   changed_when: false
 
-- name: Download kubectl
+- name: kubectl - download & unarchive
   get_url:
     # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     url: https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl
     dest: /tmp/kubectl
   when: kubectl_version_installed.stdout != kubectl_version
 
-- name: install kubectl
+- name: kubectl - install to /usr/local/bin
   become: true
   ansible.builtin.copy:
     remote_src: true
@@ -21,17 +21,17 @@
     group: root
   when: kubectl_version_installed.stdout != kubectl_version
 
-- name: remove kubectl in /tmp
+- name: kubectl - delete
   file:
     path: /tmp/kubectl
     state: absent
 
-- name: get installed helm version
+- name: helm - get installed version
   shell: helm version | sed 's/.*Version:"v\([0-9.]*\)".*/\1/'
   register: helm_version_installed
   changed_when: false
 
-- name: Download helm
+- name: helm - download & unarchive
   unarchive:
     src: https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz
     dest: /tmp
@@ -39,7 +39,7 @@
     remote_src: yes
   when: helm_version_installed.stdout != helm_version
 
-- name: install helm to /usr/local/bin
+- name: helm - install to /usr/local/bin
   become: true
   copy:
     src: /tmp/linux-amd64/helm
@@ -50,21 +50,39 @@
     remote_src: true
   when: helm_version_installed.stdout != helm_version
 
-- name: remove kubectl in /tmp
+- name: helm - delete
   file:
     path: /tmp/linux-amd64
     state: absent
 
-#
-#        kubeseal
-#
-#wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-0.17.5-linux-amd64.tar.gz -O kubeseal.tar.gz
-#
-#tar -xzf kubeseal.tar.gz
-#
-#sudo install -m 755 kubeseal /usr/local/bin/kubeseal
-#
-#        k9s (https://k9scli.io/topics/install/) oder
-#        lens
-#
-#
+- name: kubeseal - get installed version
+  shell: kubeseal --version | sed 's/.*:\s\([0-9.]*\)/\1/'
+  register: kubeseal_version_installed
+  changed_when: false
+
+
+- name: kubeseal - download & unarchive
+  unarchive:
+    src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{ kubeseal_version }}/kubeseal-{{ kubeseal_version }}-linux-amd64.tar.gz
+    dest: /tmp
+    creates: /tmp/kubeseal
+    remote_src: yes
+  when: kubeseal_version_installed.stdout != kubeseal_version
+
+- name: kubeseal - install to /usr/local/bin
+  become: true
+  copy:
+    src: /tmp/kubeseal
+    dest: /usr/local/bin/kubeseal
+    mode: 0755
+    owner: root
+    group: root
+    remote_src: true
+  when: kubeseal_version_installed.stdout != kubeseal_version
+
+- name: kubeseal - delete
+  file:
+    path: /tmp/kubeseal
+    state: absent
+
+#        k9s (https://k9scli.io/topics/install/)
