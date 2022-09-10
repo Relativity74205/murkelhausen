@@ -1,29 +1,60 @@
-#
-#        kubectl
-#
-## neuste Version
-#
-#cd ~/Downlaods
-#
-#curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-#
-#sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-#
-## bestimmte Version
-#
-#cd ~/Downlaods
-#
-#curl -LO https://dl.k8s.io/release/v1.22.8/bin/linux/amd64/kubectl
-#
-#sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-#
-#        helm
-#
-#wget https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz
-#
-#tar -xzf helm-v3.8.2-linux-amd64.tar.gz
-#
-#sudo mv linux-amd64/helm /usr/local/bin/helm
+- name: get installed kubectl version
+  shell: kubectl version --client=true | sed 's/.*GitVersion:"v\([0-9.]*\)".*/\1/'
+  register: kubectl_version_installed
+  changed_when: false
+
+- name: Download kubectl
+  get_url:
+    # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    url: https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl
+    dest: /tmp/kubectl
+  when: kubectl_version_installed.stdout != kubectl_version
+
+- name: install kubectl
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: /tmp/kubectl
+    dest: /usr/local/bin/kubectl
+    mode: 0755
+    owner: root
+    group: root
+  when: kubectl_version_installed.stdout != kubectl_version
+
+- name: remove kubectl in /tmp
+  file:
+    path: /tmp/kubectl
+    state: absent
+
+- name: get installed helm version
+  shell: helm version | sed 's/.*Version:"v\([0-9.]*\)".*/\1/'
+  register: helm_version_installed
+  changed_when: false
+
+- name: Download helm
+  unarchive:
+    src: https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz
+    dest: /tmp
+    creates: /tmp/linux-amd64/helm
+    remote_src: yes
+  when: helm_version_installed.stdout != helm_version
+
+- name: install helm to /usr/local/bin
+  become: true
+  copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    mode: 0755
+    owner: root
+    group: root
+    remote_src: true
+  when: helm_version_installed.stdout != helm_version
+
+- name: remove kubectl in /tmp
+  file:
+    path: /tmp/linux-amd64
+    state: absent
+
 #
 #        kubeseal
 #

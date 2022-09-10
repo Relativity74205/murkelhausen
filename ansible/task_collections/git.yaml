@@ -14,7 +14,7 @@
 - name: git config user.name
   community.general.git_config:
     name: user.name
-    value: '{{ name }}'
+    value: '{{ fullname }}'
     scope: global
 
 - name: git config user.email
