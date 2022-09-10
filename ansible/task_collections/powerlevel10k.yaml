@@ -1,15 +1,15 @@
 - name: Create fonts directory
   become: true
   file:
-    path: "{{ fonts_path }}"
+    path: /usr/share/fonts/TTF
     mode: '0755'
     state: directory
 
 - name: Copy powerlevel10k recommanded fonts
   become: true
   copy:
-    src: "fonts/{{ item }}"
-    dest: "{{ fonts_path }}/{{ item }}"
+    src: fonts/{{ item }}
+    dest: /usr/share/fonts/TTF/{{ item }}
     mode: '0644'
   loop:
     - MesloLGS NF Bold Italic.ttf

@@ -2,6 +2,7 @@
   apt:
     update_cache: true
   become: True
+  changed_when: false
 
 - name: Install some wsl GUI stuff like xdg-open
   apt:
@@ -18,5 +19,11 @@
 
 - name: set BROWSER env variable in zshrc
   lineinfile:
-    path: /home/{{ user }}/.zshrc
+    path: '{{ item }}'
     line: export BROWSER="powershell.exe /C start"
+  with_items:
+    - '~/.profile'
+    - '~/.bash_profile'
+    - '~/.bashrc'
+    - '~/.zprofile'
+    - '~/.zshrc'

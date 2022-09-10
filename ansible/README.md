@@ -137,21 +137,22 @@ Copy-Item -Path C:\Users\arkad\OneDrive\Documents\wsl_dev\initial_load.sh -Desti
 
 - change SSH key permissions of ssh keys to rw for current user
 ```bash
-chmod 600 .ssh/*
+sudo chown -R arkadius:arkadius ~/.ssh
+sudo chown arkadius:arkadius initial_load.sh
+chmod 600 ~/.ssh/*
 eval `ssh-agent`
-ssh-add .ssh/github
-git clone git@github.com:Relativity74205/murkelhausen.git
+ssh-add ~/.ssh/github
+mkdir -p ~/dev/murkelhausen
+git clone git@github.com:Relativity74205/murkelhausen.git ~/dev/murkelhausen
 ```
 
 
 - Install ansible
 ```bash
-sudo apt update
-sudo apt upgrade -y
-sudo apt install -y python3-pip
+sudo apt update && sudo apt upgrade -y && sudo apt install -y python3-pip
 python3 -m pip install --user ansible
-echo 'export PATH=/home/arkadius/.local/bin/:$PATH' >> .bashrc
-source .bashrc
+echo 'export PATH=/home/arkadius/.local/bin/:$PATH' >> ~/.bashrc
+source ~/.bashrc
 ansible --version
 ```
 

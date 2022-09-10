@@ -4,8 +4,9 @@
 #  vars_files:
 #    - passwd.yml
   vars:
+    name: Arkadius Schuchhardt
+    email: arkadius@schuchhardt.com
     user: 'arkadius'
-    fonts_path: /usr/share/fonts/TTF
     pycharm_version: 2022.2.1
     goland_version: 2022.2.2
     datagrip_version: 2022.2.2

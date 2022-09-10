@@ -1,20 +1,20 @@
 - name: Update apt-get repo and cache
   apt:
     update_cache: true
-  become: True
+  become: true
+  changed_when: false
 
 - name: Install aptitude
   apt:
     name: aptitude
     state: latest
-  become: True
+  become: true
 
 - name: install some system packages required for various stuff
   apt:
     pkg:
       - unzip
       - net-tools
-#      - python3.10-venv
       - python3-venv
       - git
       - nano
@@ -26,11 +26,11 @@
 - name: git config user.name
   community.general.git_config:
     name: user.name
-    value: Arkadius Schuchhardt
+    value: '{{ name }}'
     scope: global
 
 - name: git config user.email
   community.general.git_config:
     name: user.email
-    value: arkadius@schuchhardt.com
+    value: '{{ email }}'
     scope: global
