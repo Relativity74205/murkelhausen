@@ -47,3 +47,13 @@
     append: yes
     groups: docker
   become: True
+
+- name: add docker start to wsl.conf
+  become: true
+  blockinfile:
+    path: /etc/wsl.conf
+    block: |
+      [boot]
+      command="service docker start"
+    create: yes
+    insertbefore: BOF

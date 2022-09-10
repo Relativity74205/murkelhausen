@@ -16,21 +16,8 @@
       - unzip
       - net-tools
       - python3-venv
-      - git
       - nano
       - curl
       - wget
     state: latest
   become: True
-
-- name: git config user.name
-  community.general.git_config:
-    name: user.name
-    value: '{{ name }}'
-    scope: global
-
-- name: git config user.email
-  community.general.git_config:
-    name: user.email
-    value: '{{ email }}'
-    scope: global

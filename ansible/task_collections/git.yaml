@@ -1,0 +1,24 @@
+- name: Update apt-get repo and cache
+  apt:
+    update_cache: true
+  become: true
+  changed_when: false
+
+- name: install some system packages required for various stuff
+  apt:
+    pkg:
+      - git
+    state: latest
+  become: True
+
+- name: git config user.name
+  community.general.git_config:
+    name: user.name
+    value: '{{ name }}'
+    scope: global
+
+- name: git config user.email
+  community.general.git_config:
+    name: user.email
+    value: '{{ email }}'
+    scope: global

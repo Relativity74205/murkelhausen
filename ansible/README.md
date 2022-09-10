@@ -1,3 +1,19 @@
+# WSL 
+
+
+## Microsoft WSL configs
+
+https://docs.microsoft.com/de-de/windows/wsl/wsl-config
+
+
+## WSL links
+
+- https://github.com/bostrot/wsl2-distro-manager
+- https://github.com/DDoSolitary/LxRunOffline
+- https://github.com/microsoft/wslg/wiki/Diagnosing-%22cannot-open-display%22-type-issues-with-WSLg#still-having-a-problem
+- https://hjoelr.medium.com/wsl2-gui-app-shortcuts-in-windows-with-wslg-fcc66d3134e7
+
+
 
 # TODO
 
