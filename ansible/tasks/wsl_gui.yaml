@@ -21,9 +21,11 @@
   lineinfile:
     path: '{{ item }}'
     line: export BROWSER="powershell.exe /C start"
+    mode: 0644
+    create: yes
   with_items:
-    - '~/.profile'
-    - '~/.bash_profile'
-    - '~/.bashrc'
-    - '~/.zprofile'
-    - '~/.zshrc'
+    - '/home/{{ user }}/.profile'
+    - '/home/{{ user }}/.bash_profile'
+    - '/home/{{ user }}/.bashrc'
+    - '/home/{{ user }}/.zprofile'
+    - '/home/{{ user }}/.zshrc'

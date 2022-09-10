@@ -32,27 +32,27 @@
 - name: set directory permissions of pyenv
   file:
     path: '~/.pyenv'
-    mode: 'go-w'
+    mode: 0644
     recurse: yes
 
 - name: write .pyenvrc
   copy:
     src: files/.pyenvrc
-    dest: '~/.pyenvrc'
-    mode: 'u=rw,go=r'
+    dest: '/home/{{ user }}/.pyenvrc'
+    mode: 0644
 
 - name: add .pyenvrc to .profile
   lineinfile:
     path: '{{ item }}'
     line: 'source ~/.pyenvrc'
+    mode: 0644
     create: yes
-    mode: 'u=rw,go=r'
   with_items:
-    - '~/.profile'
-    - '~/.bash_profile'
-    - '~/.bashrc'
-    - '~/.zprofile'
-    - '~/.zshrc'
+    - '/home/{{ user }}/.profile'
+    - '/home/{{ user }}/.bash_profile'
+    - '/home/{{ user }}/.bashrc'
+    - '/home/{{ user }}/.zprofile'
+    - '/home/{{ user }}/.zshrc'
 
 - name: add pyenv plugin to .zshrc
   include_role:
