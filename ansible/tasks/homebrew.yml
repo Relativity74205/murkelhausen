@@ -40,7 +40,13 @@
     - '/home/{{ user }}/.zprofile'
     - '/home/{{ user }}/.zshrc'
 
-- name: Install Formula
+- name: Update homebrew
   community.general.homebrew:
     path: "/home/{{ user }}/.linuxbrew/bin"
     update_homebrew: yes
+
+- name: Install k9s
+  community.general.homebrew:
+    path: "/home/{{ user }}/.linuxbrew/bin"
+    name: k9s
+    state: latest
