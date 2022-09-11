@@ -22,3 +22,9 @@
     name: user.email
     value: '{{ email }}'
     scope: global
+
+- name: git config autocrlf
+  community.general.git_config:
+    name: core.autocrlf
+    value: false
+    scope: global

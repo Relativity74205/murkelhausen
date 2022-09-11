@@ -17,20 +17,11 @@ https://docs.microsoft.com/de-de/windows/wsl/wsl-config
 
 # TODO
 
-## check
-
-- docker without docker desktop
-
 
 ## add
 
-- aws (+ oh-my-zsh plugin)
-- kubectl (+ oh-my-zsh plugin)
-- helm (+ oh-my-zsh plugin)
-- kubeseal
 - terraform (+ oh-my-zsh plugin)
 - taskwarrior (+ oh-my-zsh plugin)
-- ansible-galaxy collection install community.general
 
 - name: Add a setting to ~/.gitconfig
   community.general.git_config:

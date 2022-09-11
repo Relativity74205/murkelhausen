@@ -14,3 +14,9 @@
   shell: /tmp/aws/install
   become: true
   when: not aws_exists.stat.exists
+
+- name: add aws plugin to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: aws

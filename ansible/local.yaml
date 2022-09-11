@@ -10,6 +10,7 @@
     pycharm_version: 2022.2.1
     goland_version: 2022.2.2
     datagrip_version: 2022.2.2
+    terraform_version: 1.2.9
     kubectl_version: 1.22.8
     helm_version: 3.8.2
     kubeseal_version: 0.17.5
@@ -27,8 +28,8 @@
 #    - name: Modify Ubuntu22.04 config
 #      import_tasks: tasks/ubuntu22.04.yaml
 
-    - name: Install homebrew
-      import_tasks: tasks/homebrew.yml
+#    - name: Install homebrew
+#      import_tasks: tasks/homebrew.yml
 
 #    - name: Install common
 #      import_tasks: tasks/common.yaml
@@ -63,3 +64,5 @@
 #    - name: Install k8s stuff
 #      import_tasks: tasks/k8s.yml
 
+    - name: Install terraform
+      import_tasks: tasks/terraform.yml

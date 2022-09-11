@@ -1,0 +1,42 @@
+- name: Install prereq packages
+  apt:
+    update_cache: true
+    pkg:
+      - gnupg
+      - software-properties-common
+    state: latest
+  become: True
+
+- name: terraform - get installed version
+  shell: terraform -version | head -n 1 | sed 's/Terraform\sv\([0-9.]*\)/\1/'
+  register: terraform_version_installed
+  changed_when: false
+
+- name: terraform - download & unarchive
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+    dest: /tmp
+    remote_src: yes
+  when: terraform_version_installed.stdout != terraform_version
+
+- name: terraform - install to /usr/local/bin
+  become: true
+  ansible.builtin.copy:
+    remote_src: true
+    src: /tmp/terraform
+    dest: /usr/local/bin/terraform
+    mode: 0755
+    owner: root
+    group: root
+  when: terraform_version_installed.stdout != terraform_version
+
+- name: terraform - delete
+  file:
+    path: /tmp/terraform
+    state: absent
+
+- name: terraform - add oh-my-zsh plugin
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: terraform

@@ -3,7 +3,7 @@
   register: kubectl_version_installed
   changed_when: false
 
-- name: kubectl - download & unarchive
+- name: kubectl - download
   get_url:
     # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     url: https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl
@@ -26,6 +26,12 @@
     path: /tmp/kubectl
     state: absent
 
+- name: kubectl - add oh-my-zsh plugin
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: kubectl
+
 - name: helm - get installed version
   shell: helm version | sed 's/.*Version:"v\([0-9.]*\)".*/\1/'
   register: helm_version_installed
@@ -35,7 +41,6 @@
   unarchive:
     src: https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz
     dest: /tmp
-    creates: /tmp/linux-amd64/helm
     remote_src: yes
   when: helm_version_installed.stdout != helm_version
 
@@ -60,12 +65,10 @@
   register: kubeseal_version_installed
   changed_when: false
 
-
 - name: kubeseal - download & unarchive
   unarchive:
     src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{ kubeseal_version }}/kubeseal-{{ kubeseal_version }}-linux-amd64.tar.gz
     dest: /tmp
-    creates: /tmp/kubeseal
     remote_src: yes
   when: kubeseal_version_installed.stdout != kubeseal_version
 
