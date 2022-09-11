@@ -17,18 +17,10 @@ https://docs.microsoft.com/de-de/windows/wsl/wsl-config
 
 # TODO
 
+- taskwarrior config + remote server
 
-## add
 
-- terraform (+ oh-my-zsh plugin)
-- taskwarrior (+ oh-my-zsh plugin)
-
-- name: Add a setting to ~/.gitconfig
-  community.general.git_config:
-    name: name
-    scope: global
-    value: Arkadius Schuchhardt
-
+# Setup
 
 Setup passwd vault:
 ```bash

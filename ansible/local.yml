@@ -14,6 +14,7 @@
     kubectl_version: 1.22.8
     helm_version: 3.8.2
     kubeseal_version: 0.17.5
+    taskwarrior_version: 2.6.2
     oh_my_zsh_plugins:
       - git
       - python
@@ -23,7 +24,6 @@
       - ansible
       - ubuntu
       - rsync
-#      - task-warrior
   tasks:
 #    - name: Modify Ubuntu22.04 config
 #      import_tasks: tasks/ubuntu22.04.yml
@@ -64,5 +64,8 @@
 #    - name: Install k8s stuff
 #      import_tasks: tasks/k8s.yml
 
-    - name: Install terraform
-      import_tasks: tasks/terraform.yml
+#    - name: Install terraform
+#      import_tasks: tasks/terraform.yml
+
+    - name: Install taskwarrior
+      import_tasks: tasks/taskwarrior.yml
