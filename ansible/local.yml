@@ -25,32 +25,32 @@
       - ubuntu
       - rsync
   tasks:
-    - name: Modify Ubuntu22.04 config
-      import_tasks: tasks/ubuntu22.04.yml
-
-    - name: Install homebrew
-      import_tasks: tasks/homebrew.yml
-
-    - name: Install common
-      import_tasks: tasks/common.yml
-
-    - name: Install git
-      import_tasks: tasks/git.yml
-
-    - name: Install docker
-      import_tasks: tasks/docker.yml
-
-    - name: Install zsh + oh_my_zsh
-      import_tasks: tasks/oh-my-zsh.yml
-
-    - name: Install powerlevel10k theme
-      import_tasks: tasks/powerlevel10k.yml
-
-    - name: setup WSL GUI stuff
-      import_tasks: tasks/wsl_gui.yml
-
-    - name: Install atuin
-      import_tasks: tasks/atuin.yml
+#    - name: Modify Ubuntu22.04 config
+#      import_tasks: tasks/ubuntu22.04.yml
+#
+#    - name: Install homebrew
+#      import_tasks: tasks/homebrew.yml
+#
+#    - name: Install common
+#      import_tasks: tasks/common.yml
+#
+#    - name: Install git
+#      import_tasks: tasks/git.yml
+#
+#    - name: Install docker
+#      import_tasks: tasks/docker.yml
+#
+#    - name: Install zsh + oh_my_zsh
+#      import_tasks: tasks/oh-my-zsh.yml
+#
+#    - name: Install powerlevel10k theme
+#      import_tasks: tasks/powerlevel10k.yml
+#
+#    - name: setup WSL GUI stuff
+#      import_tasks: tasks/wsl_gui.yml
+#
+#    - name: Install atuin
+#      import_tasks: tasks/atuin.yml
 
     - name: Install pyenv + python
       import_tasks: tasks/python.yml

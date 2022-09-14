@@ -31,22 +31,22 @@
 
 - name: set directory permissions of pyenv
   file:
-    path: '~/.pyenv'
-    mode: 0644
+    path: '/home/{{ user }}/.pyenv'
+    mode: 'go-w'
     recurse: yes
 
 - name: write .pyenvrc
   copy:
     src: files/.pyenvrc
     dest: '/home/{{ user }}/.pyenvrc'
-    mode: 0644
+    mode: 'u=rw,go=r'
 
 - name: add .pyenvrc to .profile
   lineinfile:
     path: '{{ item }}'
     line: 'source ~/.pyenvrc'
-    mode: 0644
     create: yes
+    mode: 'u=rw,go=r'
   with_items:
     - '/home/{{ user }}/.profile'
     - '/home/{{ user }}/.bash_profile'
