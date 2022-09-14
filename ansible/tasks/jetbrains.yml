@@ -1,101 +1,107 @@
-- name: Download and unarchive pycharm
-  unarchive:
-    src: https://download.jetbrains.com/python/pycharm-professional-{{ pycharm_version }}.tar.gz
-    dest: /tmp
-    creates: /tmp/pycharm-{{ pycharm_version }}/bin/pycharm.sh
-    remote_src: yes
+- name: Install PyCharm
+  block:
+    - name: PyCharm - Download and unarchive
+      unarchive:
+        src: https://download.jetbrains.com/python/pycharm-professional-{{ pycharm_version }}.tar.gz
+        dest: /tmp
+        creates: /tmp/pycharm-{{ pycharm_version }}/bin/pycharm.sh
+        remote_src: yes
 
-- name: Copy pycharm to /opt
-  become: true
-  copy:
-    src: /tmp/pycharm-{{ pycharm_version }}/
-    dest: /opt/pycharm
-    directory_mode: true
-    remote_src: true
+    - name: PyCharm - Copy to /opt
+      become: true
+      copy:
+        src: /tmp/pycharm-{{ pycharm_version }}/
+        dest: /opt/pycharm
+        directory_mode: true
+        remote_src: true
 
-- name: add pycharm symlink to /usr/local/bin
-  become: true
-  file:
-    src: /opt/pycharm/bin/pycharm.sh
-    dest: /usr/local/bin/pycharm.sh
-    state: link
+    - name: PyCharm - add symlink to /usr/local/bin
+      become: true
+      file:
+        src: /opt/pycharm/bin/pycharm.sh
+        dest: /usr/local/bin/pycharm.sh
+        state: link
 
-- name: create pycharm desktop link
-  become: true
-  copy:
-    dest: /usr/share/applications/pycharm.desktop
-    force: true
-    content: |
-      [Desktop Entry]
-      Type=Application
-      Name=PycharmUbuntu
-      Exec=/opt/pycharm/bin/pycharm.sh
-      Icon=/opt/pycharm/bin/pycharm.png
+    - name: PyCharm - create desktop link
+      become: true
+      copy:
+        dest: /usr/share/applications/pycharm.desktop
+        force: true
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=PycharmUbuntu
+          Exec=/opt/pycharm/bin/pycharm.sh
+          Icon=/opt/pycharm/bin/pycharm.png
 
-- name: Download and unarchive goland
-  unarchive:
-    src: https://download.jetbrains.com/go/goland-{{ goland_version }}.tar.gz
-    dest: /tmp
-    creates: /tmp/GoLand-{{ goland_version }}/bin/goland.sh
-    remote_src: yes
+- name: Install Goland
+  block:
+    - name: Goland - Download and unarchive
+      unarchive:
+        src: https://download.jetbrains.com/go/goland-{{ goland_version }}.tar.gz
+        dest: /tmp
+        creates: /tmp/GoLand-{{ goland_version }}/bin/goland.sh
+        remote_src: yes
 
-- name: Copy goland to /opt
-  become: true
-  copy:
-    src: /tmp/GoLand-{{ goland_version }}/
-    dest: /opt/goland
-    directory_mode: true
-    remote_src: true
+    - name: Goland - Copy to /opt
+      become: true
+      copy:
+        src: /tmp/GoLand-{{ goland_version }}/
+        dest: /opt/goland
+        directory_mode: true
+        remote_src: true
 
-- name: add goland symlink to /usr/local/bin
-  become: true
-  file:
-    src: /opt/goland/bin/goland.sh
-    dest: /usr/local/bin/goland.sh
-    state: link
+    - name: Goland - add symlink to /usr/local/bin
+      become: true
+      file:
+        src: /opt/goland/bin/goland.sh
+        dest: /usr/local/bin/goland.sh
+        state: link
 
-- name: create goland desktop link
-  become: true
-  copy:
-    dest: /usr/share/applications/goland.desktop
-    force: true
-    content: |
-      [Desktop Entry]
-      Type=Application
-      Name=GolandUbuntu
-      Exec=/opt/goland/bin/goland.sh
-      Icon=/opt/goland/bin/goland.png
+    - name: Goland - create desktop link
+      become: true
+      copy:
+        dest: /usr/share/applications/goland.desktop
+        force: true
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=GolandUbuntu
+          Exec=/opt/goland/bin/goland.sh
+          Icon=/opt/goland/bin/goland.png
 
-- name: Download and unarchive datagrip
-  unarchive:
-    src: https://download.jetbrains.com/datagrip/datagrip-{{ datagrip_version }}.tar.gz
-    dest: /tmp
-    creates: /tmp/DataGrip-{{ datagrip_version }}/bin/datagrip.sh
-    remote_src: yes
+- name: Install DataGrip
+  block:
+    - name: DataGrip - Download and unarchive
+      unarchive:
+        src: https://download.jetbrains.com/datagrip/datagrip-{{ datagrip_version }}.tar.gz
+        dest: /tmp
+        creates: /tmp/DataGrip-{{ datagrip_version }}/bin/datagrip.sh
+        remote_src: yes
 
-- name: Copy datagrip to /opt
-  become: true
-  copy:
-    src: /tmp/DataGrip-{{ datagrip_version }}/
-    dest: /opt/datagrip
-    directory_mode: true
-    remote_src: true
+    - name: DataGrip - Copy to /opt
+      become: true
+      copy:
+        src: /tmp/DataGrip-{{ datagrip_version }}/
+        dest: /opt/datagrip
+        directory_mode: true
+        remote_src: true
 
-- name: add datagrip symlink to /usr/local/bin
-  become: true
-  file:
-    src: /opt/datagrip/bin/datagrip.sh
-    dest: /usr/local/bin/datagrip.sh
-    state: link
+    - name: DataGrip - add symlink to /usr/local/bin
+      become: true
+      file:
+        src: /opt/datagrip/bin/datagrip.sh
+        dest: /usr/local/bin/datagrip.sh
+        state: link
 
-- name: create datagrip desktop link
-  become: true
-  copy:
-    dest: /usr/share/applications/datagrip.desktop
-    force: true
-    content: |
-      [Desktop Entry]
-      Type=Application
-      Name=DataGripUbuntu
-      Exec=/opt/datagrip/bin/datagrip.sh
-      Icon=/opt/datagrip/bin/datagrip.png
+    - name: DataGrip - create desktop link
+      become: true
+      copy:
+        dest: /usr/share/applications/datagrip.desktop
+        force: true
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=DataGripUbuntu
+          Exec=/opt/datagrip/bin/datagrip.sh
+          Icon=/opt/datagrip/bin/datagrip.png

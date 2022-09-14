@@ -11,28 +11,29 @@
   register: taskwarrior_version_installed
   changed_when: false
 
-- block:
-  - name: taskwarrior - download & unarchive
-    unarchive:
-      src: https://github.com/GothenburgBitFactory/taskwarrior/releases/download/v{{ taskwarrior_version }}/task-{{ taskwarrior_version }}.tar.gz
-      dest: /tmp
-      remote_src: yes
+- name: install taskwarrior
+  block:
+    - name: taskwarrior - download & unarchive
+      unarchive:
+        src: https://github.com/GothenburgBitFactory/taskwarrior/releases/download/v{{ taskwarrior_version }}/task-{{ taskwarrior_version }}.tar.gz
+        dest: /tmp
+        remote_src: yes
 
-  - name: taskwarrior - cmake
-    shell: cmake -DCMAKE_BUILD_TYPE=release .
-    args:
-      chdir: /tmp/task-{{ taskwarrior_version }}
-      executable: /bin/bash
+    - name: taskwarrior - cmake
+      shell: cmake -DCMAKE_BUILD_TYPE=release .
+      args:
+        chdir: /tmp/task-{{ taskwarrior_version }}
+        executable: /bin/bash
 
-  - name: taskwarrior - make
-    make:
-      chdir: /tmp/task-{{ taskwarrior_version }}
+    - name: taskwarrior - make
+      make:
+        chdir: /tmp/task-{{ taskwarrior_version }}
 
-  - name: taskwarrior - make install
-    make:
-      chdir: /tmp/task-{{ taskwarrior_version }}
-      target: install
-    become: true
+    - name: taskwarrior - make install
+      make:
+        chdir: /tmp/task-{{ taskwarrior_version }}
+        target: install
+      become: true
   when: taskwarrior_version_installed.stdout != taskwarrior_version
 
 - name: taskwarrior - delete tmp folder

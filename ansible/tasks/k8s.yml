@@ -3,28 +3,29 @@
   register: kubectl_version_installed
   changed_when: false
 
-- name: kubectl - download
-  get_url:
-    # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    url: https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl
-    dest: /tmp/kubectl
-  when: kubectl_version_installed.stdout != kubectl_version
+- name: install kubectl
+  block:
+    - name: kubectl - download
+      get_url:
+        # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        url: https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl
+        dest: /tmp/kubectl
 
-- name: kubectl - install to /usr/local/bin
-  become: true
-  ansible.builtin.copy:
-    remote_src: true
-    src: /tmp/kubectl
-    dest: /usr/local/bin/kubectl
-    mode: 0755
-    owner: root
-    group: root
-  when: kubectl_version_installed.stdout != kubectl_version
+    - name: kubectl - install to /usr/local/bin
+      become: true
+      ansible.builtin.copy:
+        remote_src: true
+        src: /tmp/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: 0755
+        owner: root
+        group: root
 
-- name: kubectl - delete
-  file:
-    path: /tmp/kubectl
-    state: absent
+    - name: kubectl - delete
+      file:
+        path: /tmp/kubectl
+        state: absent
+  when: kubectl_version_installed.stdout != kubectl_version
 
 - name: kubectl - add oh-my-zsh plugin
   include_role:
@@ -37,55 +38,55 @@
   register: helm_version_installed
   changed_when: false
 
-- name: helm - download & unarchive
-  unarchive:
-    src: https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz
-    dest: /tmp
-    remote_src: yes
-  when: helm_version_installed.stdout != helm_version
+- name: install helm
+  block:
+    - name: helm - download & unarchive
+      unarchive:
+        src: https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz
+        dest: /tmp
+        remote_src: yes
 
-- name: helm - install to /usr/local/bin
-  become: true
-  copy:
-    src: /tmp/linux-amd64/helm
-    dest: /usr/local/bin/helm
-    mode: 0755
-    owner: root
-    group: root
-    remote_src: true
-  when: helm_version_installed.stdout != helm_version
+    - name: helm - install to /usr/local/bin
+      become: true
+      copy:
+        src: /tmp/linux-amd64/helm
+        dest: /usr/local/bin/helm
+        mode: 0755
+        owner: root
+        group: root
+        remote_src: true
 
-- name: helm - delete
-  file:
-    path: /tmp/linux-amd64
-    state: absent
+    - name: helm - delete
+      file:
+        path: /tmp/linux-amd64
+        state: absent
+  when: helm_version_installed.stdout != helm_version
 
 - name: kubeseal - get installed version
   shell: kubeseal --version | sed 's/.*:\s\([0-9.]*\)/\1/'
   register: kubeseal_version_installed
   changed_when: false
 
-- name: kubeseal - download & unarchive
-  unarchive:
-    src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{ kubeseal_version }}/kubeseal-{{ kubeseal_version }}-linux-amd64.tar.gz
-    dest: /tmp
-    remote_src: yes
+- name: install kubeseal
+  block:
+    - name: kubeseal - download & unarchive
+      unarchive:
+        src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{ kubeseal_version }}/kubeseal-{{ kubeseal_version }}-linux-amd64.tar.gz
+        dest: /tmp
+        remote_src: yes
+
+    - name: kubeseal - install to /usr/local/bin
+      become: true
+      copy:
+        src: /tmp/kubeseal
+        dest: /usr/local/bin/kubeseal
+        mode: 0755
+        owner: root
+        group: root
+        remote_src: true
+
+    - name: kubeseal - delete
+      file:
+        path: /tmp/kubeseal
+        state: absent
   when: kubeseal_version_installed.stdout != kubeseal_version
-
-- name: kubeseal - install to /usr/local/bin
-  become: true
-  copy:
-    src: /tmp/kubeseal
-    dest: /usr/local/bin/kubeseal
-    mode: 0755
-    owner: root
-    group: root
-    remote_src: true
-  when: kubeseal_version_installed.stdout != kubeseal_version
-
-- name: kubeseal - delete
-  file:
-    path: /tmp/kubeseal
-    state: absent
-
-#        k9s (https://k9scli.io/topics/install/)

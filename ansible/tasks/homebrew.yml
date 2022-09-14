@@ -31,7 +31,6 @@
   lineinfile:
     path: '{{ item }}'
     line: "PATH=$PATH:/home/{{ user }}/.linuxbrew/bin"
-    mode: 0644
     create: yes
   with_items:
     - '/home/{{ user }}/.profile'
@@ -51,8 +50,9 @@
   vars:
     new_plugin: brew
 
-- name: Install k9s
+- name: Install homebrew packages
   community.general.homebrew:
     path: "/home/{{ user }}/.linuxbrew/bin"
-    name: k9s
+    name: '{{ item }}'
     state: latest
+  loop: '{{ homebrew_packages }}'

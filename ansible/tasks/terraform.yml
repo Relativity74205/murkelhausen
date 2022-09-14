@@ -12,28 +12,29 @@
   register: terraform_version_installed
   changed_when: false
 
-- name: terraform - download & unarchive
-  unarchive:
-    src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
-    dest: /tmp
-    remote_src: yes
-  when: terraform_version_installed.stdout != terraform_version
+- name: install terraform
+  block:
+    - name: terraform - download & unarchive
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+        dest: /tmp
+        remote_src: yes
 
-- name: terraform - install to /usr/local/bin
-  become: true
-  ansible.builtin.copy:
-    remote_src: true
-    src: /tmp/terraform
-    dest: /usr/local/bin/terraform
-    mode: 0755
-    owner: root
-    group: root
-  when: terraform_version_installed.stdout != terraform_version
+    - name: terraform - install to /usr/local/bin
+      become: true
+      ansible.builtin.copy:
+        remote_src: true
+        src: /tmp/terraform
+        dest: /usr/local/bin/terraform
+        mode: 0755
+        owner: root
+        group: root
 
-- name: terraform - delete
-  file:
-    path: /tmp/terraform
-    state: absent
+    - name: terraform - delete tmp folder
+      file:
+        path: /tmp/terraform
+        state: absent
+  when: terraform_version_installed.stdout != terraform_version
 
 - name: terraform - add oh-my-zsh plugin
   include_role:

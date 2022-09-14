@@ -6,8 +6,7 @@
 
 - name: install some system packages required for various stuff
   apt:
-    pkg:
-      - git
+    name: git
     state: latest
   become: True
 
