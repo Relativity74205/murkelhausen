@@ -13,7 +13,6 @@
   lineinfile:
     path: /home/{{ user }}/.zshrc
     line: eval "$(atuin init zsh)"
-  when: not atuin_installed.stat.exists
 
 - name: create atuin zsh completions
   command: atuin gen-completions -o /usr/share/zsh/vendor-completions --shell zsh

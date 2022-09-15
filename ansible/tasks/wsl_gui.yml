@@ -14,6 +14,14 @@
     - libxi6
     - libasound2
     - libgbm-dev
+    - libatk1.0-0  # pycharm
+    - libcups2  # pycharm
+    - libxdamage1  # pycharm
+    - libatspi2.0-0  # pycharm readme.md
+    - libpangocairo-1.0-0
+    - libxkbcommon-x11-0
+    - libatk-bridge2.0-0
+
     state: latest
   become: True
 

@@ -7,7 +7,7 @@
   become: True
 
 - name: taskwarrior - get installed version
-  shell: task --version
+  shell: task --version | cat
   register: taskwarrior_version_installed
   changed_when: false
 
