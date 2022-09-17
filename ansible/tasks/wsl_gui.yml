@@ -1,4 +1,5 @@
 - name: Add WSL Utilities from PPA
+  become: True
   ansible.builtin.apt_repository:
     repo: ppa:wslutilities/wslu
 
