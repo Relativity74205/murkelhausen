@@ -17,6 +17,8 @@ https://docs.microsoft.com/de-de/windows/wsl/wsl-config
 
 # TODO
 
+- golang
+- gauxcli
 - taskwarrior config + remote server
 
 
