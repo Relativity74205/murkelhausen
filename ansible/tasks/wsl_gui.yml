@@ -13,7 +13,7 @@
   apt:
     name:
     - ubuntu-wsl
-    - wlsu
+    - wslu
     - libfuse2
     - xdg-utils
     - libxrender1
