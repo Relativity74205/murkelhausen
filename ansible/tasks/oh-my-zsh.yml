@@ -68,3 +68,8 @@
   vars:
     new_plugin: zsh-autosuggestions
 
+- name: add ZSH_AUTOSUGGEST_STRATEGY to .zshrc
+  lineinfile:
+    path: /home/{{ user }}/.zshrc
+    line: 'export ZSH_AUTOSUGGEST_STRATEGY=(history completion)'
+    insertafter: EOF

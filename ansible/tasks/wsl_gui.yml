@@ -1,3 +1,7 @@
+- name: Add WSL Utilities from PPA
+  ansible.builtin.apt_repository:
+    repo: ppa:wslutilities/wslu
+
 - name: Update apt-get repo and cache
   apt:
     update_cache: true
@@ -7,6 +11,8 @@
 - name: Install some wsl GUI stuff like xdg-open
   apt:
     name:
+    - ubuntu-wsl
+    - wlsu
     - libfuse2
     - xdg-utils
     - libxrender1
@@ -17,10 +23,10 @@
     - libatk1.0-0  # pycharm
     - libcups2  # pycharm
     - libxdamage1  # pycharm
-    - libatspi2.0-0  # pycharm readme.md
-    - libpangocairo-1.0-0
-    - libxkbcommon-x11-0
-    - libatk-bridge2.0-0
+    - libatspi2.0-0  # pycharm
+    - libpangocairo-1.0-0  # pycharm
+    - libxkbcommon-x11-0  # pycharm
+    - libatk-bridge2.0-0  # pycharm
 
     state: latest
   become: True
@@ -28,8 +34,8 @@
 - name: set BROWSER env variable in zshrc
   lineinfile:
     path: '{{ item }}'
-    line: export BROWSER="powershell.exe /C start"
-    mode: 0644
+#    line: export BROWSER="powershell.exe /C start"
+    line: export BROWSER=/usr/bin/wslview  # add sudo update-alternatives --config x-www-browser?
     create: yes
   with_items:
     - '/home/{{ user }}/.profile'
