@@ -140,9 +140,10 @@ Copy-Item -Path C:\Users\arkad\OneDrive\Documents\wsl_dev\initial_load.sh -Desti
 ```bash
 mkdir -p .kube
 mkdir -p .aws
+mkdir -p .ssh
 cp /mnt/c/Users/ArkadiusSchuchhardt/OneDrive\ -\ auxmoney\ GmbH/Dokumente/configs/kube_config ~/.kube/config
 cp /mnt/c/Users/ArkadiusSchuchhardt/OneDrive\ -\ auxmoney\ GmbH/Dokumente/configs/aws_config ~/.aws/config
-cp -r /mnt/c/Users/ArkadiusSchuchhardt/OneDrive\ -\ auxmoney\ GmbH/Dokumente/ssh ~/ssh
+cp /mnt/c/Users/ArkadiusSchuchhardt/OneDrive\ -\ auxmoney\ GmbH/Dokumente/ssh/* ~/.ssh
 chmod 600 ~/.ssh/*
 eval `ssh-agent`
 ssh-add ~/.ssh/github_private
