@@ -1,0 +1,52 @@
+- name: go - get installed version
+  shell: /usr/local/go/bin/go version | sed 's/.*go version go\([0-9.]*\).*/\1/'
+  register: go_version_installed
+  changed_when: false
+
+- name: install go main version
+  block:
+    - name: go - delete installation
+      become: true
+      file:
+        path: /usr/local/go
+        state: absent
+
+    - name: go - download
+      unarchive:
+        # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        src: https://go.dev/dl/go{{ go.main_version }}.linux-amd64.tar.gz
+        dest: /tmp
+        remote_src: true
+
+    - name: go - install to /usr/local/go/bin
+      become: true
+      copy:
+        remote_src: true
+        src: /tmp/go
+        dest: /usr/local
+        mode: 0755
+        owner: root
+        group: root
+        directory_mode: true
+
+    - name: go - delete
+      file:
+        path: /tmp/go
+        state: absent
+
+    - name: go - .profile
+      lineinfile:
+        path: '{{ item }}'
+        line: 'export PATH=$PATH:/usr/local/go/bin'
+      with_items:
+        - '/home/{{ user }}/.profile'
+        - '/home/{{ user }}/.bash_profile'
+        - '/home/{{ user }}/.bashrc'
+        - '/home/{{ user }}/.zprofile'
+        - '/home/{{ user }}/.zshrc'
+
+  when: go_version_installed.stdout != go.main_version
+
+# install several versions
+# https://go.dev/doc/manage-install
+

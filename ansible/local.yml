@@ -15,8 +15,20 @@
     helm_version: 3.8.2
     kubeseal_version: 0.17.5
     taskwarrior_version: 2.6.2
-    homebrew_packages:
-      - k9s
+    python:
+      install: true
+      versions:
+        - '3.10'
+        - '3.9'
+        - '3.8'
+    go:
+      install: true
+      main_version: 1.19.1
+      additional_versions: 1.18
+    homebrew:
+      install: false
+      packages:
+        - k9s
     oh_my_zsh_plugins:
       - git
       - python
@@ -27,47 +39,53 @@
       - ubuntu
       - rsync
   tasks:
-    - name: Modify Ubuntu22.04 config
-      import_tasks: tasks/ubuntu22.04.yml
-
-    - name: Install common
-      import_tasks: tasks/common.yml
-
-    - name: Install git
-      import_tasks: tasks/git.yml
-
-    - name: Install zsh + oh_my_zsh
-      import_tasks: tasks/oh-my-zsh.yml
-
-    - name: Install powerlevel10k theme
-      import_tasks: tasks/powerlevel10k.yml
-
-    - name: Install atuin
-      import_tasks: tasks/atuin.yml
-
-    - name: setup WSL GUI stuff
-      import_tasks: tasks/wsl_gui.yml
+#    - name: Modify Ubuntu22.04 config
+#      import_tasks: tasks/ubuntu22.04.yml
+#
+#    - name: Install common
+#      import_tasks: tasks/common.yml
+#
+#    - name: Install git
+#      import_tasks: tasks/git.yml
+#
+#    - name: Install zsh + oh_my_zsh
+#      import_tasks: tasks/oh-my-zsh.yml
+#
+#    - name: Install powerlevel10k theme
+#      import_tasks: tasks/powerlevel10k.yml
+#
+#    - name: Install atuin
+#      import_tasks: tasks/atuin.yml
+#
+#    - name: setup WSL GUI stuff
+#      import_tasks: tasks/wsl_gui.yml
 
     - name: Install homebrew
       import_tasks: tasks/homebrew.yml
+      when: homebrew.install == true
 
-    - name: Install docker
-      import_tasks: tasks/docker.yml
+#    - name: Install docker
+#      import_tasks: tasks/docker.yml
 
     - name: Install pyenv + python
       import_tasks: tasks/python.yml
+      when: python.install == true
 
-    - name: Install jetbrains products
-      import_tasks: tasks/jetbrains.yml
+#    - name: Install jetbrains products
+#      import_tasks: tasks/jetbrains.yml
+#
+#    - name: Install aws cli tool
+#      import_tasks: tasks/aws.yml
+#
+#    - name: Install k8s stuff
+#      import_tasks: tasks/k8s.yml
+#
+#    - name: Install terraform
+#      import_tasks: tasks/terraform.yml
+#
+#    - name: Install taskwarrior
+#      import_tasks: tasks/taskwarrior.yml
 
-    - name: Install aws cli tool
-      import_tasks: tasks/aws.yml
-
-    - name: Install k8s stuff
-      import_tasks: tasks/k8s.yml
-
-    - name: Install terraform
-      import_tasks: tasks/terraform.yml
-
-    - name: Install taskwarrior
-      import_tasks: tasks/taskwarrior.yml
+    - name: Install go
+      import_tasks: tasks/go.yml
+      when: go.install == true

@@ -32,21 +32,21 @@
 - name: set directory permissions of pyenv
   file:
     path: '/home/{{ user }}/.pyenv'
-    mode: 'go-w'
+    mode: 0744
     recurse: yes
 
 - name: write .pyenvrc
   copy:
     src: files/.pyenvrc
     dest: '/home/{{ user }}/.pyenvrc'
-    mode: 'u=rw,go=r'
+    mode: 0644
 
 - name: add .pyenvrc to .profile
   lineinfile:
     path: '{{ item }}'
     line: 'source ~/.pyenvrc'
     create: yes
-    mode: 'u=rw,go=r'
+    mode: 0644
   with_items:
     - '/home/{{ user }}/.profile'
     - '/home/{{ user }}/.bash_profile'
@@ -60,20 +60,11 @@
   vars:
     new_plugin: pyenv
 
-- name: install latest python3.10
-  shell: /home/{{ user }}/.pyenv/bin/pyenv install 3.10:latest -s
-  register: python310installed
-  changed_when: python310installed.stdout != ""
-
-- name: install latest python3.9
-  shell: /home/{{ user }}/.pyenv/bin/pyenv install 3.9:latest -s
-  register: python39installed
-  changed_when: python39installed.stdout != ""
-
-- name: install latest python3.8
-  shell: /home/{{ user }}/.pyenv/bin/pyenv install 3.8:latest -s
-  register: python38installed
-  changed_when: python38installed.stdout != ""
+- name: install python versions
+  shell: '/home/{{ user }}/.pyenv/bin/pyenv install {{ item }}:latest -s'
+  register: python_version_installed
+  changed_when: python_version_installed.stdout != ""
+  loop: '{{ python.versions }}'
 
 - name: get latest python_full_version
   shell: /home/{{ user }}/.pyenv/bin/pyenv versions | grep -oP '3.10.(\d{1,2})'

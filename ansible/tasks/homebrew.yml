@@ -55,4 +55,4 @@
     path: "/home/{{ user }}/.linuxbrew/bin"
     name: '{{ item }}'
     state: latest
-  loop: '{{ homebrew_packages }}'
+  loop: '{{ homebrew.packages }}'
