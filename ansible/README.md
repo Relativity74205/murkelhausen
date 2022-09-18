@@ -130,10 +130,16 @@ Optionen:
 
 
 
-- Copy SSH keys 
+- Copy SSH keys with powershell
 ```powershell
 Copy-Item -Path C:\Users\arkad\OneDrive\Documents\wsl_dev\.ssh -Destination \\wsl.localhost\Ubuntu\home\arkadius\.ssh -Recurse
 Copy-Item -Path C:\Users\arkad\OneDrive\Documents\wsl_dev\initial_load.sh -Destination \\wsl.localhost\Ubuntu\home\arkadius\initial_load.sh
+```
+
+- copy ssh keys and initial loda scripts
+```bash
+cp -r /mnt/c/Users/arkad/OneDrive/Documents/wsl_dev/.ssh ~
+cp /mnt/c/Users/arkad/OneDrive/Documents/wsl_dev/initial_load.sh ~
 ```
 
 - change SSH key permissions of ssh keys to rw for current user
