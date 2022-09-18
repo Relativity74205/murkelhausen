@@ -47,12 +47,7 @@
     line: 'source ~/.pyenvrc'
     create: yes
     mode: 0644
-  with_items:
-    - '/home/{{ user }}/.profile'
-    - '/home/{{ user }}/.bash_profile'
-    - '/home/{{ user }}/.bashrc'
-    - '/home/{{ user }}/.zprofile'
-    - '/home/{{ user }}/.zshrc'
+    loop: '{{ source_files }}'
 
 - name: add pyenv plugin to .zshrc
   include_role:

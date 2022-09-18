@@ -32,12 +32,7 @@
     path: '{{ item }}'
     line: "PATH=$PATH:/home/{{ user }}/.linuxbrew/bin"
     create: yes
-  with_items:
-    - '/home/{{ user }}/.profile'
-    - '/home/{{ user }}/.bash_profile'
-    - '/home/{{ user }}/.bashrc'
-    - '/home/{{ user }}/.zprofile'
-    - '/home/{{ user }}/.zshrc'
+    loop: '{{ source_files }}'
 
 - name: Update homebrew
   community.general.homebrew:

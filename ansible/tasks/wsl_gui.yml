@@ -37,10 +37,4 @@
     path: '{{ item }}'
 #    line: export BROWSER="powershell.exe /C start"
     line: export BROWSER=/usr/bin/wslview  # add sudo update-alternatives --config x-www-browser?
-    create: yes
-  with_items:
-    - '/home/{{ user }}/.profile'
-    - '/home/{{ user }}/.bash_profile'
-    - '/home/{{ user }}/.bashrc'
-    - '/home/{{ user }}/.zprofile'
-    - '/home/{{ user }}/.zshrc'
+    loop: '{{ source_files }}'

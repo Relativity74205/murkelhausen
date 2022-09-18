@@ -38,12 +38,7 @@
       lineinfile:
         path: '{{ item }}'
         line: 'export PATH=$PATH:/usr/local/go/bin'
-      with_items:
-        - '/home/{{ user }}/.profile'
-        - '/home/{{ user }}/.bash_profile'
-        - '/home/{{ user }}/.bashrc'
-        - '/home/{{ user }}/.zprofile'
-        - '/home/{{ user }}/.zshrc'
+      loop: '{{ source_files }}'
 
   when: go_version_installed.stdout != go.main_version
 

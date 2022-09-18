@@ -38,6 +38,12 @@
       - ansible
       - ubuntu
       - rsync
+    source_files:
+        - '/home/{{ user }}/.profile'
+        - '/home/{{ user }}/.bash_profile'
+        - '/home/{{ user }}/.bashrc'
+        - '/home/{{ user }}/.zprofile'
+        - '/home/{{ user }}/.zshrc'
   tasks:
 #    - name: Modify Ubuntu22.04 config
 #      import_tasks: tasks/ubuntu22.04.yml
