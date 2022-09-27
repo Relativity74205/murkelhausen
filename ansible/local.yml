@@ -4,32 +4,24 @@
 #  vars_files:
 #    - passwd.yml
   vars:
-    fullname: Arkadius Schuchhardt
-    email: arkadius@schuchhardt.com
-    user: 'arkadius'
-    pycharm_version: 2022.2.1
-    goland_version: 2022.2.2
-    datagrip_version: 2022.2.2
-    terraform_version: 1.2.9
-    kubectl_version: 1.22.8
-    helm_version: 3.8.2
-    kubeseal_version: 0.17.5
-    taskwarrior_version: 2.6.2
+    user: 'arkadius'  # TODO needed? probably can be replaced with ~
+    git:
+      fullname: Arkadius Schuchhardt
+      email: schuchhardt@auxmoney.com
+      autocrlf: false
     python:
       install: true
       versions:
         - '3.10'
         - '3.9'
         - '3.8'
-    go:
+    docker:
       install: true
-      main_version: 1.19.1
-      additional_versions: 1.18
-    homebrew:
+    aws_cli:
       install: false
-      packages:
-        - k9s
-    oh_my_zsh_plugins:
+    oh_my_zsh:
+      install: false
+      plugins:
       - git
       - python
       - pip
@@ -38,60 +30,125 @@
       - ansible
       - ubuntu
       - rsync
-    source_files:
-        - '/home/{{ user }}/.profile'
-        - '/home/{{ user }}/.bash_profile'
-        - '/home/{{ user }}/.bashrc'
-        - '/home/{{ user }}/.zprofile'
-        - '/home/{{ user }}/.zshrc'
+    atuin:
+      install: true
+      search_mode: fulltext  # prefix, full text and fuzzy are the options
+      db_path: "~/.local/share/atuin/history.db"
+    k8s:
+      install: false
+      kubectl_version: 1.22.8
+      helm_version: 3.8.2
+      kubeseal_version: 0.17.5
+    homebrew:
+      install: false
+      packages:
+        - k9s
+    terraform:
+      install: false
+      version: 1.2.9
+    pycharm:
+      install: false
+      version: 2022.2.1
+    goland:
+      install: false
+      version: 2022.2.2
+    datagrip:
+      install: false
+      version: 2022.2.2
+    taskwarrior:
+      install: false
+      version: 2.6.2
+      path: /mnt/c/Users/ArkadiusSchuchhardt/OneDrive - auxmoney GmbH/Dokumente/task_warrior
+    go:
+      install: false
+      main_version: 1.19.1
+      additional_versions: 1.18
+    source_files_bash:
+      - '/home/{{ user }}/.profile'
+      - '/home/{{ user }}/.bash_profile'
+      - '/home/{{ user }}/.bashrc'
+    source_files_zsh:
+      - '/home/{{ user }}/.zprofile'
+      - '/home/{{ user }}/.zshrc'
   tasks:
-#    - name: Modify Ubuntu22.04 config
-#      import_tasks: tasks/ubuntu22.04.yml
-#
-#    - name: Install common
-#      import_tasks: tasks/common.yml
-#
-#    - name: Install git
-#      import_tasks: tasks/git.yml
-#
-#    - name: Install zsh + oh_my_zsh
-#      import_tasks: tasks/oh-my-zsh.yml
-#
-#    - name: Install powerlevel10k theme
-#      import_tasks: tasks/powerlevel10k.yml
-#
-#    - name: Install atuin
-#      import_tasks: tasks/atuin.yml
-#
-#    - name: setup WSL GUI stuff
-#      import_tasks: tasks/wsl_gui.yml
+    - name: Set source_files based on oh_my_zsh.install
+      set_fact:
+        source_files: "{{ source_files_bash + source_files_zsh if oh_my_zsh.install == true else source_files_bash}}"
 
-    - name: Install homebrew
-      import_tasks: tasks/homebrew.yml
-      when: homebrew.install == true
+    - name: Modify Ubuntu22.04 config
+      import_tasks: tasks/ubuntu22.04.yml
 
-#    - name: Install docker
-#      import_tasks: tasks/docker.yml
+    - name: Install common
+      import_tasks: tasks/common.yml
+      tags: common
 
+    - name: Install git
+      import_tasks: tasks/git.yml
+      tags: git
+
+    - name: Install zsh + oh_my_zsh
+      import_tasks: tasks/oh-my-zsh.yml
+      when: oh_my_zsh.install == true
+      tags: zsh
+
+    - name: Install powerlevel10k theme
+      import_tasks: tasks/powerlevel10k.yml
+      when: oh_my_zsh.install == true
+      tags: zsh
+
+    # must run after zsh setup
+    - name: setup WSL GUI stuff
+      import_tasks: tasks/wsl_gui.yml
+      # TODO check if some stuff should be installed optional
+      tags: wsl
+
+    - name: Install atuin
+      import_tasks: tasks/atuin.yml
+      when: atuin.install == true
+      tags: atuin
+
+    - name: Install docker
+      import_tasks: tasks/docker.yml
+      when: docker.install == true
+      tags: docker
+
+    # must run after zsh setup
     - name: Install pyenv + python
       import_tasks: tasks/python.yml
       when: python.install == true
-
-#    - name: Install jetbrains products
-#      import_tasks: tasks/jetbrains.yml
-#
-#    - name: Install aws cli tool
-#      import_tasks: tasks/aws.yml
-#
-#    - name: Install k8s stuff
-#      import_tasks: tasks/k8s.yml
-#
-#    - name: Install terraform
-#      import_tasks: tasks/terraform.yml
-#
-#    - name: Install taskwarrior
-#      import_tasks: tasks/taskwarrior.yml
+      tags: python
 
     - name: Install go
       import_tasks: tasks/go.yml
       when: go.install == true
+      tags: go
+
+    - name: Install jetbrains products
+      import_tasks: tasks/jetbrains.yml
+      tags: jetbrains
+
+    - name: Install aws cli tool
+      import_tasks: tasks/aws.yml
+      when: aws_cli.install == true
+      tags: aws
+
+    - name: Install k8s stuff
+      import_tasks: tasks/k8s.yml
+      when: k8s.install == true
+      tags: k8s
+
+    # must run after zsh setup
+    - name: Install homebrew and k9s
+      import_tasks: tasks/homebrew.yml
+      when: homebrew.install == true
+      tags: brew
+
+    - name: Install terraform
+      import_tasks: tasks/terraform.yml
+      when: terraform.install == true
+      tags: terraform
+
+    - name: Install taskwarrior
+      import_tasks: tasks/taskwarrior.yml
+      when: taskwarrior.install == true
+      tags: task

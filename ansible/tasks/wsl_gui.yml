@@ -35,6 +35,8 @@
 - name: set BROWSER env variable in zshrc
   lineinfile:
     path: '{{ item }}'
+    create: yes
+    mode: 0644
 #    line: export BROWSER="powershell.exe /C start"
     line: export BROWSER=/usr/bin/wslview  # add sudo update-alternatives --config x-www-browser?
-    loop: '{{ source_files }}'
+  loop: '{{ source_files }}'

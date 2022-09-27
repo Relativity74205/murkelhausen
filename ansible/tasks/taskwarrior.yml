@@ -15,30 +15,30 @@
   block:
     - name: taskwarrior - download & unarchive
       unarchive:
-        src: https://github.com/GothenburgBitFactory/taskwarrior/releases/download/v{{ taskwarrior_version }}/task-{{ taskwarrior_version }}.tar.gz
+        src: https://github.com/GothenburgBitFactory/taskwarrior/releases/download/v{{ taskwarrior.version }}/task-{{ taskwarrior.version }}.tar.gz
         dest: /tmp
         remote_src: yes
 
     - name: taskwarrior - cmake
       shell: cmake -DCMAKE_BUILD_TYPE=release .
       args:
-        chdir: /tmp/task-{{ taskwarrior_version }}
+        chdir: /tmp/task-{{ taskwarrior.version }}
         executable: /bin/bash
 
     - name: taskwarrior - make
       make:
-        chdir: /tmp/task-{{ taskwarrior_version }}
+        chdir: /tmp/task-{{ taskwarrior.version }}
 
     - name: taskwarrior - make install
       make:
-        chdir: /tmp/task-{{ taskwarrior_version }}
+        chdir: /tmp/task-{{ taskwarrior.version }}
         target: install
       become: true
-  when: taskwarrior_version_installed.stdout != taskwarrior_version
+  when: taskwarrior_version_installed.stdout != taskwarrior.version
 
 - name: taskwarrior - delete tmp folder
   file:
-    path: /tmp/task-{{ taskwarrior_version }}
+    path: /tmp/task-{{ taskwarrior.version }}
     state: absent
 
 - name: taskwarrior - add oh-my-zsh plugin
@@ -46,3 +46,16 @@
     name: add_plugin_to_zshrc
   vars:
     new_plugin: taskwarrior
+  when: oh_my_zsh.install == true
+
+- name: create taskwarrior config
+  copy:
+    src: files/.taskrc
+    dest: ~/.taskrc
+    mode: 0644
+
+- name: set taskwarrior directory in config
+  replace:
+    path: ~/.taskrc
+    regexp: "^(.*)data.location(.*)$"
+    replace: "data.location={{ taskwarrior.path }}"

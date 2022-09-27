@@ -32,7 +32,8 @@
     path: '{{ item }}'
     line: "PATH=$PATH:/home/{{ user }}/.linuxbrew/bin"
     create: yes
-    loop: '{{ source_files }}'
+    mode: 0644
+  loop: '{{ source_files }}'
 
 - name: Update homebrew
   community.general.homebrew:
@@ -44,6 +45,7 @@
     name: add_plugin_to_zshrc
   vars:
     new_plugin: brew
+  when: oh_my_zsh.install == true
 
 - name: Install homebrew packages
   community.general.homebrew:

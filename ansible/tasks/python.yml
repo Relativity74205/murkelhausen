@@ -47,13 +47,14 @@
     line: 'source ~/.pyenvrc'
     create: yes
     mode: 0644
-    loop: '{{ source_files }}'
+  loop: '{{ source_files }}'
 
 - name: add pyenv plugin to .zshrc
   include_role:
     name: add_plugin_to_zshrc
   vars:
     new_plugin: pyenv
+  when: oh_my_zsh.install == true
 
 - name: install python versions
   shell: '/home/{{ user }}/.pyenv/bin/pyenv install {{ item }}:latest -s'
@@ -72,10 +73,10 @@
     line: '{{ python_full_version.stdout }}'
     create: yes
 
+# TODO: make idempotent and make sure, it is installed with pyenv python and not with system python
 - name: install pipx
-  pip:
-    name: pipx
-    extra_args: --user
+  shell: python3 -m pip install --user pipx
+  # shell: /home/{{ user }}/.pyenv/versions/{{ python_full_version.stdout }} -m pip install --user pipx
 
 - name: check if pipx is on path
   shell: pipx --version
@@ -104,3 +105,6 @@
     name: add_plugin_to_zshrc
   vars:
     new_plugin: poetry
+  when: oh_my_zsh.install == true
+
+# TODO add https://python-poetry.org/docs/master/configuration/#virtualenvsprefer-active-python-experimental

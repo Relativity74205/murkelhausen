@@ -16,7 +16,7 @@
   block:
     - name: terraform - download & unarchive
       unarchive:
-        src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+        src: https://releases.hashicorp.com/terraform/{{ terraform.version }}/terraform_{{ terraform.version }}_linux_amd64.zip
         dest: /tmp
         remote_src: yes
 
@@ -34,10 +34,11 @@
       file:
         path: /tmp/terraform
         state: absent
-  when: terraform_version_installed.stdout != terraform_version
+  when: terraform_version_installed.stdout != terraform.version
 
 - name: terraform - add oh-my-zsh plugin
   include_role:
     name: add_plugin_to_zshrc
   vars:
     new_plugin: terraform
+  when: oh_my_zsh.install == true

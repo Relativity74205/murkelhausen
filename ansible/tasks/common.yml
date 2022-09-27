@@ -19,5 +19,10 @@
       - nano
       - curl
       - wget
+      - graphviz  # for python diagrams
+      - libmysqlclient-dev  # e.g. for airflow
+      - libpq-dev  # e.g. for airflow
+      - libsecret-1-0  # to store credentials e.g. for jetbrains products
+      - gnome-keyring  # to store credentials e.g. for jetbrains products
     state: latest
   become: True

@@ -11,7 +11,7 @@
 
 - name: Bin atuin to zsh
   lineinfile:
-    path: /home/{{ user }}/.zshrc
+    path: ~/.zshrc
     line: eval "$(atuin init zsh)"
 
 - name: create atuin zsh completions
@@ -19,3 +19,15 @@
   become: true
   args:
     creates: /usr/share/zsh/vendor-completions/_atuin
+
+- name: change atuin search to fulltext
+  replace:
+    path: ~/.config/atuin/config.toml
+    regexp: "^(.*)search_mode(.*)$"
+    replace: 'search_mode = "{{ atuin.search_mode }}"'
+
+- name: change atuin db_path
+  replace:
+    path: ~/.config/atuin/config.toml
+    regexp: "^(.*)db_path(.*)$"
+    replace: 'db_path = "{{ atuin.db_path }}"'

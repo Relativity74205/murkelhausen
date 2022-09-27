@@ -8,7 +8,7 @@
     - name: kubectl - download
       get_url:
         # latest_version: "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        url: https://dl.k8s.io/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl
+        url: https://dl.k8s.io/release/v{{ k8s.kubectl_version }}/bin/linux/amd64/kubectl
         dest: /tmp/kubectl
 
     - name: kubectl - install to /usr/local/bin
@@ -25,13 +25,14 @@
       file:
         path: /tmp/kubectl
         state: absent
-  when: kubectl_version_installed.stdout != kubectl_version
+  when: kubectl_version_installed.stdout != k8s.kubectl_version
 
 - name: kubectl - add oh-my-zsh plugin
   include_role:
     name: add_plugin_to_zshrc
   vars:
     new_plugin: kubectl
+  when: oh_my_zsh.install == true
 
 - name: helm - get installed version
   shell: helm version | sed 's/.*Version:"v\([0-9.]*\)".*/\1/'
@@ -42,7 +43,7 @@
   block:
     - name: helm - download & unarchive
       unarchive:
-        src: https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz
+        src: https://get.helm.sh/helm-v{{ k8s.helm_version }}-linux-amd64.tar.gz
         dest: /tmp
         remote_src: yes
 
@@ -60,7 +61,7 @@
       file:
         path: /tmp/linux-amd64
         state: absent
-  when: helm_version_installed.stdout != helm_version
+  when: helm_version_installed.stdout != k8s.helm_version
 
 - name: kubeseal - get installed version
   shell: kubeseal --version | sed 's/.*:\s\([0-9.]*\)/\1/'
@@ -71,7 +72,7 @@
   block:
     - name: kubeseal - download & unarchive
       unarchive:
-        src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{ kubeseal_version }}/kubeseal-{{ kubeseal_version }}-linux-amd64.tar.gz
+        src: https://github.com/bitnami-labs/sealed-secrets/releases/download/v{{ k8s.kubeseal_version }}/kubeseal-{{ k8s.kubeseal_version }}-linux-amd64.tar.gz
         dest: /tmp
         remote_src: yes
 
@@ -89,4 +90,4 @@
       file:
         path: /tmp/kubeseal
         state: absent
-  when: kubeseal_version_installed.stdout != kubeseal_version
+  when: kubeseal_version_installed.stdout != k8s.kubeseal_version

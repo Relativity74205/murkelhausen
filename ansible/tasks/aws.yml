@@ -20,3 +20,4 @@
     name: add_plugin_to_zshrc
   vars:
     new_plugin: aws
+  when: oh_my_zsh.install == true

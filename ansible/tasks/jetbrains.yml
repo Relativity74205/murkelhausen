@@ -2,15 +2,15 @@
   block:
     - name: PyCharm - Download and unarchive
       unarchive:
-        src: https://download.jetbrains.com/python/pycharm-professional-{{ pycharm_version }}.tar.gz
+        src: https://download.jetbrains.com/python/pycharm-professional-{{ pycharm.version }}.tar.gz
         dest: /tmp
-        creates: /tmp/pycharm-{{ pycharm_version }}/bin/pycharm.sh
+        creates: /tmp/pycharm-{{ pycharm.version }}/bin/pycharm.sh
         remote_src: yes
 
     - name: PyCharm - Copy to /opt
       become: true
       copy:
-        src: /tmp/pycharm-{{ pycharm_version }}/
+        src: /tmp/pycharm-{{ pycharm.version }}/
         dest: /opt/pycharm
         directory_mode: true
         remote_src: true
@@ -21,32 +21,34 @@
         src: /opt/pycharm/bin/pycharm.sh
         dest: /usr/local/bin/pycharm.sh
         state: link
+  when: pycharm.install == true
 
-    - name: PyCharm - create desktop link
-      become: true
-      copy:
-        dest: /usr/share/applications/pycharm.desktop
-        force: true
-        content: |
-          [Desktop Entry]
-          Type=Application
-          Name=PycharmUbuntu
-          Exec=/opt/pycharm/bin/pycharm.sh
-          Icon=/opt/pycharm/bin/pycharm.png
+# TODO does not work
+#    - name: PyCharm - create desktop link
+#      become: true
+#      copy:
+#        dest: /usr/share/applications/pycharm.desktop
+#        force: true
+#        content: |
+#          [Desktop Entry]
+#          Type=Application
+#          Name=PycharmUbuntu
+#          Exec=/opt/pycharm/bin/pycharm.sh
+#          Icon=/opt/pycharm/bin/pycharm.png
 
 - name: Install Goland
   block:
     - name: Goland - Download and unarchive
       unarchive:
-        src: https://download.jetbrains.com/go/goland-{{ goland_version }}.tar.gz
+        src: https://download.jetbrains.com/go/goland-{{ goland.version }}.tar.gz
         dest: /tmp
-        creates: /tmp/GoLand-{{ goland_version }}/bin/goland.sh
+        creates: /tmp/GoLand-{{ goland.version }}/bin/goland.sh
         remote_src: yes
 
     - name: Goland - Copy to /opt
       become: true
       copy:
-        src: /tmp/GoLand-{{ goland_version }}/
+        src: /tmp/GoLand-{{ goland.version }}/
         dest: /opt/goland
         directory_mode: true
         remote_src: true
@@ -57,32 +59,34 @@
         src: /opt/goland/bin/goland.sh
         dest: /usr/local/bin/goland.sh
         state: link
+  when: goland.install == true
 
-    - name: Goland - create desktop link
-      become: true
-      copy:
-        dest: /usr/share/applications/goland.desktop
-        force: true
-        content: |
-          [Desktop Entry]
-          Type=Application
-          Name=GolandUbuntu
-          Exec=/opt/goland/bin/goland.sh
-          Icon=/opt/goland/bin/goland.png
+# TODO does not work
+#    - name: Goland - create desktop link
+#      become: true
+#      copy:
+#        dest: /usr/share/applications/goland.desktop
+#        force: true
+#        content: |
+#          [Desktop Entry]
+#          Type=Application
+#          Name=GolandUbuntu
+#          Exec=/opt/goland/bin/goland.sh
+#          Icon=/opt/goland/bin/goland.png
 
 - name: Install DataGrip
   block:
     - name: DataGrip - Download and unarchive
       unarchive:
-        src: https://download.jetbrains.com/datagrip/datagrip-{{ datagrip_version }}.tar.gz
+        src: https://download.jetbrains.com/datagrip/datagrip-{{ datagrip.version }}.tar.gz
         dest: /tmp
-        creates: /tmp/DataGrip-{{ datagrip_version }}/bin/datagrip.sh
+        creates: /tmp/DataGrip-{{ datagrip.version }}/bin/datagrip.sh
         remote_src: yes
 
     - name: DataGrip - Copy to /opt
       become: true
       copy:
-        src: /tmp/DataGrip-{{ datagrip_version }}/
+        src: /tmp/DataGrip-{{ datagrip.version }}/
         dest: /opt/datagrip
         directory_mode: true
         remote_src: true
@@ -93,15 +97,17 @@
         src: /opt/datagrip/bin/datagrip.sh
         dest: /usr/local/bin/datagrip.sh
         state: link
+  when: datagrip.install == true
 
-    - name: DataGrip - create desktop link
-      become: true
-      copy:
-        dest: /usr/share/applications/datagrip.desktop
-        force: true
-        content: |
-          [Desktop Entry]
-          Type=Application
-          Name=DataGripUbuntu
-          Exec=/opt/datagrip/bin/datagrip.sh
-          Icon=/opt/datagrip/bin/datagrip.png
+# TODO does not work
+#    - name: DataGrip - create desktop link
+#      become: true
+#      copy:
+#        dest: /usr/share/applications/datagrip.desktop
+#        force: true
+#        content: |
+#          [Desktop Entry]
+#          Type=Application
+#          Name=DataGripUbuntu
+#          Exec=/opt/datagrip/bin/datagrip.sh
+#          Icon=/opt/datagrip/bin/datagrip.png

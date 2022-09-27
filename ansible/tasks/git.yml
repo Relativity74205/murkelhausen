@@ -13,17 +13,17 @@
 - name: git config user.name
   community.general.git_config:
     name: user.name
-    value: '{{ fullname }}'
+    value: '{{ git.fullname }}'
     scope: global
 
 - name: git config user.email
   community.general.git_config:
     name: user.email
-    value: '{{ email }}'
+    value: '{{ git.email }}'
     scope: global
 
 - name: git config autocrlf
   community.general.git_config:
     name: core.autocrlf
-    value: false
+    value: '{{ git.autocrlf }}'
     scope: global

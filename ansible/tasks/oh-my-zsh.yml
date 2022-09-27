@@ -39,7 +39,7 @@
 
 - name: determine plugins
   # removes duplicates
-  shell: echo {{ (plugins_old.stdout | split(' ') + oh_my_zsh_plugins) | unique | select | join(' ') }}
+  shell: echo {{ (plugins_old.stdout | split(' ') + oh_my_zsh.plugins) | unique | select | join(' ') }}
   register: plugins_new
   changed_when: false
 
@@ -67,6 +67,7 @@
     name: add_plugin_to_zshrc
   vars:
     new_plugin: zsh-autosuggestions
+  when: oh_my_zsh.install == true
 
 - name: add ZSH_AUTOSUGGEST_STRATEGY to .zshrc
   lineinfile:
