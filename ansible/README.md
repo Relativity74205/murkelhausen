@@ -41,7 +41,7 @@ ansible-playbook local.yaml
 
 For Beowulf
 ```bash
-ansible-playbook -i inventory.yaml beowulf.yaml
+ansible-playbook -i inventory.yml beowulf.yml -K
 ```
 
 Interesting options:

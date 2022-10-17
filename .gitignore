@@ -2,25 +2,27 @@
 build
 dist
 wheelhouse
+public
 
 # caches
+.coverage
 docs/autodoc
 .mypy_cache
 .pytest_cache
-.coverage
+.ipynb_checkpoints/
+**/__pycache__
+**/venv
+**/.venv
+**/.idea
+**/.pytest_cache
 
 # tool artifacts
 pip-wheel-metadata
 *.py[cod]
 *.egg-info
+requirements.txt
 .python-version
-
-# dev stuff
-.idea
+site
 
 # user config
 user.toml
-
-# precect
-supervisord.pid
-supervisord.log

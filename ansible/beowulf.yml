@@ -1,14 +1,21 @@
 - name: Beowulf setup
-  become: True
   hosts: beowulf
   vars:
     docker_user: 'arkadius'
+    user: 'arkadius'
+    python:
+      versions:
+        - '3.10'
+        - '3.9'
+    source_files:
+        - '/home/{{ user }}/.profile'
+        - '/home/{{ user }}/.bashrc'
   tasks:
     - name: Install common
-      include_role:
-        name: common
+      import_tasks: tasks/common.yml
+
+    - name: Install pyenv + python
+      import_tasks: tasks/python.yml
 
     - name: Install docker
-      include_role:
-        name: docker
-
+      import_tasks: tasks/docker.yml

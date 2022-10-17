@@ -2,23 +2,21 @@ version: '3.7'
 services:
   dev:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
       target: dev
-    ports:
-      - '5000:5000'
+      args:
+        REGISTRY: gitlab.office.auxmoney.com:4567
     volumes:
       - /usr/app/wheels
       - .:/usr/app
-    environment:
-      - MURKELHAUSEN_APP__APP_RELOAD=true
   prod:
-    ports:
-      - '5000:5000'
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
       target: prod
+      args:
+        REGISTRY: gitlab.office.auxmoney.com:4567
 
 # docker-compose run dev poetry run black src --check
 # docker-compose run dev poetry update

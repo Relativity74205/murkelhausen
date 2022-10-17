@@ -1,0 +1,33 @@
+version: "3"
+services:
+  zigbee2mqtt:
+      container_name: zigbee2mqtt
+      restart: unless-stopped
+      image: koenkk/zigbee2mqtt
+      volumes:
+        - ~/zigbee_data/zigbee2mqtt:/app/data
+        - /run/udev:/run/udev:ro
+      ports:
+        - "8080:8080"
+      environment:
+        - TZ=Europe/Vienna
+        - ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC=zigbee2mqtt
+        - ZIGBEE2MQTT_CONFIG_MQTT_SERVER=mqtt://mosquitto
+        - ZIGBEE2MQTT_CONFIG_FRONTEND=true
+        - ZIGBEE2MQTT_CONFIG_PERMIT_JOIN=true
+        - ZIGBEE2MQTT_CONFIG_HOMEASSISTANT=false
+        - ZIGBEE2MQTT_CONFIG_SERIAL_PORT=/dev/ttyACM0
+      devices:
+        # Make sure this matched your adapter location
+        - /dev/ttyUSB0:/dev/ttyACM0
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mqtt
+    restart: always
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ~/zigbee_data/mosquitto/data:/mosquitto/data
+      - ~/zigbee_data/mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"

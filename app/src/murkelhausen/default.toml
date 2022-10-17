@@ -1,0 +1,2 @@
+[app]
+loglevel = "DEBUG"  # "DEBUG" "INFO"

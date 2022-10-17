@@ -1,0 +1,38 @@
+site_name: murkelhausen documentation
+repo_url: https://gitlab.office.auxmoney.com/bi_group/murkelhausen/
+
+theme:
+  name: "material"
+  palette:
+    scheme: preference
+    primary: teal
+    accent: purple
+
+nav:
+    - Home: 'index.md'
+    - Tooling: 'tooling.md'
+    - CLI Reference: 'cli.md'
+    - Config: 'config.md'
+    - Code Reference:
+      - util package: 'util.md'
+
+plugins:
+- search
+- section-index
+- mkdocstrings:
+    default_handler: python
+    handlers:
+      python:
+        rendering:
+          show_signature_annotations: true
+          show_source: true
+    watch:
+      - src/murkelhausen
+markdown_extensions:
+- mkdocs-click
+- pymdownx.superfences
+- pymdownx.snippets:
+    check_paths: true
+
+extra_css:
+- css/style.css
