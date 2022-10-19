@@ -40,7 +40,7 @@ def on_message(client, userdata, msg):
     with open(p, "a") as f:
         csv_writer = csv.writer(f, delimiter=',')
         csv_writer.writerow([now, msg.topic, msg_payload])
-    log.info(f"{now}: {msg.topic} - {msg_payload}")
+    log.info(f"new message - {now}: {msg.topic} - {msg_payload}")
 
 
 def create_client() -> paho.mqtt.client.Client:

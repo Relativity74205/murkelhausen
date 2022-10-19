@@ -4,6 +4,9 @@ version = "0.1.0"
 description = ""
 authors = ["Relativity74205 <arkadius@schuchhardt.com>"]
 
+[tool.poetry.scripts]
+murkelhausen = "murkelhausen.cli.cli:cli"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 paho-mqtt = "^1.6.1"

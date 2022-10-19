@@ -80,24 +80,34 @@
 
 - name: check if pipx is on path
   shell: pipx --version
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: install cookiecutter with pipx
   shell: pipx install cookiecutter
+  args:
+    executable: /bin/bash
   register: cookiecutter_install
   changed_when: '"already seems to be installed" not in cookiecutter_install.stdout'
 
 - name: check if cookiecutter is on path
   shell: cookiecutter --version
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: install poetry with pipx
   shell: pipx install poetry
+  args:
+    executable: /bin/bash
   register: poetry_install
   changed_when: '"already seems to be installed" not in poetry_install.stdout'
 
 - name: check if cookiecutter is on path
   shell: poetry --version
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: add poetry plugin to .zshrc

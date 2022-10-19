@@ -7,8 +7,11 @@
       versions:
         - '3.10'
         - '3.9'
+    oh_my_zsh:
+      install: false
     source_files:
         - '/home/{{ user }}/.profile'
+        - '/home/{{ user }}/.bash_profile'
         - '/home/{{ user }}/.bashrc'
   tasks:
     - name: Install common

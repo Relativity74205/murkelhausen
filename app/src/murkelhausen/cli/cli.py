@@ -2,6 +2,7 @@ import click
 
 from murkelhausen import __version__
 from murkelhausen.util import logger
+from murkelhausen.mqtt import client
 
 
 @click.group(invoke_without_command=True)
@@ -28,9 +29,7 @@ def cli(ctx: click.Context, version: bool):
     logger.setup_logging()
 
 
+# TODO change command name
 @cli.command()
-@click.option("-c", "--count", default=1, help="Number of greetings.")
-@click.option("-n", "--name", prompt="Your name", help="The person to greet.")
-def hello(count: int, name: str):  # pragma: no cover
-    for x in range(count):
-        click.echo(f"Hello {name}!")
+def start_mqtt_client():
+    client.main()

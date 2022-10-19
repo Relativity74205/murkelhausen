@@ -19,6 +19,8 @@
       - nano
       - curl
       - wget
+      - zip
+      - screen
       - graphviz  # for python diagrams
       - libmysqlclient-dev  # e.g. for airflow
       - libpq-dev  # e.g. for airflow
@@ -26,3 +28,10 @@
       - gnome-keyring  # to store credentials e.g. for jetbrains products
     state: latest
   become: True
+
+- name: add /home/{{ user }}/local/bin to PATH in .zshrc
+  lineinfile:
+    path: '{{ item }}'
+    create: yes
+    line: 'export PATH=/home/{{ user }}/.local/bin:$PATH'
+  loop: '{{ source_files }}'
