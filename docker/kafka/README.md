@@ -17,6 +17,7 @@ Docker config reference:
 confluent-hub install confluentinc/kafka-connect-mqtt:1.5.2
 confluent-hub install confluentinc/kafka-connect-jdbc:10.6.0
 ```
+For kafka-connect-jdbs see: https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc
 
 
 ## mqtt to kafka:
