@@ -1,0 +1,8 @@
+FROM confluentinc/cp-server-connect-base:7.2.2
+
+RUN   confluent-hub install --no-prompt confluentinc/kafka-connect-mqtt:1.5.2 \
+   && confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.6.0
+
+RUN   mkdir -p /usr/share/confluent-hub-components/confluentinc-kafka-connect-jdbc/lib \
+   && cd /usr/share/confluent-hub-components/confluentinc-kafka-connect-jdbc/lib \
+   && wget https://jdbc.postgresql.org/download/postgresql-42.5.0.jar
