@@ -1,20 +1,20 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
-	"github.com/google/uuid"
-	kafka "github.com/segmentio/kafka-go"
 )
 
+var c chan string
+
 func onMessageReceived(client MQTT.Client, message MQTT.Message) {
+	c <- string(message.Payload())
 	fmt.Printf("Received message on topic: %s\nMessage: %s\n", message.Topic(), message.Payload())
 }
 
@@ -45,171 +45,53 @@ func listen_mqtt() {
 
 	<-sigchan
 	client.Disconnect(250)
+	close(c)
 	fmt.Println("Disconnecting")
 }
 
-func newKafkaWriter(kafkaURL, topic string) *kafka.Writer {
-	return &kafka.Writer{
-		Addr:     kafka.TCP(kafkaURL),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
+func handleProducerEvents(producer *kafka.Producer) {
+	for producerEvent := range producer.Events() {
+		switch kafkaEvent := producerEvent.(type) {
+		case *kafka.Message:
+			if kafkaEvent.TopicPartition.Error != nil {
+				fmt.Printf("Delivery failed: %v\n", kafkaEvent.TopicPartition)
+			} else {
+				fmt.Printf("Delivered message to %v\n", kafkaEvent.TopicPartition)
+			}
+		}
 	}
 }
 
-func kafka_producer() {
-	// kafkaURL := "localhost:9092"
-	kafkaURL := "192.168.1.69:9092"
+func kafka_producer(c chan string) {
+	kafkaServer := "192.168.1.69:19092"
 	topic := "test_topic"
-	partition := 0
 
-	conn, err := kafka.DialLeader(context.Background(), "tcp", kafkaURL, topic, partition)
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafkaServer})
 	if err != nil {
-		log.Fatal("failed to dial leader:", err)
+		panic(err)
 	}
 
-	conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
-	_, err = conn.WriteMessages(
-		kafka.Message{Value: []byte("one!")},
-		kafka.Message{Value: []byte("two!")},
-		kafka.Message{Value: []byte("three!")},
-	)
-	if err != nil {
-		log.Fatal("failed to write messages:", err)
+	defer p.Close()
+
+	// Delivery report handler for produced messages
+	go handleProducerEvents(p)
+
+	// Produce messages to topic (asynchronously)
+	for msg := range c {
+		time.Sleep(5 * time.Second)
+		p.Produce(&kafka.Message{
+			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+			Value:          []byte(msg),
+		}, nil)
+		print("foo")
 	}
 
-	if err := conn.Close(); err != nil {
-		log.Fatal("failed to close writer:", err)
-	}
-
-	// conn, err := kafka.Dial("tcp", kafkaURL)
-	// if err != nil {
-	// 	log.Fatal("failed to dial leader:", err)
-	// }
-	// defer conn.Close()
-
-	// controller, err := conn.Controller()
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// var controllerConn *kafka.Conn
-	// controllerConn, err = kafka.Dial("tcp", net.JoinHostPort(controller.Host, strconv.Itoa(controller.Port)))
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// defer controllerConn.Close()
-
-	// topicConfigs := []kafka.TopicConfig{
-	// 	{
-	// 		Topic:             topic,
-	// 		NumPartitions:     1,
-	// 		ReplicationFactor: 1,
-	// 	},
-	// }
-
-	// err = controllerConn.CreateTopics(topicConfigs...)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-
-	// conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
-	// _, err = conn.WriteMessages(
-	// 	kafka.Message{Value: []byte("one!")},
-	// 	kafka.Message{Value: []byte("two!")},
-	// 	kafka.Message{Value: []byte("three!")},
-	// )
-	// if err != nil {
-	// 	log.Fatal("failed to write messages:", err)
-	// } else {
-	// 	print("Written message.")
-	// }
-
-	// if err := conn.Close(); err != nil {
-	// 	log.Fatal("failed to close writer:", err)
-	// } else {
-	// 	print("Closed connection")
-	// }
-	// kafkaWriter := getKafkaWriter(kafkaURL, topic)
-	// defer kafkaWriter.Close()
-	// key := "Key-1"
-	// msg := kafka.Message{
-	// 	Key:   []byte(key),
-	// 	Value: []byte(fmt.Sprint(uuid.New())),
-	// }
-	// err := kafkaWriter.WriteMessages(context.Background(), msg)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// } else {
-	// 	fmt.Println("produced", key)
-	// }
-}
-
-func kafka_producer2() {
-	kafkaURL := "192.168.1.69:19092"
-	topic := "test_topic"
-	writer := newKafkaWriter(kafkaURL, topic)
-	defer writer.Close()
-	fmt.Println("start producing ... !!")
-	for i := 0; ; i++ {
-		key := fmt.Sprintf("Key-%d", i)
-		msg := kafka.Message{
-			Key:   []byte(key),
-			Value: []byte(fmt.Sprint(uuid.New())),
-		}
-		err := writer.WriteMessages(context.Background(), msg)
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			fmt.Println("produced", key)
-		}
-		time.Sleep(1 * time.Second)
-	}
-}
-
-func kafka_list_topics() {
-	conn, err := kafka.Dial("tcp", "192.168.1.69:9092")
-	if err != nil {
-		panic(err.Error())
-	}
-	defer conn.Close()
-
-	partitions, err := conn.ReadPartitions()
-	if err != nil {
-		panic(err.Error())
-	}
-
-	m := map[string]struct{}{}
-
-	for _, p := range partitions {
-		m[p.Topic] = struct{}{}
-	}
-	for k := range m {
-		fmt.Println(k)
-	}
-}
-
-func kafka_reader() {
-	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:   []string{"192.168.1.69:9092"},
-		Topic:     "mqtt",
-		Partition: 0,
-		MinBytes:  10e3, // 10KB
-		MaxBytes:  10e6, // 10MB
-	})
-	r.SetOffset(0)
-
-	for {
-		m, err := r.ReadMessage(context.Background())
-		if err != nil {
-			break
-		}
-		fmt.Printf("message at offset %d: %s = %s\n", m.Offset, string(m.Key), string(m.Value))
-	}
-
-	if err := r.Close(); err != nil {
-		log.Fatal("failed to close reader:", err)
-	}
+	// Wait for message deliveries before shutting down
+	p.Flush(15 * 1000)
 }
 
 func main() {
-	kafka_producer2()
+	c = make(chan string, 3)
+	go kafka_producer(c)
+	listen_mqtt()
 }
