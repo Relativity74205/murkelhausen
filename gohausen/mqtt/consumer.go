@@ -1,32 +1,71 @@
 package mqtt
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
+	"gohausen/dto"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
-var c chan string
+var c chan dto.ChannelPayload
 
-const topic = "test_topic"
+const qos = 0
+
+var topicsTest = map[string]byte{
+	"test_topic": byte(qos),
+}
+var topicsXiaomiMiSensor = map[string]byte{
+	"zigbee2mqtt/XaomiTempCellarHobby":      byte(qos),
+	"zigbee2mqtt/XaomiTempCellarVersorgung": byte(qos),
+}
+
 const broker = "tcp://192.168.1.69:1883"
 const id = "gohausen_client"
 const cleanSession = false
+const xiaomiMiSensorKafkaTopic = "xiaomi_mi_sensor"
 
-func onMessageReceived(client mqtt.Client, message mqtt.Message) {
-	c <- string(message.Payload())
+func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
+	var data dto.MQTTTestData
+	msgPayload := message.Payload()
+	err := json.Unmarshal(msgPayload, &data)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	c <- dto.ChannelPayload{
+		Topic: "test_topic",
+		Value: data,
+	}
+
 	fmt.Printf("Received message on topic: %s\nMessage: %s\n", message.Topic(), message.Payload())
 }
 
-func Consumer(queueChannel chan string) {
+func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
+	var data dto.XiaomiMiSensorData
+	mqttTopic := message.Topic()
+	msgPayload := message.Payload()
+	err := json.Unmarshal(msgPayload, &data)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	c <- dto.ChannelPayload{
+		Topic: xiaomiMiSensorKafkaTopic,
+		Key:   mqttTopic,
+		Value: data,
+	}
+
+	fmt.Printf("Received message on topic: %s\nMessage: %s\n", message.Topic(), message.Payload())
+}
+
+func Consumer(queueChannel chan dto.ChannelPayload) {
 	c = queueChannel
 	osSignalChannel := make(chan os.Signal, 1)
 	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
-
-	qos := 0
 
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(broker)
@@ -38,7 +77,11 @@ func Consumer(queueChannel chan string) {
 		panic(token.Error())
 	}
 
-	if token := client.Subscribe(topic, byte(qos), onMessageReceived); token.Wait() && token.Error() != nil {
+	if token := client.SubscribeMultiple(topicsTest, onMessageReceivedTest); token.Wait() && token.Error() != nil {
+		fmt.Println(token.Error())
+		os.Exit(1)
+	}
+	if token := client.SubscribeMultiple(topicsXiaomiMiSensor, onMessageReceivedXiaomiMiSensor); token.Wait() && token.Error() != nil {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}

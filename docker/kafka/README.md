@@ -22,6 +22,7 @@ For kafka-connect-jdbs see: https://www.confluent.io/hub/confluentinc/kafka-conn
 
 ## mqtt to kafka:
 
+- https://docs.confluent.io/kafka-connectors/mqtt/current/mqtt-source-connector/index.html
 - https://medium.com/python-point/mqtt-and-kafka-8e470eff606b
 - https://www.kai-waehner.de/blog/2021/03/15/apache-kafka-mqtt-sparkplug-iot-blog-series-part-1-of-5-overview-comparison/
 - https://github.com/kaiwaehner/kafka-connect-iot-mqtt-connector-example/blob/master/live-demo-kafka-connect-iot-mqtt-connector.adoc
