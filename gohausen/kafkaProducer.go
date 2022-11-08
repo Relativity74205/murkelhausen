@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde/avro"
-	"os"
+	log "github.com/sirupsen/logrus"
 )
 
 const kafkaServer = "192.168.1.69:19092"
@@ -17,9 +16,9 @@ func handleProducerEvents(producer *kafka.Producer) {
 		switch kafkaEvent := producerEvent.(type) {
 		case *kafka.Message:
 			if kafkaEvent.TopicPartition.Error != nil {
-				fmt.Printf("Delivery failed: %v\n", kafkaEvent.TopicPartition)
+				log.WithField("topicPartition", kafkaEvent.TopicPartition).Error("Delivery failed!")
 			} else {
-				fmt.Printf("Delivered message to %v\n", kafkaEvent.TopicPartition)
+				log.WithField("topicPartition", kafkaEvent.TopicPartition).Info("Successfully delivered message!")
 			}
 		}
 	}
@@ -33,14 +32,12 @@ func kafkaProducer(queueChannel chan ChannelPayload) {
 
 	client, err := schemaregistry.NewClient(schemaregistry.NewConfig(schemaRegistryUrl))
 	if err != nil {
-		fmt.Printf("Failed to create schema registry client: %s\n", err)
-		os.Exit(1)
+		log.WithField("error", err).Fatal("Failed to create schema registry client!")
 	}
 
 	ser, err := avro.NewGenericSerializer(client, serde.ValueSerde, avro.NewSerializerConfig())
 	if err != nil {
-		fmt.Printf("Failed to create serializer: %s\n", err)
-		os.Exit(1)
+		log.WithField("error", err).Fatal("Failed to create serializer!")
 	}
 
 	defer p.Close()
@@ -54,12 +51,9 @@ func kafkaProducer(queueChannel chan ChannelPayload) {
 		key := msg.Key
 		value := msg.Value
 
-		if err != nil {
-			fmt.Println(err)
-		}
 		valueSerialized, err := ser.Serialize(topic, &value)
 		if err != nil {
-			fmt.Println(err)
+			log.WithField("messageValue", value).Error("Payload value could not be serialized!")
 		}
 
 		err = p.Produce(&kafka.Message{
@@ -68,14 +62,14 @@ func kafkaProducer(queueChannel chan ChannelPayload) {
 			Value:          valueSerialized,
 		}, nil)
 		if err != nil {
-			panic(err)
+			log.WithField("error", err).Error("Failed to sent message.")
 		}
 	}
 
-	fmt.Println("queueChannel was closed. Flushing...")
+	log.Info("queueChannel was closed. Flushing...")
 
 	// Wait for message deliveries before shutting down
 	p.Flush(15 * 1000)
 
-	fmt.Println("queueChannel was closed. Flushing complete.")
+	log.Info("queueChannel was closed. Flushing complete.")
 }

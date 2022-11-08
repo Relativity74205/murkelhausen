@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
 	"syscall"
@@ -32,15 +32,17 @@ func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
 	msgPayload := message.Payload()
 	err := json.Unmarshal(msgPayload, &data)
 	if err != nil {
-		fmt.Println(err)
+		log.WithField("error", err).Error("Error with unmarshalling message payload.")
 	}
 
-	messageQueue <- ChannelPayload{
+	channelPayload := ChannelPayload{
 		Topic: "test_topic",
 		Value: data,
 	}
 
-	fmt.Printf("Received message on topic: %s\nMessage: %s\n", message.Topic(), message.Payload())
+	log.WithField("channelPayload", channelPayload).Info("Received MQTT message and prepared for sending to queueChannel.")
+	messageQueue <- channelPayload
+	log.Info("Send data to queueChannel.")
 }
 
 func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
@@ -49,7 +51,7 @@ func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
 	msgPayload := message.Payload()
 	err := json.Unmarshal(msgPayload, &data)
 	if err != nil {
-		fmt.Println(err)
+		log.WithField("error", err).Error("Error with unmarshalling message payload.")
 	}
 
 	messageQueue <- ChannelPayload{
@@ -58,7 +60,10 @@ func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
 		Value: data,
 	}
 
-	fmt.Printf("Received message on topic: %s\nMessage: %s\n", message.Topic(), message.Payload())
+	log.WithFields(log.Fields{
+		"topic":   message.Topic(),
+		"payload": message.Payload(),
+	}).Info("Received message.")
 }
 
 func mqttConsumer(queueChannel chan ChannelPayload) {
@@ -73,23 +78,27 @@ func mqttConsumer(queueChannel chan ChannelPayload) {
 
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		panic(token.Error())
+		log.WithField("error", token.Error()).Fatal("Could not connect to Mqtt server.")
 	}
 
 	if token := client.SubscribeMultiple(topicsTest, onMessageReceivedTest); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
+		log.WithFields(log.Fields{
+			"error": token.Error(),
+			"topic": topicsTest,
+		}).Fatal("Subscription to topic failed")
 	}
 	if token := client.SubscribeMultiple(topicsXiaomiMiSensor, onMessageReceivedXiaomiMiSensor); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
+		log.WithFields(log.Fields{
+			"error": token.Error(),
+			"topic": topicsXiaomiMiSensor,
+		}).Fatal("Subscription to topic failed")
 	}
 
 	<-osSignalChannel
-	fmt.Println("Disconnecting mqtt client and closing queueChannel ...")
+	log.Info("Disconnecting mqtt client and closing queueChannel ...")
 	client.Disconnect(250)
 	close(messageQueue)
-	fmt.Println("Mqtt client disconnected and queueChannel closed. Sleep for 1 second to give other routines chance to stop.")
-	time.Sleep(1 * time.Second)
-	fmt.Println("Sleep complete. Goodbye!")
+	log.Info("Mqtt client disconnected and queueChannel closed. Sleep for 1 second to give other routines chance to stop.")
+	time.Sleep(1 * time.Second) // TODO move to config
+	log.Info("Sleep complete. Goodbye!")
 }

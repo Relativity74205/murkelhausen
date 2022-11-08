@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 )
@@ -22,11 +22,11 @@ func dispatcher(queueChannel chan ChannelPayload) {
 	router.GET("/shelly/:sensor", func(c *gin.Context) {
 		humidity, err := strconv.ParseFloat(c.Query("hum"), 32)
 		if err != nil {
-			fmt.Println(err)
+			log.WithField("error", err).Error("No hum query parameter in url query string!")
 		}
 		temperature, _ := strconv.ParseFloat(c.Query("temp"), 32)
 		if err != nil {
-			fmt.Println(err)
+			log.WithField("error", err).Error("No temp query parameter in url query string!")
 		}
 		shellyHTData := ShellyHTData{
 			Humidity:    humidity,
@@ -39,15 +39,15 @@ func dispatcher(queueChannel chan ChannelPayload) {
 			Value: shellyHTData,
 		}
 
-		fmt.Printf("Prepared data for sending to queueChannel: %v \n", channelPayload)
+		log.WithField("channelPayload", channelPayload).Info("Received dispatcher message and prepared data for sending to queueChannel.")
 		queueChannel <- channelPayload
-		fmt.Println("Send data to queueChannel.")
+		log.Info("Send data to queueChannel.")
 
 		c.String(http.StatusOK, "OK")
 	})
 
 	err := router.Run(":8123") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {
-		panic(err)
+		log.WithField("error", err).Fatal("Could not start gin server!")
 	}
 }
