@@ -1,16 +1,15 @@
-package dispatcher
+package main
 
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"gohausen/dto"
 	"net/http"
 	"strconv"
 )
 
 const shellyHTKafkaTopic = "shelly_ht_sensor"
 
-func Main(queueChannel chan dto.ChannelPayload) {
+func dispatcher(queueChannel chan ChannelPayload) {
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
 
@@ -29,12 +28,12 @@ func Main(queueChannel chan dto.ChannelPayload) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		shellyHTData := dto.ShellyHTData{
+		shellyHTData := ShellyHTData{
 			Humidity:    humidity,
 			Temperature: temperature,
 			Id:          c.Query("id"),
 		}
-		channelPayload := dto.ChannelPayload{
+		channelPayload := ChannelPayload{
 			Topic: shellyHTKafkaTopic,
 			Key:   c.Param("sensor"),
 			Value: shellyHTData,

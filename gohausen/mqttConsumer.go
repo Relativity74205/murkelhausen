@@ -1,17 +1,16 @@
-package mqtt
+package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
-	"gohausen/dto"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
-var c chan dto.ChannelPayload
+var messageQueue chan ChannelPayload
 
 const qos = 0
 
@@ -29,14 +28,14 @@ const cleanSession = false
 const xiaomiMiSensorKafkaTopic = "xiaomi_mi_sensor"
 
 func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
-	var data dto.MQTTTestData
+	var data MQTTTestData
 	msgPayload := message.Payload()
 	err := json.Unmarshal(msgPayload, &data)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	c <- dto.ChannelPayload{
+	messageQueue <- ChannelPayload{
 		Topic: "test_topic",
 		Value: data,
 	}
@@ -45,7 +44,7 @@ func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
 }
 
 func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
-	var data dto.XiaomiMiSensorData
+	var data XiaomiMiSensorData
 	mqttTopic := message.Topic()
 	msgPayload := message.Payload()
 	err := json.Unmarshal(msgPayload, &data)
@@ -53,7 +52,7 @@ func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
 		fmt.Println(err)
 	}
 
-	c <- dto.ChannelPayload{
+	messageQueue <- ChannelPayload{
 		Topic: xiaomiMiSensorKafkaTopic,
 		Key:   mqttTopic,
 		Value: data,
@@ -62,8 +61,8 @@ func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
 	fmt.Printf("Received message on topic: %s\nMessage: %s\n", message.Topic(), message.Payload())
 }
 
-func Consumer(queueChannel chan dto.ChannelPayload) {
-	c = queueChannel
+func mqttConsumer(queueChannel chan ChannelPayload) {
+	messageQueue = queueChannel
 	osSignalChannel := make(chan os.Signal, 1)
 	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
 
@@ -89,7 +88,7 @@ func Consumer(queueChannel chan dto.ChannelPayload) {
 	<-osSignalChannel
 	fmt.Println("Disconnecting mqtt client and closing queueChannel ...")
 	client.Disconnect(250)
-	close(c)
+	close(messageQueue)
 	fmt.Println("Mqtt client disconnected and queueChannel closed. Sleep for 1 second to give other routines chance to stop.")
 	time.Sleep(1 * time.Second)
 	fmt.Println("Sleep complete. Goodbye!")

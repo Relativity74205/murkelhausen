@@ -1,4 +1,4 @@
-package kafka
+package main
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde/avro"
-	"gohausen/dto"
 	"os"
 )
 
@@ -26,7 +25,7 @@ func handleProducerEvents(producer *kafka.Producer) {
 	}
 }
 
-func Producer(queueChannel chan dto.ChannelPayload) {
+func kafkaProducer(queueChannel chan ChannelPayload) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafkaServer})
 	if err != nil {
 		panic(err)

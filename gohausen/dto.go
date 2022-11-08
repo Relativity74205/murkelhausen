@@ -1,4 +1,4 @@
-package dto
+package main
 
 type ChannelPayload struct {
 	Topic string
