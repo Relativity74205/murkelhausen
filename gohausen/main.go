@@ -21,11 +21,10 @@ func main() {
 func setupLogger() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp:          true,
+		ForceColors:            true,
 		DisableLevelTruncation: false,
 		PadLevelText:           true,
 	})
 	log.SetLevel(log.DebugLevel) // TODO config
-	//log.SetReportCaller(true)
-
-	// TODO combine gin and logrus: https://github.com/toorop/gin-logrus/blob/master/logger.go
+	log.SetReportCaller(false)
 }

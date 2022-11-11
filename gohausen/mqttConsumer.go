@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var messageQueue chan ChannelPayload
+var queueChannelReference chan ChannelPayload
 
 const qos = 0
 
@@ -29,6 +29,7 @@ const xiaomiMiSensorKafkaTopic = "xiaomi_mi_sensor"
 
 func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
 	var data MQTTTestData
+	mqttTopic := message.Topic()
 	msgPayload := message.Payload()
 	err := json.Unmarshal(msgPayload, &data)
 	if err != nil {
@@ -36,13 +37,16 @@ func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
 	}
 
 	channelPayload := ChannelPayload{
-		Topic: "test_topic",
+		Topic: mqttTopic,
 		Value: data,
 	}
+	queueChannelReference <- channelPayload
 
-	log.WithField("channelPayload", channelPayload).Info("Received MQTT message and prepared for sending to queueChannel.")
-	messageQueue <- channelPayload
-	log.Info("Send data to queueChannel.")
+	log.WithFields(log.Fields{
+		"topic": channelPayload.Topic,
+		"key":   channelPayload.Key,
+		"value": channelPayload.Value,
+	}).Info("Received MQTT message from Broker and sent to queueChannelReference.")
 }
 
 func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
@@ -54,20 +58,22 @@ func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
 		log.WithField("error", err).Error("Error with unmarshalling message payload.")
 	}
 
-	messageQueue <- ChannelPayload{
+	channelPayload := ChannelPayload{
 		Topic: xiaomiMiSensorKafkaTopic,
 		Key:   mqttTopic,
 		Value: data,
 	}
+	queueChannelReference <- channelPayload
 
 	log.WithFields(log.Fields{
-		"topic":   message.Topic(),
-		"payload": message.Payload(),
-	}).Info("Received message.")
+		"topic": channelPayload.Topic,
+		"key":   channelPayload.Key,
+		"value": channelPayload.Value,
+	}).Info("Received MQTT message from Broker and sent to queueChannelReference.")
 }
 
 func mqttConsumer(queueChannel chan ChannelPayload) {
-	messageQueue = queueChannel
+	queueChannelReference = queueChannel
 	osSignalChannel := make(chan os.Signal, 1)
 	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
 
@@ -97,7 +103,7 @@ func mqttConsumer(queueChannel chan ChannelPayload) {
 	<-osSignalChannel
 	log.Info("Disconnecting mqtt client and closing queueChannel ...")
 	client.Disconnect(250)
-	close(messageQueue)
+	close(queueChannelReference)
 	log.Info("Mqtt client disconnected and queueChannel closed. Sleep for 1 second to give other routines chance to stop.")
 	time.Sleep(1 * time.Second) // TODO move to config
 	log.Info("Sleep complete. Goodbye!")

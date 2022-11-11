@@ -16,9 +16,9 @@ func handleProducerEvents(producer *kafka.Producer) {
 		switch kafkaEvent := producerEvent.(type) {
 		case *kafka.Message:
 			if kafkaEvent.TopicPartition.Error != nil {
-				log.WithField("topicPartition", kafkaEvent.TopicPartition).Error("Delivery failed!")
+				log.WithField("topicPartition", kafkaEvent.TopicPartition).Error("Delivery failed to Kafka!")
 			} else {
-				log.WithField("topicPartition", kafkaEvent.TopicPartition).Info("Successfully delivered message!")
+				log.WithField("topicPartition", kafkaEvent.TopicPartition).Info("Successfully delivered message to Kafka!")
 			}
 		}
 	}
