@@ -43,7 +43,7 @@ func dispatcher(queueChannel chan ChannelPayload) {
 		log.WithFields(log.Fields{
 			"topic": channelPayload.Topic,
 			"key":   channelPayload.Key,
-			"value": channelPayload.Value,
+			"value": fmt.Sprintf("%+v", channelPayload.Value),
 		}).Info("Received dispatcher message and send data to queueChannel.")
 
 		c.String(http.StatusOK, "OK")

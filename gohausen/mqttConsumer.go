@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -12,8 +13,7 @@ import (
 
 var queueChannelReference chan ChannelPayload
 
-const qos = 0
-
+// TODO move to config
 var topicsTest = map[string]byte{
 	"test_topic": byte(qos),
 }
@@ -22,10 +22,11 @@ var topicsXiaomiMiSensor = map[string]byte{
 	"zigbee2mqtt/XaomiTempCellarVersorgung": byte(qos),
 }
 
-const broker = "tcp://192.168.1.69:1883"
-const id = "gohausen_client"
-const cleanSession = false
+// TODO move to config
 const xiaomiMiSensorKafkaTopic = "xiaomi_mi_sensor"
+
+// TODO move to config
+const qos = 0
 
 func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
 	var data MQTTTestData
@@ -68,7 +69,7 @@ func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
 	log.WithFields(log.Fields{
 		"topic": channelPayload.Topic,
 		"key":   channelPayload.Key,
-		"value": channelPayload.Value,
+		"value": fmt.Sprintf("%+v", channelPayload.Value),
 	}).Info("Received MQTT message from Broker and sent to queueChannelReference.")
 }
 
@@ -78,9 +79,9 @@ func mqttConsumer(queueChannel chan ChannelPayload) {
 	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
 
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker(broker)
-	opts.SetClientID(id)
-	opts.SetCleanSession(cleanSession)
+	opts.AddBroker(Conf.mqtt.broker)
+	opts.SetClientID(Conf.mqtt.clientId)
+	opts.SetCleanSession(Conf.mqtt.cleanSession)
 
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
