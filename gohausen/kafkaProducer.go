@@ -8,9 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const kafkaServer = "192.168.1.69:19092"
-const schemaRegistryUrl = "http://192.168.1.69:8081"
-
 func handleProducerEvents(producer *kafka.Producer) {
 	for producerEvent := range producer.Events() {
 		switch kafkaEvent := producerEvent.(type) {
@@ -25,12 +22,12 @@ func handleProducerEvents(producer *kafka.Producer) {
 }
 
 func kafkaProducer(queueChannel chan ChannelPayload) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": kafkaServer})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": Conf.kafka.broker})
 	if err != nil {
 		panic(err)
 	}
 
-	client, err := schemaregistry.NewClient(schemaregistry.NewConfig(schemaRegistryUrl))
+	client, err := schemaregistry.NewClient(schemaregistry.NewConfig(Conf.kafka.schemaRegistryUrl))
 	if err != nil {
 		log.WithField("error", err).Fatal("Failed to create schema registry client!")
 	}

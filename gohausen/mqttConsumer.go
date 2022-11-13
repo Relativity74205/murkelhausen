@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
@@ -13,56 +14,79 @@ import (
 
 var queueChannelReference chan ChannelPayload
 
-// TODO move to config
-var topicsTest = map[string]byte{
-	"test_topic": byte(qos),
+func getKafkaTopic(currentMqttTopic string) (string, error) {
+	for _, mapping := range Conf.mqttKafkaMappings {
+		for _, mqttTopic := range mapping.mqttTopics {
+			if currentMqttTopic == mqttTopic {
+				return mapping.kafkaTopic, nil
+			}
+		}
+	}
+	return "", errors.New("currentMqttTopic not found in config, should not happen")
 }
-var topicsXiaomiMiSensor = map[string]byte{
-	"zigbee2mqtt/XaomiTempCellarHobby":      byte(qos),
-	"zigbee2mqtt/XaomiTempCellarVersorgung": byte(qos),
+
+func getMqttTopics() map[string]byte {
+	mqttTopics := make(map[string]byte)
+	for _, mapping := range Conf.mqttKafkaMappings {
+		for _, topic := range mapping.mqttTopics {
+			mqttTopics[topic] = byte(mapping.qos)
+		}
+	}
+
+	return mqttTopics
 }
 
-// TODO move to config
-const xiaomiMiSensorKafkaTopic = "xiaomi_mi_sensor"
+func getPayloadType(currentMqttTopic string) (string, error) {
+	for _, mapping := range Conf.mqttKafkaMappings {
+		for _, mqttTopic := range mapping.mqttTopics {
+			if currentMqttTopic == mqttTopic {
+				return mapping.payloadType, nil
+			}
+		}
+	}
+	return "", errors.New("currentMqttTopic not found in config, should not happen")
+}
 
-// TODO move to config
-const qos = 0
-
-func onMessageReceivedTest(_ mqtt.Client, message mqtt.Message) {
-	var data MQTTTestData
-	mqttTopic := message.Topic()
-	msgPayload := message.Payload()
+func unmarshalPayload(msgPayload []byte, data KafkaValue) {
 	err := json.Unmarshal(msgPayload, &data)
 	if err != nil {
-		log.WithField("error", err).Error("Error with unmarshalling message payload.")
+		log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
 	}
-
-	channelPayload := ChannelPayload{
-		Topic: mqttTopic,
-		Value: data,
-	}
-	queueChannelReference <- channelPayload
-
-	log.WithFields(log.Fields{
-		"topic": channelPayload.Topic,
-		"key":   channelPayload.Key,
-		"value": channelPayload.Value,
-	}).Info("Received MQTT message from Broker and sent to queueChannelReference.")
 }
 
-func onMessageReceivedXiaomiMiSensor(_ mqtt.Client, message mqtt.Message) {
-	var data XiaomiMiSensorData
-	mqttTopic := message.Topic()
-	msgPayload := message.Payload()
-	err := json.Unmarshal(msgPayload, &data)
-	if err != nil {
-		log.WithField("error", err).Error("Error with unmarshalling message payload.")
+func getKafkaValue(mqttTopic string, msgPayload []byte) KafkaValue {
+	payloadType, _ := getPayloadType(mqttTopic)
+
+	switch payloadType {
+	case "MQTTTestData":
+		var data MQTTTestData
+		unmarshalPayload(msgPayload, &data)
+		return data
+	case "XiaomiMiSensorData":
+		var data XiaomiMiSensorData
+		//err := json.Unmarshal(msgPayload, &data)
+		//if err != nil {
+		//	log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
+		//}
+		unmarshalPayload(msgPayload, &data)
+		return data
 	}
 
+	return nil
+}
+
+func onMessageReceived(_ mqtt.Client, message mqtt.Message) {
+	mqttTopic := message.Topic()
+	msgPayload := message.Payload()
+
+	kafkaTopic, err := getKafkaTopic(mqttTopic)
+	if err != nil {
+		log.WithField("error", err).Error("Could not find the assigned KafkaTopic to a MqttTopic.")
+	}
 	channelPayload := ChannelPayload{
-		Topic: xiaomiMiSensorKafkaTopic,
+		Topic: kafkaTopic,
 		Key:   mqttTopic,
-		Value: data,
+		Value: getKafkaValue(mqttTopic, msgPayload),
 	}
 	queueChannelReference <- channelPayload
 
@@ -88,16 +112,9 @@ func mqttConsumer(queueChannel chan ChannelPayload) {
 		log.WithField("error", token.Error()).Fatal("Could not connect to Mqtt server.")
 	}
 
-	if token := client.SubscribeMultiple(topicsTest, onMessageReceivedTest); token.Wait() && token.Error() != nil {
+	if token := client.SubscribeMultiple(getMqttTopics(), onMessageReceived); token.Wait() && token.Error() != nil {
 		log.WithFields(log.Fields{
 			"error": token.Error(),
-			"topic": topicsTest,
-		}).Fatal("Subscription to topic failed")
-	}
-	if token := client.SubscribeMultiple(topicsXiaomiMiSensor, onMessageReceivedXiaomiMiSensor); token.Wait() && token.Error() != nil {
-		log.WithFields(log.Fields{
-			"error": token.Error(),
-			"topic": topicsXiaomiMiSensor,
 		}).Fatal("Subscription to topic failed")
 	}
 

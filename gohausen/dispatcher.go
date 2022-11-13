@@ -11,14 +11,21 @@ import (
 	"time"
 )
 
-const shellyHTKafkaTopic = "shelly_ht_sensor"
-
 func dispatcher(queueChannel chan ChannelPayload) {
-	//gin.SetMode(gin.DebugMode)
 	router := gin.New()
 
 	router.Use(Logger())
 
+	addShellyHT(router, queueChannel)
+
+	addr := fmt.Sprintf(":%d", Conf.dispatcher.port)
+	err := router.Run(addr)
+	if err != nil {
+		log.WithField("error", err).Fatal("Could not start gin server!")
+	}
+}
+
+func addShellyHT(router *gin.Engine, queueChannel chan ChannelPayload) {
 	router.GET("/shelly/:sensor", func(c *gin.Context) {
 		humidity, err := strconv.ParseFloat(c.Query("hum"), 32)
 		if err != nil {
@@ -34,7 +41,7 @@ func dispatcher(queueChannel chan ChannelPayload) {
 			Id:          c.Query("id"),
 		}
 		channelPayload := ChannelPayload{
-			Topic: shellyHTKafkaTopic,
+			Topic: Conf.dispatcher.shellyHTKafkaTopic,
 			Key:   c.Param("sensor"),
 			Value: shellyHTData,
 		}
@@ -48,11 +55,6 @@ func dispatcher(queueChannel chan ChannelPayload) {
 
 		c.String(http.StatusOK, "OK")
 	})
-
-	err := router.Run(":8123") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
-	if err != nil {
-		log.WithField("error", err).Fatal("Could not start gin server!")
-	}
 }
 
 func Logger(notLogged ...string) gin.HandlerFunc {
