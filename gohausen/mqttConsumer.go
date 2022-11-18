@@ -64,11 +64,9 @@ func getKafkaValue(mqttTopic string, msgPayload []byte) KafkaValue {
 		return data
 	case "XiaomiMiSensorData":
 		var data XiaomiMiSensorData
-		//err := json.Unmarshal(msgPayload, &data)
-		//if err != nil {
-		//	log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
-		//}
 		unmarshalPayload(msgPayload, &data)
+		data.SensorName = mqttTopic
+		data.Tstamp = time.Now().Local()
 		return data
 	}
 

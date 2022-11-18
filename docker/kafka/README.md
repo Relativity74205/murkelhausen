@@ -1,15 +1,16 @@
+<http://192.168.1.69:9021/>
 
 ## confluent
 
-- https://docs.confluent.io/platform/current/platform-quickstart.html#ce-docker-quickstart
+- <https://docs.confluent.io/platform/current/platform-quickstart.html#ce-docker-quickstart>
 
 Docker compose:
 
-- https://github.com/confluentinc/cp-all-in-one/blob/7.2.2-post/cp-all-in-one/docker-compose.yml
+- <https://github.com/confluentinc/cp-all-in-one/blob/7.2.2-post/cp-all-in-one/docker-compose.yml>
 
 Docker config reference:
 
-- https://docs.confluent.io/platform/current/installation/docker/config-reference.html
+- <https://docs.confluent.io/platform/current/installation/docker/config-reference.html>
 
 ## kafka connect connectors
 
@@ -17,15 +18,15 @@ Docker config reference:
 confluent-hub install confluentinc/kafka-connect-mqtt:1.5.2
 confluent-hub install confluentinc/kafka-connect-jdbc:10.6.0
 ```
-For kafka-connect-jdbs see: https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc
 
+For kafka-connect-jdbs see: <https://www.confluent.io/hub/confluentinc/kafka-connect-jdbc>
 
-## mqtt to kafka:
+## mqtt to kafka
 
-- https://docs.confluent.io/kafka-connectors/mqtt/current/mqtt-source-connector/index.html
-- https://medium.com/python-point/mqtt-and-kafka-8e470eff606b
-- https://www.kai-waehner.de/blog/2021/03/15/apache-kafka-mqtt-sparkplug-iot-blog-series-part-1-of-5-overview-comparison/
-- https://github.com/kaiwaehner/kafka-connect-iot-mqtt-connector-example/blob/master/live-demo-kafka-connect-iot-mqtt-connector.adoc
+- <https://docs.confluent.io/kafka-connectors/mqtt/current/mqtt-source-connector/index.html>
+- <https://medium.com/python-point/mqtt-and-kafka-8e470eff606b>
+- <https://www.kai-waehner.de/blog/2021/03/15/apache-kafka-mqtt-sparkplug-iot-blog-series-part-1-of-5-overview-comparison/>
+- <https://github.com/kaiwaehner/kafka-connect-iot-mqtt-connector-example/blob/master/live-demo-kafka-connect-iot-mqtt-connector.adoc>
 
 ## connect API
 
@@ -43,7 +44,6 @@ curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connec
 
 ```
 
-
 ```bash
 curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connectors -d '{
     "name" : "mqtt-kafka-postgres-test_jdbc",
@@ -60,7 +60,6 @@ curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connec
     }
 }'
 ```
-
 
 ```bash
 curl -s -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
@@ -81,7 +80,6 @@ curl -s -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
   }
 }
 ```
-
 
 ## connect config for postgres
 
