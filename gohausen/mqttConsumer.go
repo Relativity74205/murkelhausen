@@ -33,6 +33,8 @@ func getMqttTopics() map[string]byte {
 		}
 	}
 
+	log.WithField("mqttTopics", mqttTopics).Info("Connecting to the following topics")
+
 	return mqttTopics
 }
 

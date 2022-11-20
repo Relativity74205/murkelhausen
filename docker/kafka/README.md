@@ -87,15 +87,26 @@ curl -s -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
 
 ```json
 {
-  "name": "mqtt-kafka-postgres-test_jdbc",
+  "name": "PostgresSinkTest2",
   "config": {
-    "name": "mqtt-kafka-postgres-test_jdbc",
+    "value.converter.schema.registry.url": "http://schema-registry:8081",
+    "name": "PostgresSinkTest2",
     "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
-    "topics": "postgres_test",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.avro.AvroConverter",
+    "transforms": "insertTS",
+    "errors.tolerance": "none",
+    "topics": "xiaomi_mi_sensor, shelly_ht_sensor, aqara_sensor",
+    "transforms.insertTS.type": "org.apache.kafka.connect.transforms.InsertField$Value",
+    "transforms.insertTS.timestamp.field": "messageTS",
     "connection.url": "jdbc:postgresql://192.168.1.69:5432/bar",
     "connection.user": "postgres",
     "connection.password": "***",
-    "dialect.name": "PostgreSqlDatabaseDialect"
+    "dialect.name": "PostgreSqlDatabaseDialect",
+    "delete.enabled": "false",
+    "pk.mode": "kafka",
+    "auto.create": "true",
+    "auto.evolve": "true"
   }
 }
 ```
