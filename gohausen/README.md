@@ -57,11 +57,16 @@ mappingMqttKafka:
       - test_topic
     kafkaTopic: test_topic
     payloadType: MQTTTestData
-  xaomi:
+  xiaomi:
     qos: 0
     mqttTopics:
-      - zigbee2mqtt/XaomiTempCellarHobby
-      - zigbee2mqtt/XaomiTempCellarVersorgung
+      - zigbee2mqtt/XiaomiTempCellarHobby
+      - zigbee2mqtt/XiaomiTempCellarVersorgung
     kafkaTopic: xiaomi_mi_sensor
     payloadType: XiaomiMiSensorData
+  aqara:
+    qos: 0
+      - zigbee2mqtt/AqaraTempCellar
+    kafkaTopic: aqara_sensor
+    payloadType: AqaraSensorData
 ```

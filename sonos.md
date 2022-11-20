@@ -1,0 +1,4 @@
+- https://developer.sonos.com/reference/control-api/
+- https://soco.readthedocs.io/en/latest/getting_started.html
+- https://github.com/SoCo/SoCo
+- 

@@ -68,6 +68,12 @@ func getKafkaValue(mqttTopic string, msgPayload []byte) KafkaValue {
 		data.SensorName = mqttTopic
 		data.Tstamp = time.Now().Local()
 		return data
+	case "AqaraSensorData":
+		var data AqaraSensorData
+		unmarshalPayload(msgPayload, &data)
+		data.SensorName = mqttTopic
+		data.Tstamp = time.Now().Local()
+		return data
 	}
 
 	return nil

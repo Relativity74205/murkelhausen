@@ -35,14 +35,17 @@ func addShellyHT(router *gin.Engine, queueChannel chan ChannelPayload) {
 		if err != nil {
 			log.WithField("error", err).Error("No temp query parameter in url query string!")
 		}
+		sensorName := c.Param("sensor")
 		shellyHTData := ShellyHTData{
+			SensorName:  sensorName,
+			Tstamp:      time.Now().Local(),
 			Humidity:    humidity,
 			Temperature: temperature,
 			Id:          c.Query("id"),
 		}
 		channelPayload := ChannelPayload{
 			Topic: Conf.dispatcher.shellyHTKafkaTopic,
-			Key:   c.Param("sensor"),
+			Key:   sensorName,
 			Value: shellyHTData,
 		}
 
