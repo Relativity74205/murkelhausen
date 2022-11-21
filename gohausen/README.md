@@ -23,6 +23,14 @@ nohup ./gohausen &>gohausen.logs &
 
 http://192.168.1.75/
 
+### Shelly flood
+
+192.168.1.79
+
+nach
+
+http://192.168.1.69:8123/shelly_flood/flood1
+
 ## MQTT consumer
 
 ### test messages

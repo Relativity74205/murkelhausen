@@ -1,5 +1,9 @@
 # Shelly Stuff
 
+## IPs
+
+- 192.168.1.79 Flood
+
 <https://www.shelly.cloud/documents/catalogues/Shelly-Catalogue_2022_EU_v10_web_low.pdf>
 
 ## Actors

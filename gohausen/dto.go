@@ -56,3 +56,12 @@ type ShellyHTData struct {
 }
 
 func (data ShellyHTData) data() KafkaValue { return data }
+
+type ShellyFloodData struct {
+	SensorName  string    `json:"sensorname"`
+	Tstamp      time.Time `json:"tstamp"`
+	Temperature float64
+	Id          string
+}
+
+func (data ShellyFloodData) data() KafkaValue { return data }

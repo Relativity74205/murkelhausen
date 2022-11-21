@@ -17,6 +17,7 @@ func dispatcher(queueChannel chan ChannelPayload) {
 	router.Use(Logger())
 
 	addShellyHT(router, queueChannel)
+	addShellyFlood(router, queueChannel)
 
 	addr := fmt.Sprintf(":%d", Conf.dispatcher.port)
 	err := router.Run(addr)
@@ -31,7 +32,7 @@ func addShellyHT(router *gin.Engine, queueChannel chan ChannelPayload) {
 		if err != nil {
 			log.WithField("error", err).Error("No hum query parameter in url query string!")
 		}
-		temperature, _ := strconv.ParseFloat(c.Query("temp"), 32)
+		temperature, err := strconv.ParseFloat(c.Query("temp"), 32)
 		if err != nil {
 			log.WithField("error", err).Error("No temp query parameter in url query string!")
 		}
@@ -60,6 +61,37 @@ func addShellyHT(router *gin.Engine, queueChannel chan ChannelPayload) {
 	})
 }
 
+func addShellyFlood(router *gin.Engine, queueChannel chan ChannelPayload) {
+	router.GET("/shelly_flood/:sensor", func(c *gin.Context) {
+
+		//temperature, err := strconv.ParseFloat(c.Query("temp"), 32)
+		//if err != nil {
+		//	log.WithField("error", err).Error("No temp query parameter in url query string!")
+		//}
+		//sensorName := c.Param("sensor")
+		//shellyFloodData := ShellyFloodData{
+		//	SensorName:  sensorName,
+		//	Tstamp:      time.Now().Local(),
+		//	Temperature: temperature,
+		//	Id:          c.Query("id"),
+		//}
+		//channelPayload := ChannelPayload{
+		//	Topic: Conf.dispatcher.shellyHTKafkaTopic,
+		//	Key:   sensorName,
+		//	Value: shellyFloodData,
+		//}
+		//
+		//queueChannel <- channelPayload
+		//log.WithFields(log.Fields{
+		//	"topic": channelPayload.Topic,
+		//	"key":   channelPayload.Key,
+		//	"value": fmt.Sprintf("%+v", channelPayload.Value),
+		//}).Info("Received dispatcher message and send data to queueChannel.")
+
+		c.String(http.StatusOK, "OK")
+	})
+}
+
 func Logger(notLogged ...string) gin.HandlerFunc {
 	hostname, err := os.Hostname()
 	if err != nil {
@@ -79,6 +111,8 @@ func Logger(notLogged ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// other handler can change c.Path so:
 		path := c.Request.URL.Path
+		query := c.Request.URL.Query()
+		rawQuery := c.Request.URL.RawQuery
 		start := time.Now()
 		c.Next()
 		stop := time.Since(start)
@@ -103,6 +137,8 @@ func Logger(notLogged ...string) gin.HandlerFunc {
 			"clientIP":   clientIP,
 			"method":     c.Request.Method,
 			"path":       path,
+			"query":      query,
+			"rawQuery":   rawQuery,
 			"referer":    referer,
 			"dataLength": dataLength,
 			"userAgent":  clientUserAgent,
