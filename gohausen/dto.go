@@ -50,9 +50,9 @@ func (data MQTTTestData) data() KafkaValue { return data }
 type ShellyHTData struct {
 	SensorName  string    `json:"sensorname"`
 	Tstamp      time.Time `json:"tstamp"`
-	Humidity    float64
-	Temperature float64
-	Id          string
+	Humidity    float64   `json:"humidity"`
+	Temperature float64   `json:"temperature"`
+	Id          string    `json:"id"`
 }
 
 func (data ShellyHTData) data() KafkaValue { return data }
@@ -60,8 +60,9 @@ func (data ShellyHTData) data() KafkaValue { return data }
 type ShellyFloodData struct {
 	SensorName  string    `json:"sensorname"`
 	Tstamp      time.Time `json:"tstamp"`
-	Temperature float64
-	Id          string
+	Temperature float64   `json:"temperature"`
+	Flood       int       `json:"flood"`
+	Id          string    `json:"id"`
 }
 
 func (data ShellyFloodData) data() KafkaValue { return data }

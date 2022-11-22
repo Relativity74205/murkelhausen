@@ -64,29 +64,34 @@ func addShellyHT(router *gin.Engine, queueChannel chan ChannelPayload) {
 func addShellyFlood(router *gin.Engine, queueChannel chan ChannelPayload) {
 	router.GET("/shelly_flood/:sensor", func(c *gin.Context) {
 
-		//temperature, err := strconv.ParseFloat(c.Query("temp"), 32)
-		//if err != nil {
-		//	log.WithField("error", err).Error("No temp query parameter in url query string!")
-		//}
-		//sensorName := c.Param("sensor")
-		//shellyFloodData := ShellyFloodData{
-		//	SensorName:  sensorName,
-		//	Tstamp:      time.Now().Local(),
-		//	Temperature: temperature,
-		//	Id:          c.Query("id"),
-		//}
-		//channelPayload := ChannelPayload{
-		//	Topic: Conf.dispatcher.shellyHTKafkaTopic,
-		//	Key:   sensorName,
-		//	Value: shellyFloodData,
-		//}
-		//
-		//queueChannel <- channelPayload
-		//log.WithFields(log.Fields{
-		//	"topic": channelPayload.Topic,
-		//	"key":   channelPayload.Key,
-		//	"value": fmt.Sprintf("%+v", channelPayload.Value),
-		//}).Info("Received dispatcher message and send data to queueChannel.")
+		temperature, err := strconv.ParseFloat(c.Query("temp"), 32)
+		if err != nil {
+			log.WithField("error", err).Error("No temp query parameter in url query string!")
+		}
+		flood, err := strconv.Atoi(c.Query("flood"))
+		if err != nil {
+			log.WithField("error", err).Error("No temp query parameter in url query string!")
+		}
+		sensorName := c.Param("sensor")
+		shellyFloodData := ShellyFloodData{
+			SensorName:  sensorName,
+			Tstamp:      time.Now().Local(),
+			Temperature: temperature,
+			Flood:       flood,
+			Id:          c.Query("id"),
+		}
+		channelPayload := ChannelPayload{
+			Topic: Conf.dispatcher.shellyFloodTopic,
+			Key:   sensorName,
+			Value: shellyFloodData,
+		}
+
+		queueChannel <- channelPayload
+		log.WithFields(log.Fields{
+			"topic": channelPayload.Topic,
+			"key":   channelPayload.Key,
+			"value": fmt.Sprintf("%+v", channelPayload.Value),
+		}).Info("Received dispatcher message and send data to queueChannel.")
 
 		c.String(http.StatusOK, "OK")
 	})

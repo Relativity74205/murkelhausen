@@ -26,6 +26,7 @@ type kafkaConfig struct {
 type dispatcherConfig struct {
 	port               int
 	shellyHTKafkaTopic string
+	shellyFloodTopic   string
 }
 
 type mqttKafkaMapping struct {
@@ -112,6 +113,7 @@ func setupConfig() {
 		dispatcher: dispatcherConfig{
 			port:               viper.GetInt("dispatcher.port"),
 			shellyHTKafkaTopic: viper.GetString("dispatcher.shellyHTKafkaTopic"),
+			shellyFloodTopic:   viper.GetString("dispatcher.shellyFloodTopic"),
 		},
 		mqttKafkaMappings: mappings,
 	}
