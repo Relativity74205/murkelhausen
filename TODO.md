@@ -1,7 +1,7 @@
 # TODO list
 
 - use tstamp columns in superset
-- create start/stop script
+- [x] create start/stop script
 - create deploy script
 - create github pipeline
 - create versioning system

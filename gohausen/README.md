@@ -55,30 +55,33 @@ mqtt:
   broker: "tcp://192.168.1.69:1883"
   clientId: gohausen
   cleanSession: false
-  qos: 0
+  qos: 1
 kafka:
   broker: 192.168.1.69:19092
   schemaRegistryUrl: http://192.168.1.69:8081
 dispatcher:
   port: 8123
   shellyHTKafkaTopic: shelly_ht_sensor
+  shellyFloodTopic: shelly_flood
 mappingMqttKafka:
   test:
-    qos: 0
+    qos: 1
     mqttTopics:
       - test_topic
     kafkaTopic: test_topic
     payloadType: MQTTTestData
   xiaomi:
-    qos: 0
+    qos: 1
     mqttTopics:
       - zigbee2mqtt/XiaomiTempCellarHobby
       - zigbee2mqtt/XiaomiTempCellarVersorgung
     kafkaTopic: xiaomi_mi_sensor
     payloadType: XiaomiMiSensorData
   aqara:
-    qos: 0
+    qos: 1
+    mqttTopics:
       - zigbee2mqtt/AqaraTempCellar
     kafkaTopic: aqara_sensor
     payloadType: AqaraSensorData
+
 ```
