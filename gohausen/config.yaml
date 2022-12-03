@@ -38,5 +38,6 @@ mappingMqttKafka:
     qos: 1
     mqttTopics:
       - tele/stromhaushalt/SENSOR
+      - tele/stromwaermepumpe/SENSOR
     kafkaTopic: power_data
     payloadType: PowerData

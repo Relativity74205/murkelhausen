@@ -1,6 +1,8 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 type ChannelPayload struct {
 	Topic string
@@ -68,10 +70,14 @@ type ShellyFloodData struct {
 func (data ShellyFloodData) data() KafkaValue { return data }
 
 // {"Time":"2022-11-29T22:02:05","Usage":{"Total":11381.07,"Current":2655.5}}
+// {"Time":"2022-12-03T21:42:39","Usage":{"Total":11836.01,"Current":2943.0,"Current_p1":-2.0,"Current_p2":2.0,"Current_p3":2942.0}}
 
 type Usage struct {
-	Total   float32
-	Current float32
+	Total     float32
+	Current   float32
+	CurrentP1 float32 `json:"CurrentP1,omitempty"`
+	CurrentP2 float32 `json:"CurrentP2,omitempty"`
+	CurrentP3 float32 `json:"CurrentP3,omitempty"`
 }
 
 type PowerDataRaw struct {
@@ -80,10 +86,13 @@ type PowerDataRaw struct {
 }
 
 type PowerData struct {
-	SensorName   string  `json:"sensorname"`
-	Tstamp       string  `json:"tstamp"`
-	PowerTotal   float32 `json:"powertotal"`
-	PowerCurrent float32 `json:"powercurrent"`
+	SensorName     string  `json:"sensorname"`
+	Tstamp         string  `json:"tstamp"`
+	PowerTotal     float32 `json:"powertotal"`
+	PowerCurrent   float32 `json:"powercurrent"`
+	PowerCurrentP1 float32 `json:"powercurrent_p1,omitempty"`
+	PowerCurrentP2 float32 `json:"powercurrent_p2,omitempty"`
+	PowerCurrentP3 float32 `json:"powercurrent_p3,omitempty"`
 }
 
 func (data PowerData) data() KafkaValue { return data }

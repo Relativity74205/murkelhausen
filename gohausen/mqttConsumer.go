@@ -87,6 +87,10 @@ func getKafkaValue(mqttTopic string, msgPayload []byte) KafkaValue {
 		data.Tstamp = rawData.Time
 		data.PowerTotal = rawData.Usage.Total
 		data.PowerCurrent = rawData.Usage.Current
+		log.Info(rawData.Usage)
+		data.PowerCurrentP1 = rawData.Usage.CurrentP1
+		data.PowerCurrentP2 = rawData.Usage.CurrentP2
+		data.PowerCurrentP3 = rawData.Usage.CurrentP3
 		return data
 	}
 
