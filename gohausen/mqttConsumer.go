@@ -76,6 +76,18 @@ func getKafkaValue(mqttTopic string, msgPayload []byte) KafkaValue {
 		data.SensorName = mqttTopic
 		data.Tstamp = time.Now().Local()
 		return data
+	case "PowerData":
+		var data PowerData
+		var rawData PowerDataRaw
+		err := json.Unmarshal(msgPayload, &rawData)
+		if err != nil {
+			log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
+		}
+		data.SensorName = mqttTopic
+		data.Tstamp = rawData.Time
+		data.PowerTotal = rawData.Usage.Total
+		data.PowerCurrent = rawData.Usage.Current
+		return data
 	}
 
 	return nil

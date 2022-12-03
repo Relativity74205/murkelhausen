@@ -29,6 +29,14 @@ mappingMqttKafka:
   aqara:
     qos: 1
     mqttTopics:
-      - zigbee2mqtt/AqaraTempCellar
+      - zigbee2mqtt/AqaraTemp1
+      - zigbee2mqtt/AqaraTemp2
+      - zigbee2mqtt/AqaraTemp3
     kafkaTopic: aqara_sensor
     payloadType: AqaraSensorData
+  power:
+    qos: 1
+    mqttTopics:
+      - tele/stromhaushalt/SENSOR
+    kafkaTopic: power_data
+    payloadType: PowerData

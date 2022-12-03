@@ -66,3 +66,24 @@ type ShellyFloodData struct {
 }
 
 func (data ShellyFloodData) data() KafkaValue { return data }
+
+// {"Time":"2022-11-29T22:02:05","Usage":{"Total":11381.07,"Current":2655.5}}
+
+type Usage struct {
+	Total   float32
+	Current float32
+}
+
+type PowerDataRaw struct {
+	Time  string
+	Usage Usage
+}
+
+type PowerData struct {
+	SensorName   string  `json:"sensorname"`
+	Tstamp       string  `json:"tstamp"`
+	PowerTotal   float32 `json:"powertotal"`
+	PowerCurrent float32 `json:"powercurrent"`
+}
+
+func (data PowerData) data() KafkaValue { return data }
