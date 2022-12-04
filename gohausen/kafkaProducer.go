@@ -50,7 +50,7 @@ func kafkaProducer(queueChannel chan ChannelPayload) {
 
 		valueSerialized, err := ser.Serialize(topic, &value)
 		if err != nil {
-			log.WithField("messageValue", value).Error("Payload value could not be serialized!")
+			log.WithFields(log.Fields{"messageValue": value, "error": err}).Error("Payload value could not be serialized!")
 		}
 
 		err = p.Produce(&kafka.Message{

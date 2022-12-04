@@ -35,13 +35,5 @@ sudo usermod -aG docker pi
 docker compose /home/pi/docker-compose.yml up -d
 
 
-###############################################################################
-
-#crontab -l
-#0 1 * * * cp -r unifi_config/data/backup/autobackup nas/rasp/unifi/
-
-
-###############################################################################
-### .smbcredentials ###
-#username=arkadius
-#password=....
+# install pi-hole (https://github.com/pi-hole/pi-hole/#one-step-automated-install)
+curl -sSL https://install.pi-hole.net | bash
