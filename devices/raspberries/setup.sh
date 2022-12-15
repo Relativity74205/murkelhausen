@@ -2,19 +2,17 @@
 
 # create folders
 mkdir -p unifi_config
-mkdir -p nas
-mkdir -p pihole
+mkdir -p backup
 
-# setup nas connection
-echo "//192.168.1.19/arkadiusbackup /home/pi/nas cifs credentials=/home/pi/.smbcredentials,vers=2.0,uid=1000,gid=1000 0 0" | sudo tee -a /etc/fstab
-echo -e "username=arkadius\npassword=$PASSWORD" >> .smbcredentials
-sudo mount -a
+# install pi-hole (https://github.com/pi-hole/pi-hole/#one-step-automated-install)
+curl -sSL https://install.pi-hole.net | bash
 
-# setup git (incl. adding git ssh key to ssh-agent)
-sudo apt install git
-# TODO: ssh keys
+# install gravity-sync (https://github.com/vmstan/gravity-sync/wiki/Installing)
+curl -sSL https://raw.githubusercontent.com/vmstan/gs-install/main/gs-install.sh | bash
+# and run config
+gravity-sync config
 
-
+# rasp2
 # install docker (https://docs.docker.com/engine/install/debian/)
 sudo apt-get update
 sudo apt-get install \
@@ -33,7 +31,3 @@ sudo usermod -aG docker pi
 
 # setup unifi
 docker compose /home/pi/docker-compose.yml up -d
-
-
-# install pi-hole (https://github.com/pi-hole/pi-hole/#one-step-automated-install)
-curl -sSL https://install.pi-hole.net | bash

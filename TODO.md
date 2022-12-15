@@ -1,20 +1,24 @@
 
 # IPs
 
-- superset
-- kafka
-- zigbeemqtt
-- unifi
-- C430A GO
-- NAS
-- mqtt
-- pi-hole
+-
+- C430A GO (192.168.1.24; fixed)
+- NAS (192.168.1.19; fixed)
+- beowulf (192.168.1.69; fixed)
+  - mqtt
+  - superset <http://192.168.1.69:8088/>
+  - kafka <http://192.168.1.69:9021/>
+  - zigbeemqtt <http://192.168.1.69:8080/>
+- rasp1 (192.168.1.18 (fixed)):
+  - pi-hole: <http://rasp1.local/admin/>
+- rasp2 (192.168.1.28 (fixed))
+  - pi-hole: <http://rasp2.local/admin/>
+  - unifi: <https://rasp2.local:8443/>
 - shellies:
   - floodmeter:
-  -
 - Smartmeter IR Leser:
-  - Haushalt: 192.168.1.80
-  - Wärmepumpe: 192.168.1.84
+  - Haushalt: 192.168.1.84; fixed
+  - Wärmepumpe: 192.168.1.85; fixed
   
 # TODO list
 
@@ -41,18 +45,20 @@
 - add sonos control consumer
 
 - NAS mount (<https://michael-casey.com/2022/01/09/mount-synology-nas-to-raspberry-pi-using-nfs/> <https://eliaslundgaard.com/posts/mount-nas-to-pi/> )
-  - rasp1
-  - raps2
-  - NUK
-- backup unifi backups
-- backup pi-hole settings and pihole-FLT.db
+  - [x] rasp1
+  - [x] raps2
+  - [x] NUK
+- [x] backup unifi backups
+- [x] backup pi-hole settings and pihole-FLT.db
   - <https://docs.pi-hole.net/database/ftl/?h=backup#backup-database>
 - pi-hole
   - redundancy:
     - [x] <https://www.reddit.com/r/pihole/comments/692vaf/what_if_the_pi_goes_down/>
     - [x] second pi-hole in parallel
     - keep in sync: <https://github.com/vmstan/gravity-sync>
-  - backup settings (<https://www.reddit.com/r/pihole/comments/ncjzxx/how_to_properly_backup_my_pihole_setup/>)
+  - [x] backup settings (<https://www.reddit.com/r/pihole/comments/ncjzxx/how_to_properly_backup_my_pihole_setup/>)
+  - pihole update block lists
+  - set clients in pi-hole
 - force dns traffic
   - <https://scotthelme.co.uk/catching-naughty-devices-on-my-home-network/>
   - <https://fictionbecomesfact.com/usg-redirect-pihole>
