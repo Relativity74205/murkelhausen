@@ -44,18 +44,17 @@
 - create scheduling system
 - add sonos control consumer
 
-- NAS mount (<https://michael-casey.com/2022/01/09/mount-synology-nas-to-raspberry-pi-using-nfs/> <https://eliaslundgaard.com/posts/mount-nas-to-pi/> )
+- [x] NAS mount (<https://michael-casey.com/2022/01/09/mount-synology-nas-to-raspberry-pi-using-nfs/> <https://eliaslundgaard.com/posts/mount-nas-to-pi/> )
   - [x] rasp1
   - [x] raps2
   - [x] NUK
 - [x] backup unifi backups
-- [x] backup pi-hole settings and pihole-FLT.db
-  - <https://docs.pi-hole.net/database/ftl/?h=backup#backup-database>
+- [x] backup pi-hole settings and pihole-FLT.db (<https://docs.pi-hole.net/database/ftl/?h=backup#backup-database>)
 - pi-hole
-  - redundancy:
+  - [x] redundancy:
     - [x] <https://www.reddit.com/r/pihole/comments/692vaf/what_if_the_pi_goes_down/>
     - [x] second pi-hole in parallel
-    - keep in sync: <https://github.com/vmstan/gravity-sync>
+    - [x] keep in sync: <https://github.com/vmstan/gravity-sync>
   - [x] backup settings (<https://www.reddit.com/r/pihole/comments/ncjzxx/how_to_properly_backup_my_pihole_setup/>)
   - pihole update block lists
   - set clients in pi-hole
