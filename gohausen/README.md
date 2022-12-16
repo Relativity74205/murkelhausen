@@ -6,6 +6,11 @@
 go build . && scp gohausen beowulf:~ 
 ```
 
+Build for raspberry
+```bash
+env GOOS=linux GOARCH=arm GOARM=7 go build ./cmd/app
+```
+
 ## Start as background
 
 ```bash

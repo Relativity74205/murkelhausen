@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
-import "github.com/spf13/viper"
+
+var Conf gohausenConfig
 
 type appConfig struct {
 	queueChannelSize int
+	modules          []string
 }
 
 type mqttConfig struct {
@@ -44,38 +47,10 @@ type gohausenConfig struct {
 	mqttKafkaMappings []mqttKafkaMapping
 }
 
-var Conf gohausenConfig
-
-func main() {
-	setupConfig()
-	setupLogger()
-	log.Info("Starting")
-	var messageQueue = make(chan ChannelPayload, Conf.app.queueChannelSize)
-
-	// TODO start also kafkaProducer as go routine and end main function when all go routines close.
-	// TODO go routines shall close on system call
-	go dispatcher(messageQueue)
-	go mqttConsumer(messageQueue)
-	kafkaProducer(messageQueue)
-
-	//log.Info("Started everything")
-}
-
-func setupLogger() {
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp:          true,
-		ForceColors:            true,
-		DisableLevelTruncation: false,
-		PadLevelText:           true,
-	})
-	log.SetLevel(log.DebugLevel) // TODO config
-	log.SetReportCaller(false)
-}
-
 func setupConfig() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("$HOME/.gohausen")
+	viper.AddConfigPath("$HOME/.app")
 	viper.AddConfigPath(".")
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		log.WithField("e.Name", e.Name).Warning("Config file changed!")
@@ -99,6 +74,7 @@ func setupConfig() {
 	Conf = gohausenConfig{
 		app: appConfig{
 			queueChannelSize: viper.GetInt("app.queueChannelSize"),
+			modules:          viper.GetStringSlice("app.modules"),
 		},
 		mqtt: mqttConfig{
 			broker:       viper.GetString("mqtt.broker"),

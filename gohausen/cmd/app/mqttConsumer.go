@@ -115,8 +115,8 @@ func onMessageReceived(_ mqtt.Client, message mqtt.Message) {
 	}).Info("Received MQTT message from Broker and sent to queueChannelReference.")
 }
 
-func mqttConsumer(queueChannel chan ChannelPayload) {
-	queueChannelReference = queueChannel
+func mqttConsumer(messageQueue chan ChannelPayload) {
+	queueChannelReference = messageQueue
 	osSignalChannel := make(chan os.Signal, 1)
 	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
 

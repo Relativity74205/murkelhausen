@@ -1,7 +1,7 @@
 #!/bin/bash
 
 start() {
-  nohup ./gohausen &> logs_gohausen.log &
+  nohup ./app &> logs_gohausen.log &
   echo $! > pid_gohausen
   echo "started gohausen and created pid file"
 }

@@ -1,5 +1,8 @@
 app:
   queueChannelSize: 100
+  modules:
+    - scheduler
+    - kafkaProducer
 mqtt:
   broker: "tcp://192.168.1.69:1883"
   clientId: gohausen

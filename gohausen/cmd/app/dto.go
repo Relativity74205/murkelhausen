@@ -69,8 +69,30 @@ type ShellyFloodData struct {
 
 func (data ShellyFloodData) data() KafkaValue { return data }
 
-// {"Time":"2022-11-29T22:02:05","Usage":{"Total":11381.07,"Current":2655.5}}
-// {"Time":"2022-12-03T21:42:39","Usage":{"Total":11836.01,"Current":2943.0,"Current_p1":-2.0,"Current_p2":2.0,"Current_p3":2942.0}}
+type SystemState struct {
+	Hostname            string  `json:"hostname"`
+	Uptime              int64   `json:"uptime"`
+	MemoryTotal         int64   `json:"memoryTotal"`
+	MemoryAvailable     int64   `json:"memoryAvailable"`
+	MemoryUsed          int64   `json:"memoryUsed"`
+	MemoryUsedPercent   float64 `json:"memoryUsedPercent"`
+	MemoryFree          int64   `json:"memoryFree"`
+	CpuCores            int     `json:"cpuCores"`
+	CpuLogical          int     `json:"cpuLogical"`
+	CpuUsageAvg         float64 `json:"cpuUsageAvg"`
+	RootDiskTotal       int64   `json:"rootDiskTotal"`
+	RootDiskFree        int64   `json:"rootDiskFree"`
+	RootDiskUsed        int64   `json:"rootDiskUsed"`
+	RootDiskUsedPercent float64 `json:"rootDiskUsedPercent"`
+	Load01              float64 `json:"load01"`
+	Load05              float64 `json:"load05"`
+	Load15              float64 `json:"load15"`
+	NetworkBytesSent    int64   `json:"networkBytesSent"`
+	NetworkBytesRecv    int64   `json:"networkBytesRecv"`
+	ProcessCount        int     `json:"processCount"`
+}
+
+func (data SystemState) data() KafkaValue { return data }
 
 type Usage struct {
 	Total   float32
