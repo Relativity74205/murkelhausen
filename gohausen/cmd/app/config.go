@@ -27,9 +27,9 @@ type kafkaConfig struct {
 }
 
 type dispatcherConfig struct {
-	port               int
-	shellyHTKafkaTopic string
-	shellyFloodTopic   string
+	Port               int
+	ShellyHTKafkaTopic string
+	ShellyFloodTopic   string
 }
 
 type mqttKafkaMapping struct {
@@ -43,7 +43,7 @@ type gohausenConfig struct {
 	app               appConfig
 	mqtt              mqttConfig
 	kafka             kafkaConfig
-	dispatcher        dispatcherConfig
+	Dispatcher        dispatcherConfig
 	mqttKafkaMappings []mqttKafkaMapping
 }
 
@@ -86,10 +86,10 @@ func setupConfig() {
 			broker:            viper.GetString("kafka.broker"),
 			schemaRegistryUrl: viper.GetString("kafka.schemaRegistryUrl"),
 		},
-		dispatcher: dispatcherConfig{
-			port:               viper.GetInt("dispatcher.port"),
-			shellyHTKafkaTopic: viper.GetString("dispatcher.shellyHTKafkaTopic"),
-			shellyFloodTopic:   viper.GetString("dispatcher.shellyFloodTopic"),
+		Dispatcher: dispatcherConfig{
+			Port:               viper.GetInt("dispatcher.port"),
+			ShellyHTKafkaTopic: viper.GetString("dispatcher.shellyHTKafkaTopic"),
+			ShellyFloodTopic:   viper.GetString("dispatcher.shellyFloodTopic"),
 		},
 		mqttKafkaMappings: mappings,
 	}

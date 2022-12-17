@@ -6,6 +6,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde/avro"
 	log "github.com/sirupsen/logrus"
+	"os"
 )
 
 func handleProducerEvents(producer *kafka.Producer) {
@@ -21,7 +22,7 @@ func handleProducerEvents(producer *kafka.Producer) {
 	}
 }
 
-func kafkaProducer(queueChannel chan ChannelPayload) {
+func kafkaProducer(queueChannel chan ChannelPayload, osSignalChannel chan os.Signal) {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": Conf.kafka.broker})
 	if err != nil {
 		panic(err)
@@ -66,7 +67,7 @@ func kafkaProducer(queueChannel chan ChannelPayload) {
 	log.Info("queueChannel was closed. Flushing...")
 
 	// Wait for message deliveries before shutting down
-	p.Flush(15 * 1000)
+	p.Flush(15 * 1000) // TODO move to config and research the meaning
 
 	log.Info("queueChannel was closed. Flushing complete.")
 }
