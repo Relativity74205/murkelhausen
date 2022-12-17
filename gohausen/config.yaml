@@ -1,8 +1,11 @@
 app:
-  queueChannelSize: 100
+  debugMode: true
   modules:
-    - scheduler
     - kafkaProducer
+    - scheduler
+    - dispatcher
+    - mqttConsumer
+  queueChannelSize: 100
 mqtt:
   broker: "tcp://192.168.1.69:1883"
   clientId: gohausen
@@ -15,6 +18,7 @@ dispatcher:
   port: 8123
   shellyHTKafkaTopic: shelly_ht_sensor
   shellyFloodTopic: shelly_flood
+  testTopic: testDispatcher
 mappingMqttKafka:
   test:
     qos: 1
@@ -22,6 +26,7 @@ mappingMqttKafka:
       - test_topic
     kafkaTopic: test_topic
     payloadType: MQTTTestData
+    debugMode: true
   xiaomi:
     qos: 1
     mqttTopics:

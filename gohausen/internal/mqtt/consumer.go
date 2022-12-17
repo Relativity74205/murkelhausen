@@ -1,24 +1,23 @@
-package main
+package mqtt
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/common"
 	"github.com/eclipse/paho.mqtt.golang"
 	log "github.com/sirupsen/logrus"
 	"os"
-	"os/signal"
-	"syscall"
 	"time"
 )
 
-var queueChannelReference chan ChannelPayload
+var queueChannelReference chan common.ChannelPayload
 
 func getKafkaTopic(currentMqttTopic string) (string, error) {
-	for _, mapping := range Conf.mqttKafkaMappings {
-		for _, mqttTopic := range mapping.mqttTopics {
+	for _, mapping := range common.Conf.MqttKafkaMappings {
+		for _, mqttTopic := range mapping.MqttTopics {
 			if currentMqttTopic == mqttTopic {
-				return mapping.kafkaTopic, nil
+				return mapping.KafkaTopic, nil
 			}
 		}
 	}
@@ -27,58 +26,60 @@ func getKafkaTopic(currentMqttTopic string) (string, error) {
 
 func getMqttTopics() map[string]byte {
 	mqttTopics := make(map[string]byte)
-	for _, mapping := range Conf.mqttKafkaMappings {
-		for _, topic := range mapping.mqttTopics {
-			mqttTopics[topic] = byte(mapping.qos)
+	for _, mapping := range common.Conf.MqttKafkaMappings {
+		for _, topic := range mapping.MqttTopics {
+			if common.Conf.App.DebugMode && mapping.DebugMode { // only debug topics
+				mqttTopics[topic] = byte(mapping.Qos)
+			} else if !common.Conf.App.DebugMode && !mapping.DebugMode { // only productive topics
+				mqttTopics[topic] = byte(mapping.Qos)
+			}
 		}
 	}
-
-	log.WithField("mqttTopics", mqttTopics).Info("Connecting to the following topics")
 
 	return mqttTopics
 }
 
 func getPayloadType(currentMqttTopic string) (string, error) {
-	for _, mapping := range Conf.mqttKafkaMappings {
-		for _, mqttTopic := range mapping.mqttTopics {
+	for _, mapping := range common.Conf.MqttKafkaMappings {
+		for _, mqttTopic := range mapping.MqttTopics {
 			if currentMqttTopic == mqttTopic {
-				return mapping.payloadType, nil
+				return mapping.PayloadType, nil
 			}
 		}
 	}
 	return "", errors.New("currentMqttTopic not found in config, should not happen")
 }
 
-func unmarshalPayload(msgPayload []byte, data KafkaValue) {
+func unmarshalPayload(msgPayload []byte, data common.KafkaValue) {
 	err := json.Unmarshal(msgPayload, &data)
 	if err != nil {
 		log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
 	}
 }
 
-func getKafkaValue(mqttTopic string, msgPayload []byte) KafkaValue {
+func getKafkaValue(mqttTopic string, msgPayload []byte) common.KafkaValue {
 	payloadType, _ := getPayloadType(mqttTopic)
 
 	switch payloadType {
 	case "MQTTTestData":
-		var data MQTTTestData
+		var data common.MQTTTestData
 		unmarshalPayload(msgPayload, &data)
 		return data
 	case "XiaomiMiSensorData":
-		var data XiaomiMiSensorData
+		var data common.XiaomiMiSensorData
 		unmarshalPayload(msgPayload, &data)
 		data.SensorName = mqttTopic
 		data.Tstamp = time.Now().Local()
 		return data
 	case "AqaraSensorData":
-		var data AqaraSensorData
+		var data common.AqaraSensorData
 		unmarshalPayload(msgPayload, &data)
 		data.SensorName = mqttTopic
 		data.Tstamp = time.Now().Local()
 		return data
 	case "PowerData":
-		var data PowerData
-		var rawData PowerDataRaw
+		var data common.PowerData
+		var rawData common.PowerDataRaw
 		err := json.Unmarshal(msgPayload, &rawData)
 		if err != nil {
 			log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
@@ -101,7 +102,7 @@ func onMessageReceived(_ mqtt.Client, message mqtt.Message) {
 	if err != nil {
 		log.WithField("error", err).Error("Could not find the assigned KafkaTopic to a MqttTopic.")
 	}
-	channelPayload := ChannelPayload{
+	channelPayload := common.ChannelPayload{
 		Topic: kafkaTopic,
 		Key:   mqttTopic,
 		Value: getKafkaValue(mqttTopic, msgPayload),
@@ -115,32 +116,35 @@ func onMessageReceived(_ mqtt.Client, message mqtt.Message) {
 	}).Info("Received MQTT message from Broker and sent to queueChannelReference.")
 }
 
-func mqttConsumer(messageQueue chan ChannelPayload) {
+func Start(messageQueue chan common.ChannelPayload, osSignalChannel chan os.Signal) {
+	log.Info("Starting MQTT consumer...")
 	queueChannelReference = messageQueue
-	osSignalChannel := make(chan os.Signal, 1)
-	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
 
 	opts := mqtt.NewClientOptions()
-	opts.AddBroker(Conf.mqtt.broker)
-	opts.SetClientID(Conf.mqtt.clientId)
-	opts.SetCleanSession(Conf.mqtt.cleanSession)
+	opts.AddBroker(common.Conf.Mqtt.Broker)
+	clientId := common.Conf.Mqtt.ClientId
+	if common.Conf.App.DebugMode {
+		clientId = fmt.Sprintf("%s_debug", clientId)
+	}
+	opts.SetClientID(clientId)
+	opts.SetCleanSession(common.Conf.Mqtt.CleanSession)
 
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		log.WithField("error", token.Error()).Fatal("Could not connect to Mqtt server.")
 	}
+	log.Info("Connected to MQTT broker.")
 
-	if token := client.SubscribeMultiple(getMqttTopics(), onMessageReceived); token.Wait() && token.Error() != nil {
+	mqttTopics := getMqttTopics()
+	if token := client.SubscribeMultiple(mqttTopics, onMessageReceived); token.Wait() && token.Error() != nil {
 		log.WithFields(log.Fields{
 			"error": token.Error(),
 		}).Fatal("Subscription to topic failed")
 	}
+	log.WithField("mqttTopics", mqttTopics).Info("Subscribed to MQTT topics.")
 
 	<-osSignalChannel
-	log.Info("Disconnecting mqtt client and closing queueChannel ...")
+	log.Info("Disconnecting mqtt client  ...")
 	client.Disconnect(250)
-	close(queueChannelReference)
-	log.Info("Mqtt client disconnected and queueChannel closed. Sleep for 1 second to give other routines chance to stop.")
-	time.Sleep(1 * time.Second) // TODO move to config
-	log.Info("Sleep complete. Goodbye!")
+	log.Info("Mqtt client disconnected.")
 }

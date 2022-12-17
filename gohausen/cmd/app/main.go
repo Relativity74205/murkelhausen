@@ -1,6 +1,11 @@
 package main
 
 import (
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/common"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/dispatcher"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/kafka"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/mqtt"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/tasks"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
@@ -10,42 +15,42 @@ import (
 )
 
 func main() {
-	setupConfig()
+	common.SetupConfig()
 	setupLogger()
 	startModules()
 }
 
 var modulesMapping = map[string]interface{}{
-	"scheduler":     gohausenScheduler,
-	"kafkaProducer": kafkaProducer,
-	"dispatcher":    dispatcher,
-	"mqttConsumer":  mqttConsumer,
+	"scheduler":     tasks.Start,
+	"kafkaProducer": kafka.Start,
+	"dispatcher":    dispatcher.Start,
+	"mqttConsumer":  mqtt.Start,
 }
 
 func startModules() {
 	log.Info("Creating channels...")
 
-	var messageQueue = make(chan ChannelPayload, Conf.app.queueChannelSize)
+	var messageQueue = make(chan common.ChannelPayload, common.Conf.App.QueueChannelSize)
 	osSignalChannel := make(chan os.Signal, 1)
 	signal.Notify(osSignalChannel, os.Interrupt, syscall.SIGTERM)
 
-	log.WithField("moduleList", Conf.app.modules).Info("Starting modulesMapping...")
+	log.WithField("moduleList", common.Conf.App.Modules).Info("Starting modulesMapping...")
 	// TODO start also kafkaProducer as go routine and end main function when all go routines close.
 	// TODO go routines shall close on system call
 	//go dispatcher(messageQueue)
 	//go mqttConsumer(messageQueue)
-	for _, moduleName := range Conf.app.modules {
+	for _, moduleName := range common.Conf.App.Modules {
 		moduleCallable, ok := modulesMapping[moduleName]
 		if !ok {
 			log.WithField("module", moduleName).Error("Module not found.")
 		}
 
 		log.WithField("module", moduleName).Info("Starting module.")
-		f := reflect.ValueOf(moduleCallable)
-		in := make([]reflect.Value, 2)
-		in[0] = reflect.ValueOf(messageQueue)
-		in[1] = reflect.ValueOf(osSignalChannel)
-		go f.Call(in)
+		callable := reflect.ValueOf(moduleCallable)
+		args := []reflect.Value{
+			reflect.ValueOf(messageQueue), reflect.ValueOf(osSignalChannel),
+		}
+		go callable.Call(args)
 	}
 
 	log.Info("Started everything")

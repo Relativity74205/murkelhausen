@@ -1,7 +1,8 @@
-package main
+package dispatcher
 
 import (
 	"fmt"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/common"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"math"
@@ -10,15 +11,17 @@ import (
 	"time"
 )
 
-func dispatcher(queueChannel chan ChannelPayload) {
+func Start(messageQueue chan common.ChannelPayload, _ chan os.Signal) {
+	log.Info("Starting dispatcher microservice...")
 	router := gin.New()
 
 	router.Use(Logger())
 
-	addShellyHT(router, queueChannel)
-	addShellyFlood(router, queueChannel)
-
-	addr := fmt.Sprintf(":%d", Conf.Dispatcher.Port)
+	addShellyHT(router, messageQueue)
+	addShellyFlood(router, messageQueue)
+	addTestRoute(router, messageQueue)
+	log.Info("Added routes and starting server.")
+	addr := fmt.Sprintf(":%d", common.Conf.Dispatcher.Port)
 	err := router.Run(addr)
 	if err != nil {
 		log.WithField("error", err).Fatal("Could not start gin server!")

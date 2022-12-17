@@ -1,7 +1,8 @@
-package main
+package tasks
 
 import (
 	"fmt"
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/common"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
@@ -32,8 +33,8 @@ func getIOCounter(ioCounters []net.IOCountersStat, nameIOCounter string) (net.IO
 	return net.IOCountersStat{}, fmt.Errorf("searched ioCounter not found")
 }
 
-func getStats(queueChannel chan ChannelPayload) {
-	log.Info("Starting to collect stats...")
+func getStats(messageQueue chan common.ChannelPayload) {
+	log.Info("Starting to collect system stats...")
 	virtualMemory, _ := mem.VirtualMemory()
 	cpuCores, _ := cpu.Counts(false)
 	cpuLogical, _ := cpu.Counts(true)
@@ -57,7 +58,7 @@ func getStats(queueChannel chan ChannelPayload) {
 	// TODO system temperature (only raspberry? /usr/bin/vcgencmd measure_temp )
 	// /usr/bin/vcgencmd measure_temp
 
-	state := SystemState{
+	state := common.SystemState{
 		Hostname:            hostInfo.Hostname,
 		Uptime:              int64(hostInfo.Uptime),
 		MemoryTotal:         int64(virtualMemory.Total),
@@ -80,13 +81,13 @@ func getStats(queueChannel chan ChannelPayload) {
 		ProcessCount:        len(processes),
 	}
 
-	log.WithField("state", state).Debug("Stats collected. Sending...")
+	log.WithField("SystemState", state).Debug("Stats collected. Sending...")
 
-	channelPayload := ChannelPayload{
+	channelPayload := common.ChannelPayload{
 		Topic: "gohausenStates",
 		Key:   state.Hostname,
 		Value: state,
 	}
-	queueChannel <- channelPayload
-	log.Info("Send.")
+	messageQueue <- channelPayload
+	log.Info("Stats collected and send.")
 }

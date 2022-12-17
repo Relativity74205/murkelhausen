@@ -24,9 +24,17 @@ nohup ./gohausen &>gohausen.logs &
 
 ## Dispatcher microservice
 
+Test message:
+```bash
+curl "localhost:8123/test/foo?value=65"
+```
+
 ### Shelly sensor
 
 http://192.168.1.75/
+```bash
+curl "192.168.1.69:8123/shelly/foo?hum=65&temp=21.50&id=shellyht-C8E78E"
+```
 
 ### Shelly flood
 

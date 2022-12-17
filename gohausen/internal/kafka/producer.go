@@ -1,6 +1,7 @@
-package main
+package kafka
 
 import (
+	"github.com/Relativity74205/murkelhausen/gohausen/internal/common"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry"
 	"github.com/confluentinc/confluent-kafka-go/schemaregistry/serde"
@@ -22,13 +23,13 @@ func handleProducerEvents(producer *kafka.Producer) {
 	}
 }
 
-func kafkaProducer(queueChannel chan ChannelPayload, osSignalChannel chan os.Signal) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": Conf.kafka.broker})
+func Start(messageQueue chan common.ChannelPayload, _ chan os.Signal) {
+	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": common.Conf.Kafka.Broker})
 	if err != nil {
 		panic(err)
 	}
 
-	client, err := schemaregistry.NewClient(schemaregistry.NewConfig(Conf.kafka.schemaRegistryUrl))
+	client, err := schemaregistry.NewClient(schemaregistry.NewConfig(common.Conf.Kafka.SchemaRegistryUrl))
 	if err != nil {
 		log.WithField("error", err).Fatal("Failed to create schema registry client!")
 	}
@@ -44,7 +45,7 @@ func kafkaProducer(queueChannel chan ChannelPayload, osSignalChannel chan os.Sig
 	go handleProducerEvents(p)
 
 	// Produce messages to topic (asynchronously)
-	for msg := range queueChannel {
+	for msg := range messageQueue {
 		topic := msg.Topic
 		key := msg.Key
 		value := msg.Value

@@ -1,4 +1,4 @@
-package main
+package common
 
 import (
 	"time"
@@ -68,6 +68,13 @@ type ShellyFloodData struct {
 }
 
 func (data ShellyFloodData) data() KafkaValue { return data }
+
+type DispatcherTestData struct {
+	Value  int       `json:"value"`
+	Tstamp time.Time `json:"tstamp"`
+}
+
+func (data DispatcherTestData) data() KafkaValue { return data }
 
 type SystemState struct {
 	Hostname            string  `json:"hostname"`
