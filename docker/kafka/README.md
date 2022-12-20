@@ -129,9 +129,11 @@ curl -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
 
 ### kafka producers/connect sinks change offsets
 
+<https://rmoff.net/2019/10/15/skipping-bad-records-with-the-kafka-connect-jdbc-sink-connector/>
+
 ```bash
 docker-compose exec broker bash
 kafka-consumer-groups --bootstrap-server broker:29092 --list
 kafka-consumer-groups --bootstrap-server broker:29092 --describe --group connect-PostgresSinkTest2
-kafka-consumer-groups --bootstrap-server broker:29092 --group connect-PostgresSinkTest2 --reset-offsets --topic power_data --to-offset 40060 --execute
+kafka-consumer-groups --bootstrap-server broker:29092 --group connect-PostgresSinkTest2 --reset-offsets --topic power_data --to-offset 43220 --execute
 ```
