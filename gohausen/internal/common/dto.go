@@ -77,26 +77,27 @@ type DispatcherTestData struct {
 func (data DispatcherTestData) data() KafkaValue { return data }
 
 type SystemState struct {
-	Hostname            string  `json:"hostname"`
-	Uptime              int64   `json:"uptime"`
-	MemoryTotal         int64   `json:"memoryTotal"`
-	MemoryAvailable     int64   `json:"memoryAvailable"`
-	MemoryUsed          int64   `json:"memoryUsed"`
-	MemoryUsedPercent   float64 `json:"memoryUsedPercent"`
-	MemoryFree          int64   `json:"memoryFree"`
-	CpuCores            int     `json:"cpuCores"`
-	CpuLogical          int     `json:"cpuLogical"`
-	CpuUsageAvg         float64 `json:"cpuUsageAvg"`
-	RootDiskTotal       int64   `json:"rootDiskTotal"`
-	RootDiskFree        int64   `json:"rootDiskFree"`
-	RootDiskUsed        int64   `json:"rootDiskUsed"`
-	RootDiskUsedPercent float64 `json:"rootDiskUsedPercent"`
-	Load01              float64 `json:"load01"`
-	Load05              float64 `json:"load05"`
-	Load15              float64 `json:"load15"`
-	NetworkBytesSent    int64   `json:"networkBytesSent"`
-	NetworkBytesRecv    int64   `json:"networkBytesRecv"`
-	ProcessCount        int     `json:"processCount"`
+	Tstamp              time.Time `json:"tstamp"`
+	Hostname            string    `json:"hostname"`
+	Uptime              int64     `json:"uptime"`
+	MemoryTotal         int64     `json:"memoryTotal"`
+	MemoryAvailable     int64     `json:"memoryAvailable"`
+	MemoryUsed          int64     `json:"memoryUsed"`
+	MemoryUsedPercent   float64   `json:"memoryUsedPercent"`
+	MemoryFree          int64     `json:"memoryFree"`
+	CpuCores            int       `json:"cpuCores"`
+	CpuLogical          int       `json:"cpuLogical"`
+	CpuUsageAvg         float64   `json:"cpuUsageAvg"`
+	RootDiskTotal       int64     `json:"rootDiskTotal"`
+	RootDiskFree        int64     `json:"rootDiskFree"`
+	RootDiskUsed        int64     `json:"rootDiskUsed"`
+	RootDiskUsedPercent float64   `json:"rootDiskUsedPercent"`
+	Load01              float64   `json:"load01"`
+	Load05              float64   `json:"load05"`
+	Load15              float64   `json:"load15"`
+	NetworkBytesSent    int64     `json:"networkBytesSent"`
+	NetworkBytesRecv    int64     `json:"networkBytesRecv"`
+	ProcessCount        int       `json:"processCount"`
 }
 
 func (data SystemState) data() KafkaValue { return data }
@@ -112,10 +113,10 @@ type PowerDataRaw struct {
 }
 
 type PowerData struct {
-	SensorName   string  `json:"sensorname"`
-	Tstamp       string  `json:"tstamp"`
-	PowerTotal   float32 `json:"powertotal"`
-	PowerCurrent float32 `json:"powercurrent"`
+	SensorName   string    `json:"sensorname"`
+	Tstamp       time.Time `json:"tstamp"`
+	PowerTotal   float32   `json:"powertotal"`
+	PowerCurrent float32   `json:"powercurrent"`
 }
 
 func (data PowerData) data() KafkaValue { return data }

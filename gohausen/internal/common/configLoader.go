@@ -38,6 +38,9 @@ func SetupConfig() {
 			Modules:          viper.GetStringSlice("app.modules"),
 			QueueChannelSize: viper.GetInt("app.queueChannelSize"),
 		},
+		Tasks: tasksConfig{
+			Psutil: taskConfig{viper.GetInt("tasks.psutil.schedule")},
+		},
 		Mqtt: mqttConfig{
 			Broker:       viper.GetString("mqtt.broker"),
 			ClientId:     viper.GetString("mqtt.clientId"),

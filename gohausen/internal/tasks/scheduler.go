@@ -11,7 +11,7 @@ import (
 func Start(messageQueue chan common.ChannelPayload, osSignalChannel chan os.Signal) {
 	log.Info("Setting up schedules...")
 	s := gocron.NewScheduler(time.UTC)
-	_, _ = s.Every(15).Seconds().Do(func() { getStats(messageQueue) })
+	_, _ = s.Every(common.Conf.Tasks.Psutil.Schedule).Seconds().Do(func() { getStats(messageQueue) })
 
 	log.Info("Starting scheduler asynchronous...")
 	s.StartAsync()

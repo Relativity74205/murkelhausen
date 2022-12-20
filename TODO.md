@@ -25,8 +25,9 @@
 - add gohausen cron command at startup
 - add kafka docker compose command at startup
 - add upsert/ignore duplicates for kafka connect
-- powerdata make PowerCurrentPX optional
+- [x] powerdata make PowerCurrentPX optional
 - use tstamp columns in superset
+- create deadletterqueue for postgres sink
 - [x] create start/stop script
 - create deploy script
 - create github pipeline

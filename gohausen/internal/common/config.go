@@ -35,8 +35,17 @@ type mqttKafkaMapping struct {
 	DebugMode   bool
 }
 
+type taskConfig struct {
+	Schedule int
+}
+
+type tasksConfig struct {
+	Psutil taskConfig
+}
+
 type gohausenConfig struct {
 	App               appConfig
+	Tasks             tasksConfig
 	Mqtt              mqttConfig
 	Kafka             kafkaConfig
 	Dispatcher        dispatcherConfig

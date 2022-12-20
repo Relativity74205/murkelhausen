@@ -59,6 +59,7 @@ func getStats(messageQueue chan common.ChannelPayload) {
 	// /usr/bin/vcgencmd measure_temp
 
 	state := common.SystemState{
+		Tstamp:              time.Now().Local(),
 		Hostname:            hostInfo.Hostname,
 		Uptime:              int64(hostInfo.Uptime),
 		MemoryTotal:         int64(virtualMemory.Total),
