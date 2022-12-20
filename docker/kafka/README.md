@@ -30,8 +30,24 @@ For kafka-connect-jdbs see: <https://www.confluent.io/hub/confluentinc/kafka-con
 
 ## connect API
 
+<https://docs.confluent.io/platform/current/connect/references/restapi.html#tasks>
+
+Change config:
+
 ```bash
-curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connectors -d '{
+
+curl -X PUT -H 'Content-Type: application/json' http://192.168.1.69:8083/connectors/PostgresSinkTest2/config --data-binary "@postgres_sink.json" | jq
+
+```
+
+Restart:
+
+```bash
+curl -X POST http://192.168.1.69:8083/connectors/PostgresSinkTest2/restart | jq
+```
+
+```bash
+curl -X POST -H 'Content-Type: application/json' http://localhost:8083/connectors -d '{
     "name" : "mqtt-kafka-postgres-test",
 "config" : {
     "connector.class" : "io.confluent.connect.mqtt.MqttSourceConnector",
@@ -45,7 +61,7 @@ curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connec
 ```
 
 ```bash
-curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connectors -d '{
+curl -X POST -H 'Content-Type: application/json' http://localhost:8083/connectors -d '{
     "name" : "mqtt-kafka-postgres-test_jdbc",
 "config" : {
     "connector.class" : "io.confluent.connect.jdbc.JdbcSinkConnector",
@@ -62,7 +78,7 @@ curl -s -X POST -H 'Content-Type: application/json' http://localhost:8083/connec
 ```
 
 ```bash
-curl -s -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
+curl -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
 ```
 
 ## connect config for mqtt
@@ -109,4 +125,13 @@ curl -s -X DELETE http://localhost:8083/connectors/mqtt-kafka-postgres-test_jdbc
     "auto.evolve": "true"
   }
 }
+```
+
+### kafka producers/connect sinks change offsets
+
+```bash
+docker-compose exec broker bash
+kafka-consumer-groups --bootstrap-server broker:29092 --list
+kafka-consumer-groups --bootstrap-server broker:29092 --describe --group connect-PostgresSinkTest2
+kafka-consumer-groups --bootstrap-server broker:29092 --group connect-PostgresSinkTest2 --reset-offsets --topic power_data --to-offset 40060 --execute
 ```

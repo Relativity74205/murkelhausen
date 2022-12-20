@@ -91,8 +91,8 @@ func getKafkaValue(mqttTopic string, msgPayload []byte) common.KafkaValue {
 			log.WithField("error", err).Error("error parsing time for PowerData")
 		}
 		data.Tstamp = timeParsed
-		data.PowerTotal = rawData.Usage.Total
-		data.PowerCurrent = rawData.Usage.Current
+		data.PowerTotal = float64(rawData.Usage.Total)
+		data.PowerCurrent = float64(rawData.Usage.Current)
 		return data
 	}
 

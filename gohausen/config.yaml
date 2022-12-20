@@ -50,6 +50,6 @@ mappingMqttKafka:
     mqttTopics:
       - tele/stromhaushalt/SENSOR
       - tele/stromwaermepumpe/SENSOR
-    kafkaTopic: power_data
+    kafkaTopic: power_data_v2
     payloadType: PowerData
     debugMode: true

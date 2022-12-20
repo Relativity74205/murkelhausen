@@ -22,3 +22,6 @@
 
     - name: Install docker
       import_tasks: tasks/docker.yml
+
+# confluent cli: curl -sL --http1.1 https://cnfl.io/cli | sh -s -- latest
+# mosquitto cli: 

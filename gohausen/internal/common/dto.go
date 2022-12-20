@@ -115,8 +115,8 @@ type PowerDataRaw struct {
 type PowerData struct {
 	SensorName   string    `json:"sensorname"`
 	Tstamp       time.Time `json:"tstamp"`
-	PowerTotal   float32   `json:"powertotal"`
-	PowerCurrent float32   `json:"powercurrent"`
+	PowerTotal   float64   `json:"powertotal"`
+	PowerCurrent float64   `json:"powercurrent"`
 }
 
 func (data PowerData) data() KafkaValue { return data }
