@@ -85,8 +85,8 @@ func getKafkaValue(mqttTopic string, msgPayload []byte) common.KafkaValue {
 			log.WithField("error", err).Error("Error with unmarshalling message payloadType.")
 		}
 		data.SensorName = mqttTopic
-		log.Info(rawData.Time)
-		timeParsed, _ := time.Parse("2006-01-02T15:04:05", rawData.Time)
+		location, _ := time.LoadLocation("Europe/Berlin")
+		timeParsed, _ := time.ParseInLocation("2006-01-02T15:04:05", rawData.Time, location)
 		if err != nil {
 			log.WithField("error", err).Error("error parsing time for PowerData")
 		}
