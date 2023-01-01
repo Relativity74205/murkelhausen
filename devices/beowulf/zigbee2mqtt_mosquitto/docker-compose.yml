@@ -5,7 +5,7 @@ services:
     container_name: zigbee2mqtt
     restart: always
     volumes:
-      - ~/zigbee_data/zigbee2mqtt:/app/data
+      - ~/data/zigbee2mqtt:/app/data
       - /run/udev:/run/udev:ro
     ports:
       - "8080:8080"
@@ -25,9 +25,9 @@ services:
     container_name: mqtt
     restart: always
     volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ~/zigbee_data/mosquitto/data:/mosquitto/data
-      - ~/zigbee_data/mosquitto/log:/mosquitto/log
+      - ~/data/mosquitto/config:/mosquitto/config
+      - ~/data/mosquitto/data:/mosquitto/data
+      - ~/data/mosquitto/log:/mosquitto/log
     ports:
       - "1881:1881"
       - "1883:1883"

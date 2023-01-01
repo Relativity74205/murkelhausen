@@ -1,0 +1,3 @@
+CREATE SCHEMA report;
+CREATE USER report WITH PASSWORD '';
+ALTER SCHEMA report OWNER TO report;

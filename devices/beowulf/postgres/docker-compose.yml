@@ -1,0 +1,16 @@
+# PASSWORD env var has to be provided, e.g. with .env file
+version: '3'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    hostname: postgres
+    environment:
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - TZ=Europe/Berlin
+      - PGTZ=Europe/Berlin
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/data/postgres:/var/lib/postgresql/data

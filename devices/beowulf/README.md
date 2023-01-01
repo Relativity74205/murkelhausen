@@ -137,3 +137,9 @@ kafka-consumer-groups --bootstrap-server broker:29092 --list
 kafka-consumer-groups --bootstrap-server broker:29092 --describe --group connect-PostgresSinkTest2
 kafka-consumer-groups --bootstrap-server broker:29092 --group connect-PostgresSinkTest2 --reset-offsets --topic power_data --to-offset 43220 --execute
 ```
+
+## postgres backup
+
+```bash
+docker-compose exec postgres pg_dumpall -c -U postgres > dump_$(date +%Y-%m-%d_%H_%M_%S).sql
+```
