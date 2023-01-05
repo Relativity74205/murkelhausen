@@ -22,4 +22,5 @@ sudo apt-get install syncthing
 # prefect
 sudo apt update && sudo apt install sqlite3
 pipx install prefect
+pipx inject prefect prefect-shell
 
