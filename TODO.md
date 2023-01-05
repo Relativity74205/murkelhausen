@@ -23,8 +23,11 @@
 # TODO list
 
 - add gohausen cron command at startup
+  - alternative: supervisord script
 - add kafka docker compose command at startup
+  - change restart policy to always
 - add upsert/ignore duplicates for kafka connect
+  - why?
 - [x] powerdata make PowerCurrentPX optional
 - use tstamp columns in superset
 - create deadletterqueue for postgres sink
@@ -44,6 +47,10 @@
 - add google traffic forecast data
 - create scheduling system
 - add sonos control consumer
+- monitoring:
+  - are processes and containers running?
+  - are backups created?
+  - are NAS NFS mounts online?
 
 - [x] NAS mount (<https://michael-casey.com/2022/01/09/mount-synology-nas-to-raspberry-pi-using-nfs/> <https://eliaslundgaard.com/posts/mount-nas-to-pi/> )
   - [x] rasp1

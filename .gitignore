@@ -23,6 +23,7 @@ pip-wheel-metadata
 requirements.txt
 .python-version
 site
+*.iml
 
 # user config
 user.toml

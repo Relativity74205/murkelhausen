@@ -18,3 +18,8 @@ echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://
 sudo apt-get update
 sudo apt-get install syncthing
 
+
+# prefect
+sudo apt update && sudo apt install sqlite3
+pipx install prefect
+
