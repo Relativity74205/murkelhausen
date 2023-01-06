@@ -36,7 +36,8 @@ type mqttKafkaMapping struct {
 }
 
 type taskConfig struct {
-	Schedule int
+	Schedule   int
+	KafkaTopic string
 }
 
 type tasksConfig struct {

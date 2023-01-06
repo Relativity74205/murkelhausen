@@ -39,7 +39,10 @@ func SetupConfig() {
 			QueueChannelSize: viper.GetInt("app.queueChannelSize"),
 		},
 		Tasks: tasksConfig{
-			Psutil: taskConfig{viper.GetInt("tasks.psutil.schedule")},
+			Psutil: taskConfig{
+				viper.GetInt("tasks.psutil.schedule"),
+				viper.GetString("tasks.psutil.kafkaTopic"),
+			},
 		},
 		Mqtt: mqttConfig{
 			Broker:       viper.GetString("mqtt.broker"),

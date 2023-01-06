@@ -80,24 +80,24 @@ type SystemState struct {
 	Tstamp              time.Time `json:"tstamp"`
 	Hostname            string    `json:"hostname"`
 	Uptime              int64     `json:"uptime"`
-	MemoryTotal         int64     `json:"memoryTotal"`
-	MemoryAvailable     int64     `json:"memoryAvailable"`
-	MemoryUsed          int64     `json:"memoryUsed"`
-	MemoryUsedPercent   float64   `json:"memoryUsedPercent"`
-	MemoryFree          int64     `json:"memoryFree"`
-	CpuCores            int       `json:"cpuCores"`
-	CpuLogical          int       `json:"cpuLogical"`
-	CpuUsageAvg         float64   `json:"cpuUsageAvg"`
-	RootDiskTotal       int64     `json:"rootDiskTotal"`
-	RootDiskFree        int64     `json:"rootDiskFree"`
-	RootDiskUsed        int64     `json:"rootDiskUsed"`
-	RootDiskUsedPercent float64   `json:"rootDiskUsedPercent"`
+	MemoryTotal         int64     `json:"memory_total"`
+	MemoryAvailable     int64     `json:"memory_available"`
+	MemoryUsed          int64     `json:"memory_used"`
+	MemoryUsedPercent   float64   `json:"memory_used_percent"`
+	MemoryFree          int64     `json:"memory_free"`
+	CpuCores            int       `json:"cpu_cores"`
+	CpuLogical          int       `json:"cpu_logical"`
+	CpuUsageAvg         float64   `json:"cpu_usage_avg"`
+	RootDiskTotal       int64     `json:"root_disk_total"`
+	RootDiskFree        int64     `json:"root_disk_free"`
+	RootDiskUsed        int64     `json:"root_disk_used"`
+	RootDiskUsedPercent float64   `json:"root_disk_used_percent"`
 	Load01              float64   `json:"load01"`
 	Load05              float64   `json:"load05"`
 	Load15              float64   `json:"load15"`
-	NetworkBytesSent    int64     `json:"networkBytesSent"`
-	NetworkBytesRecv    int64     `json:"networkBytesRecv"`
-	ProcessCount        int       `json:"processCount"`
+	NetworkBytesSent    int64     `json:"network_bytes_sent"`
+	NetworkBytesRecv    int64     `json:"network_bytes_recv"`
+	ProcessCount        int       `json:"process_count"`
 }
 
 func (data SystemState) data() KafkaValue { return data }
@@ -115,8 +115,8 @@ type PowerDataRaw struct {
 type PowerData struct {
 	SensorName   string    `json:"sensorname"`
 	Tstamp       time.Time `json:"tstamp"`
-	PowerTotal   float64   `json:"powertotal"`
-	PowerCurrent float64   `json:"powercurrent"`
+	PowerTotal   float64   `json:"power_total"`
+	PowerCurrent float64   `json:"power_current"`
 }
 
 func (data PowerData) data() KafkaValue { return data }

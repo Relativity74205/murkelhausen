@@ -85,7 +85,7 @@ func getStats(messageQueue chan common.ChannelPayload) {
 	log.WithField("SystemState", state).Debug("Stats collected. Sending...")
 
 	channelPayload := common.ChannelPayload{
-		Topic: "gohausenStates",
+		Topic: common.Conf.Tasks.Psutil.KafkaTopic,
 		Key:   state.Hostname,
 		Value: state,
 	}

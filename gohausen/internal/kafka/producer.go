@@ -61,7 +61,7 @@ func Start(messageQueue chan common.ChannelPayload, _ chan os.Signal) {
 			Value:          valueSerialized,
 		}, nil)
 		if err != nil {
-			log.WithField("error", err).Error("Failed to sent message.")
+			log.WithFields(log.Fields{"error": err, "topic": &topic}).Error("Failed to sent message.")
 		}
 	}
 

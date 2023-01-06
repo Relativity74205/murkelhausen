@@ -9,6 +9,7 @@ app:
 tasks:
   psutil:
     schedule: 60
+    kafkaTopic: murkelhausen_states_v2
 mqtt:
   broker: "tcp://192.168.1.69:1883"
   clientId: gohausen
@@ -50,6 +51,6 @@ mappingMqttKafka:
     mqttTopics:
       - tele/stromhaushalt/SENSOR
       - tele/stromwaermepumpe/SENSOR
-    kafkaTopic: power_data_v2
+    kafkaTopic: power_data_v3
     payloadType: PowerData
     debugMode: true
