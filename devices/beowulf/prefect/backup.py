@@ -99,6 +99,11 @@ def monitor_docker_processes():
     pass
 
 
+@task
+def monitor_supervisor_processes():
+    pass
+
+
 @flow(name="beowulf backup and monitoring", task_runner=ConcurrentTaskRunner())
 def beowulf():
     logger = get_run_logger()
@@ -116,6 +121,7 @@ def beowulf():
     backup_mosquitto.submit()
     backup_zigbee2mqtt.submit()
     monitor_docker_processes.submit()
+    monitor_supervisor_processes.submit()
 
 
 if __name__ == "__main__":
