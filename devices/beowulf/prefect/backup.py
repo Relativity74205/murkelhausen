@@ -2,14 +2,13 @@
 prefect deployment build ./backup.py:beowulf -n backup_beowulf -q beowulf --cron "0 2 * * *"
 """
 
-
-import logging
 from datetime import datetime
 from pathlib import Path
 from dateutil import relativedelta
 
 from prefect import flow, task, get_run_logger
 from prefect_shell import shell_run_command
+from prefect.task_runners import ConcurrentTaskRunner
 
 POSTGRES_BACKUP_PATH = "/home/arkadius/backup/postgres"
 POSTGRES_PATH = "/home/arkadius/postgres"
@@ -25,7 +24,8 @@ def get_months_between_dates(date1, date2) -> int:
 
 
 @task
-def postgres_cleanup(logger: logging.Logger):
+def postgres_backup_cleanup():
+    logger = get_run_logger()
     # TODO add error handling
     files = [
         ele
@@ -67,10 +67,42 @@ def postgres_cleanup(logger: logging.Logger):
         logger.info(f"Deleted {file} and {globals_file}.")
 
 
-@flow(name="beowulf backup and monitoring")
+@task
+def backup_kafka():
+    """
+    https://docs.confluent.io/platform/current/kafka-rest/api.html
+
+    broker:
+    curl http://localhost:8082/v3/clusters | jq
+    curl http://localhost:8082/v3/clusters/3x4LP0wLSdm1jZGXUxfYZw/brokers/1/configs | jq
+
+    schema registry:
+    curl http://localhost:8081/subjects | jq
+    curl http://localhost:8081/subjects/power_data_v2-value/versions/1 | jq
+
+    """
+    pass
+
+
+@task
+def backup_mosquitto():
+    pass
+
+
+@task
+def backup_zigbee2mqtt():
+    pass
+
+
+@task
+def monitor_docker_processes():
+    pass
+
+
+@flow(name="beowulf backup and monitoring", task_runner=ConcurrentTaskRunner())
 def beowulf():
     logger = get_run_logger()
-    shell_run_command(
+    postgres_backup = shell_run_command.with_options(name="postgres_backup").submit(
         command="/home/arkadius/postgres/backup.sh",
         return_all=False,
         env={
@@ -79,7 +111,11 @@ def beowulf():
         },
     )
     logger.info("Performed backup of postgres database.")
-    postgres_cleanup(logger)
+    postgres_backup_cleanup.submit(wait_for=[postgres_backup])
+    backup_kafka.submit()
+    backup_mosquitto.submit()
+    backup_zigbee2mqtt.submit()
+    monitor_docker_processes.submit()
 
 
 if __name__ == "__main__":
