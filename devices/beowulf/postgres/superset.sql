@@ -1,0 +1,5 @@
+CREATE DATABASE superset;
+CREATE USER superset WITH PASSWORD '';
+ALTER DATABASE superset OWNER TO superset;
+
+ALTER USER superset WITH PASSWORD '';

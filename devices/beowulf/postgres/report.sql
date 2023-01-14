@@ -6,7 +6,6 @@ GRANT SELECT ON ALL TABLES IN SCHEMA kafka to report;
 ALTER DEFAULT PRIVILEGES IN SCHEMA kafka GRANT SELECT ON TABLES TO report;
 
 
-
 -- view DDLs --
 CREATE OR REPLACE VIEW report.aqara_sensor AS
     SELECT tstamp, message_tstamp, sensorname, battery, humidity, linkquality, power_outage_count, pressure, temperature, voltage FROM kafka.aqara_sensor;
