@@ -1,7 +1,9 @@
 """
 prefect deployment build ./backup.py:beowulf -n backup_beowulf -q beowulf --cron "0 2 * * *"
 """
-
+import json
+import logging
+import subprocess
 from datetime import datetime
 from pathlib import Path
 from dateutil import relativedelta
@@ -14,7 +16,7 @@ POSTGRES_BACKUP_PATH = "/home/arkadius/backup/postgres"
 POSTGRES_PATH = "/home/arkadius/postgres"
 POSTGRES_DATABASE_PREFIX = "murkelhausen_datastore"
 POSTGRES_GLOBALS_PREFIX = "globals"
-POSTGRES_BACKUP_LAST_COUNT = 2
+POSTGRES_BACKUP_LAST_COUNT = 5
 
 
 def get_months_between_dates(date1, date2) -> int:
@@ -23,6 +25,7 @@ def get_months_between_dates(date1, date2) -> int:
     return months
 
 
+# TODO add superset backups
 @task
 def postgres_backup_cleanup():
     logger = get_run_logger()
@@ -95,8 +98,30 @@ def backup_zigbee2mqtt():
 
 
 @task
-def monitor_docker_processes():
-    pass
+def monitor_docker_processes(app_name: str):
+    logger = get_run_logger()
+    processes = json.loads(
+        subprocess.check_output(
+            "docker compose ps --format json",
+            shell=True,
+            universal_newlines=True,
+            cwd=f"/home/arkadius/{app_name}",
+        )
+    )
+
+    all_good = True
+    for process in processes:
+        if process["Service"] == "superset-init":
+            continue
+
+        if "Up" in process["Status"] and "unhealthy" not in process["Status"]:
+            continue
+
+        all_good = False
+        logger.info(f"{app_name} - container{process[0]} has bad state: {process[2]}.")
+
+    if not all_good:
+        raise RuntimeError(f"At least one of the {app_name} processes is not 'Up'.")
 
 
 @task
@@ -120,7 +145,18 @@ def beowulf():
     backup_kafka.submit()
     backup_mosquitto.submit()
     backup_zigbee2mqtt.submit()
-    monitor_docker_processes.submit()
+    # kafka_processes = shell_run_command.with_options(name="kafka_processes").submit(
+    #     command="docker-compose ps",
+    #     return_all=True,
+    #     cwd="/home/arkadius/kafka",
+    # )
+    monitor_docker_processes.with_options(name="monitor_kafka_docker").submit("kafka")
+    monitor_docker_processes.with_options(name="monitor_postgres_docker").submit(
+        "postgres"
+    )
+    monitor_docker_processes.with_options(name="monitor_superset_docker").submit(
+        "superset"
+    )
     monitor_supervisor_processes.submit()
 
 

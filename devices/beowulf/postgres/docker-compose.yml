@@ -10,8 +10,6 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
       - TZ=Europe/Berlin
       - PGTZ=Europe/Berlin
-#    ports:
-#      - 5432:5432
     volumes:
       - ~/data/postgres:/var/lib/postgresql/data
     network_mode: host

@@ -15,9 +15,21 @@
 # limitations under the License.
 #
 
-# Ignore everything
-*
-# DON'T ignore the .gitignore
-!.gitignore
-!superset_config.py
-!superset_config_local.example
+#
+# This is an example "local" configuration file. In order to set/override config
+# options that ONLY apply to your local environment, simply copy/rename this file
+# to docker/pythonpath/superset_config_docker.py
+# It ends up being imported by docker/superset_config.py which is loaded by
+# superset/config.py
+#
+import os
+
+FEATURE_FLAGS = {
+    "ALERT_REPORTS": True,
+    # "GENERIC_CHART_AXES": True,
+    # "EMBEDDABLE_CHARTS": True,
+    # "EMBEDDED_SUPERSET": True,
+}
+SECRET_KEY = os.environ["SECRET_KEY"]
+CONTENT_SECURITY_POLICY_WARNING = False
+SQLALCHEMY_ECHO = True
