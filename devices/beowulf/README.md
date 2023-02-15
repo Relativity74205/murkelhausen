@@ -1,4 +1,10 @@
-<http://192.168.1.69:9021/>
+# Beowulf
+
+## supervisord
+
+Install (see install.sh) and setup supervisord. Place 
+- `supervisord.conf` in `/etc/supervisor`
+- other `*.conf` files `/etc/supervisor/conf.d`
 
 ## confluent
 

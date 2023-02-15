@@ -16,6 +16,7 @@ POSTGRES_BACKUP_PATH = "/home/arkadius/backup/postgres"
 POSTGRES_PATH = "/home/arkadius/postgres"
 POSTGRES_DATABASE_PREFIX = "murkelhausen_datastore"
 POSTGRES_GLOBALS_PREFIX = "globals"
+POSTGRES_SUPERSET_PREFIX = "superset"
 POSTGRES_BACKUP_LAST_COUNT = 5
 
 
@@ -25,14 +26,11 @@ def get_months_between_dates(date1, date2) -> int:
     return months
 
 
-# TODO add superset backups
-@task
-def postgres_backup_cleanup():
+def cleanup_backup_files(prefix: str):
     logger = get_run_logger()
-    # TODO add error handling
     files = [
         ele
-        for ele in Path(POSTGRES_BACKUP_PATH).glob(f"*{POSTGRES_DATABASE_PREFIX}.dump")
+        for ele in Path(POSTGRES_BACKUP_PATH).glob(f"*{prefix}.dump")
         if ele.is_file()
     ]
     files_with_dates = [
@@ -46,7 +44,7 @@ def postgres_backup_cleanup():
     files_with_dates.sort(key=lambda x: x[1], reverse=True)
 
     files_to_delete = [
-        (file, file_date)
+        file
         for i, (file, file_date) in enumerate(files_with_dates)
         if not (
             # keep the last x files
@@ -59,15 +57,17 @@ def postgres_backup_cleanup():
         )
     ]
     logger.info(f"{files_to_delete=}")
-    for file, file_date in files_to_delete:
-        globals_file = (
-            file.parent
-            / f"{file_date.strftime('%Y-%m-%dT%H_%M_%S')}__{POSTGRES_GLOBALS_PREFIX}.sql"
-        )
+    for file in files_to_delete:
         file.unlink()
-        globals_file.unlink()
 
-        logger.info(f"Deleted {file} and {globals_file}.")
+        logger.info(f"Deleted {file}.")
+
+
+@task
+def postgres_backup_cleanup():
+    cleanup_backup_files(POSTGRES_DATABASE_PREFIX)
+    cleanup_backup_files(POSTGRES_GLOBALS_PREFIX)
+    cleanup_backup_files(POSTGRES_SUPERSET_PREFIX)
 
 
 @task
@@ -118,7 +118,7 @@ def monitor_docker_processes(app_name: str):
             continue
 
         all_good = False
-        logger.info(f"{app_name} - container{process[0]} has bad state: {process[2]}.")
+        logger.info(f"{app_name} - container{process['Service']} has bad state: {process['STATUS']}.")
 
     if not all_good:
         raise RuntimeError(f"At least one of the {app_name} processes is not 'Up'.")
@@ -145,11 +145,6 @@ def beowulf():
     backup_kafka.submit()
     backup_mosquitto.submit()
     backup_zigbee2mqtt.submit()
-    # kafka_processes = shell_run_command.with_options(name="kafka_processes").submit(
-    #     command="docker-compose ps",
-    #     return_all=True,
-    #     cwd="/home/arkadius/kafka",
-    # )
     monitor_docker_processes.with_options(name="monitor_kafka_docker").submit("kafka")
     monitor_docker_processes.with_options(name="monitor_postgres_docker").submit(
         "postgres"
