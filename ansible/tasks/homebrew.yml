@@ -13,31 +13,31 @@
 - name: Clone Homebrew GitHub repo
   ansible.builtin.git:
     repo: https://github.com/Homebrew/brew
-    dest: "/home/{{ user }}/.linuxbrew/Homebrew"
+    dest: "~/.linuxbrew/Homebrew"
     version: master
 
 - name: Create bin directory for brew
   ansible.builtin.file:
-    path: "/home/{{ user }}/.linuxbrew/bin"
+    path: "~/.linuxbrew/bin"
     state: directory
 
 - name: Create a symbolic link for brew
   ansible.builtin.file:
-    src: "/home/{{ user }}/.linuxbrew/Homebrew/bin/brew"
-    dest: "/home/{{ user }}/.linuxbrew/bin/brew"
+    src: "~/.linuxbrew/Homebrew/bin/brew"
+    dest: "~/.linuxbrew/bin/brew"
     state: link
 
 - name: Add homebrew path to system-wide $PATH for zsh shell.
   lineinfile:
     path: '{{ item }}'
-    line: "PATH=$PATH:/home/{{ user }}/.linuxbrew/bin"
+    line: "PATH=$PATH:~/.linuxbrew/bin"
     create: yes
     mode: 0644
   loop: '{{ source_files }}'
 
 - name: Update homebrew
   community.general.homebrew:
-    path: "/home/{{ user }}/.linuxbrew/bin"
+    path: "~/.linuxbrew/bin"
     update_homebrew: yes
 
 - name: add brew plugin to .zshrc
@@ -49,7 +49,7 @@
 
 - name: Install homebrew packages
   community.general.homebrew:
-    path: "/home/{{ user }}/.linuxbrew/bin"
+    path: "~/.linuxbrew/bin"
     name: '{{ item }}'
     state: latest
   loop: '{{ homebrew.packages }}'
