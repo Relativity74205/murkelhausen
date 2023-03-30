@@ -1,3 +1,36 @@
+- name: clone Pyenv
+  shell: 'curl https://pyenv.run | /bin/bash'
+  args:
+    creates: $HOME/.pyenv
+    executable: /bin/bash
+
+- name: set directory permissions of pyenv
+  file:
+    path: $HOME/.pyenv
+    mode: 0744
+    recurse: yes
+
+- name: write .pyenvrc
+  copy:
+    src: files/.pyenvrc
+    dest: $HOME/.pyenvrc
+    mode: 0644
+
+- name: add .pyenvrc to .profile
+  lineinfile:
+    path: '{{ item }}'
+    line: 'source ~/.pyenvrc'
+    create: yes
+    mode: 0644
+  loop: '{{ source_files }}'
+
+- name: add pyenv plugin to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: pyenv
+  when: (oh_my_zsh is defined) and (oh_my_zsh.install == true)
+
 - name: Install required system packages
   apt:
     pkg:
@@ -23,98 +56,73 @@
     update_cache: true
   become: True
 
-- name: clone Pyenv
-  shell: 'curl https://pyenv.run | /bin/bash'
-  args:
-    creates: '~/.pyenv'
-    executable: /bin/bash
-
-- name: set directory permissions of pyenv
-  file:
-    path: '/home/{{ user }}/.pyenv'
-    mode: 0744
-    recurse: yes
-
-- name: write .pyenvrc
-  copy:
-    src: files/.pyenvrc
-    dest: '/home/{{ user }}/.pyenvrc'
-    mode: 0644
-
-- name: add .pyenvrc to .profile
-  lineinfile:
-    path: '{{ item }}'
-    line: 'source ~/.pyenvrc'
-    create: yes
-    mode: 0644
-  loop: '{{ source_files }}'
-
-- name: add pyenv plugin to .zshrc
-  include_role:
-    name: add_plugin_to_zshrc
-  vars:
-    new_plugin: pyenv
-  when: oh_my_zsh.install == true
-
 - name: install python versions
-  shell: '/home/{{ user }}/.pyenv/bin/pyenv install {{ item }}:latest -s'
+  shell: $HOME/.pyenv/bin/pyenv install {{ item }} -s
   register: python_version_installed
   changed_when: python_version_installed.stdout != ""
   loop: '{{ python.versions }}'
 
 - name: get latest python_full_version
-  shell: /home/{{ user }}/.pyenv/bin/pyenv versions | grep -oP '3.10.(\d{1,2})'
+  shell: $HOME/.pyenv/bin/pyenv versions | grep -oP '{{ python.default_version }}.(\d{1,2})'
   register: python_full_version
   changed_when: false
 
-- name: set python3.10 as global
+- name: set python{{ python.default_version }} as global
   lineinfile:
-    path: /home/{{ user }}/.pyenv/version
+    path: $HOME/.pyenv/version
     line: '{{ python_full_version.stdout }}'
     create: yes
 
-# TODO: make idempotent and make sure, it is installed with pyenv python and not with system python
 - name: install pipx
-  shell: python3 -m pip install --user pipx
-  # shell: /home/{{ user }}/.pyenv/versions/{{ python_full_version.stdout }} -m pip install --user pipx
-
-- name: check if pipx is on path
-  shell: pipx --version
-  args:
-    executable: /bin/bash
-  changed_when: false
+  pip:
+    name: pipx
+    extra_args: --user
 
 - name: install cookiecutter with pipx
-  shell: pipx install cookiecutter
-  args:
-    executable: /bin/bash
-  register: cookiecutter_install
-  changed_when: '"already seems to be installed" not in cookiecutter_install.stdout'
+  community.general.pipx:
+    name: cookiecutter
 
-- name: check if cookiecutter is on path
-  shell: cookiecutter --version
-  args:
-    executable: /bin/bash
-  changed_when: false
+- name: install bpython with pipx
+  community.general.pipx:
+    name: bpython
+
+- name: install black with pipx
+  community.general.pipx:
+    name: black
+
+- name: install blackd into pipx-black
+  community.general.pipx:
+    name: black
+    state: inject
+    inject_packages: blackd
+
+- name: install isort with pipx
+  community.general.pipx:
+    name: isort
 
 - name: install poetry with pipx
-  shell: pipx install poetry
-  args:
-    executable: /bin/bash
-  register: poetry_install
-  changed_when: '"already seems to be installed" not in poetry_install.stdout'
-
-- name: check if cookiecutter is on path
-  shell: poetry --version
-  args:
-    executable: /bin/bash
-  changed_when: false
+  community.general.pipx:
+    name: poetry
 
 - name: add poetry plugin to .zshrc
   include_role:
     name: add_plugin_to_zshrc
   vars:
     new_plugin: poetry
-  when: oh_my_zsh.install == true
+  when: (oh_my_zsh is defined) and (oh_my_zsh.install == true)
 
-# TODO add https://python-poetry.org/docs/master/configuration/#virtualenvsprefer-active-python-experimental
+- name: add poetry virtualenvs.prefer-active-python=true setting
+  block:
+    - name: add virtual env section
+      lineinfile:
+        path: '~/.config/pypoetry/config.toml'
+        line: '[virtualenvs]'
+        insertafter: 'EOF'
+        create: yes
+        mode: 0644
+
+    - name: add prefer-active-python setting
+      lineinfile:
+        path: '~/.config/pypoetry/config.toml'
+        line: 'prefer-active-python = true'
+        insertafter: '[virtualenvs]'
