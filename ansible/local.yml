@@ -13,13 +13,12 @@
         - '3.11'
         - '3.10'
         - '3.9'
-        - '3.8'
     docker:
       install: true
     aws_cli:
-      install: false
+      install: true
     oh_my_zsh:
-      install: false
+      install: true
       plugins:
       - git
       - python
@@ -48,16 +47,16 @@
     wsl_gui:
       install: true
     pycharm:
-      install: false
+      install: true
       version: 2023.1
     goland:
-      install: false
+      install: true
       version: 2022.3.4
     datagrip:
-      install: false
+      install: true
       version: 2023.1
     go:
-      install: false
+      install: true
       main_version: 1.20.2
       additional_versions: 1.19
     source_files_bash:
