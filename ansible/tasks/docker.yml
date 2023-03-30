@@ -1,27 +1,27 @@
 - name: Install required system packages
   apt:
     pkg:
-      - apt-transport-https
       - ca-certificates
       - curl
-      - software-properties-common
-      - python3-pip
-      - virtualenv
-      - python3-setuptools
+      - gnupg
+      - lsb-release
     state: latest
     update_cache: true
   become: True
 
 - name: Add Docker GPG apt Key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
+  ansible.builtin.get_url:
+    url: 'https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg'
+    dest: /etc/apt/trusted.gpg.d/docker.asc
+    mode: '0644'
+    force: true
   become: True
 
 - name: Add Docker Repository
   apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    repo: 'deb [arch=amd64] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable'
     state: present
+    update_cache: true
   become: True
 
 - name: Update apt and install docker-ce
@@ -43,7 +43,7 @@
 
 - name: users | adding docker users (for use without sudo)
   user:
-    name: "{{ user }}"
+    name: "{{ ansible_user_id }}"
     append: yes
     groups: docker
   become: True
