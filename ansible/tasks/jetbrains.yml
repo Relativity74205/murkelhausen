@@ -1,3 +1,17 @@
+- name: install jetbrains optional dependencies
+  apt:
+    pkg:
+      - libsecret-1-0  # to store credentials e.g. for jetbrains products
+      - gnome-keyring  # to store credentials e.g. for jetbrains products
+    state: latest
+  become: True
+  when: (goland.install == true) or (datagrip.install == true) or (pycharm.install == true)
+
+- name: pycharm - get installed version
+  shell: cat /opt/pycharm/product-info.json | jq -r '.version'
+  register: pycharm_version_installed
+  changed_when: false
+
 - name: Install PyCharm
   block:
     - name: PyCharm - Download and unarchive
@@ -6,6 +20,11 @@
         dest: /tmp
         creates: /tmp/pycharm-{{ pycharm.version }}/bin/pycharm.sh
         remote_src: yes
+
+    - name: Delete /opt/pycharm
+      file:
+        state: absent
+        path: /opt/pycharm
 
     - name: PyCharm - Copy to /opt
       become: true
@@ -21,20 +40,24 @@
         src: /opt/pycharm/bin/pycharm.sh
         dest: /usr/local/bin/pycharm.sh
         state: link
-  when: pycharm.install == true
 
-# TODO does not work
-#    - name: PyCharm - create desktop link
-#      become: true
-#      copy:
-#        dest: /usr/share/applications/pycharm.desktop
-#        force: true
-#        content: |
-#          [Desktop Entry]
-#          Type=Application
-#          Name=PycharmUbuntu
-#          Exec=/opt/pycharm/bin/pycharm.sh
-#          Icon=/opt/pycharm/bin/pycharm.png
+    - name: PyCharm - create desktop link
+      become: true
+      copy:
+        dest: /usr/share/applications/pycharm.desktop
+        force: true
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=PycharmUbuntu
+          Exec=/opt/pycharm/bin/pycharm.sh
+          Icon=/opt/pycharm/bin/pycharm.png
+  when: (pycharm.install == true) and (pycharm.version != pycharm_version_installed.stdout)
+
+- name: goland - get installed version
+  shell: cat /opt/goland/product-info.json | jq -r '.version'
+  register: goland_version_installed
+  changed_when: false
 
 - name: Install Goland
   block:
@@ -44,6 +67,11 @@
         dest: /tmp
         creates: /tmp/GoLand-{{ goland.version }}/bin/goland.sh
         remote_src: yes
+
+    - name: Delete /opt/goland
+      file:
+        state: absent
+        path: /opt/goland
 
     - name: Goland - Copy to /opt
       become: true
@@ -59,20 +87,24 @@
         src: /opt/goland/bin/goland.sh
         dest: /usr/local/bin/goland.sh
         state: link
-  when: goland.install == true
 
-# TODO does not work
-#    - name: Goland - create desktop link
-#      become: true
-#      copy:
-#        dest: /usr/share/applications/goland.desktop
-#        force: true
-#        content: |
-#          [Desktop Entry]
-#          Type=Application
-#          Name=GolandUbuntu
-#          Exec=/opt/goland/bin/goland.sh
-#          Icon=/opt/goland/bin/goland.png
+    - name: Goland - create desktop link
+      become: true
+      copy:
+        dest: /usr/share/applications/goland.desktop
+        force: true
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=GolandUbuntu
+          Exec=/opt/goland/bin/goland.sh
+          Icon=/opt/goland/bin/goland.png
+  when: (goland.install == true) and (goland.version != goland_version_installed.stdout)
+
+- name: datagrip - get installed version
+  shell: cat /opt/datagrip/product-info.json | jq -r '.version'
+  register: datagrip_version_installed
+  changed_when: false
 
 - name: Install DataGrip
   block:
@@ -82,6 +114,11 @@
         dest: /tmp
         creates: /tmp/DataGrip-{{ datagrip.version }}/bin/datagrip.sh
         remote_src: yes
+
+    - name: Delete /opt/datagrip
+      file:
+        state: absent
+        path: /opt/datagrip
 
     - name: DataGrip - Copy to /opt
       become: true
@@ -97,17 +134,16 @@
         src: /opt/datagrip/bin/datagrip.sh
         dest: /usr/local/bin/datagrip.sh
         state: link
-  when: datagrip.install == true
 
-# TODO does not work
-#    - name: DataGrip - create desktop link
-#      become: true
-#      copy:
-#        dest: /usr/share/applications/datagrip.desktop
-#        force: true
-#        content: |
-#          [Desktop Entry]
-#          Type=Application
-#          Name=DataGripUbuntu
-#          Exec=/opt/datagrip/bin/datagrip.sh
-#          Icon=/opt/datagrip/bin/datagrip.png
+    - name: DataGrip - create desktop link
+      become: true
+      copy:
+        dest: /usr/share/applications/datagrip.desktop
+        force: true
+        content: |
+          [Desktop Entry]
+          Type=Application
+          Name=DataGripUbuntu
+          Exec=/opt/datagrip/bin/datagrip.sh
+          Icon=/opt/datagrip/bin/datagrip.png
+  when: (datagrip.install == true) and (datagrip.version != datagrip_version_installed.stdout)
