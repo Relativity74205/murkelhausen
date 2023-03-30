@@ -1,5 +1,7 @@
+# go get latest version
+
 - name: go - get installed version
-  shell: /usr/local/go/bin/go version | sed 's/.*go version go\([0-9.]*\).*/\1/'
+  shell: go version | sed 's/.*go version go\([0-9.]*\).*/\1/'
   register: go_version_installed
   changed_when: false
 
@@ -34,14 +36,29 @@
         path: /tmp/go
         state: absent
 
-    - name: go - .profile
-      lineinfile:
-        path: '{{ item }}'
-        line: 'export PATH=$PATH:/usr/local/go/bin'
-      loop: '{{ source_files }}'
-
   when: go_version_installed.stdout != go.main_version
 
-# install several versions
-# https://go.dev/doc/manage-install
+- name: go - source-files
+  lineinfile:
+    path: '{{ item }}'
+    line: 'export PATH=$PATH:/usr/local/go/bin'
+  loop: '{{ source_files }}'
 
+- name: go - source-files - 2
+  lineinfile:
+    path: '{{ item }}'
+    line: 'export PATH=$PATH:~/go/bin'
+  loop: '{{ source_files }}'
+
+- name: go - additional versions
+  shell: '/usr/local/go/bin/go install golang.org/dl/go{{ item }}@latest && ~/go/bin/go{{ item }} download'
+  register: go_sub_version_result
+  changed_when: '"already downloaded" not in go_sub_version_result.stderr'
+  loop: '{{ go.additional_versions }}'
+
+- name: add golang plugin to .zshrc
+  include_role:
+    name: add_plugin_to_zshrc
+  vars:
+    new_plugin: golang
+  when: oh_my_zsh.install == true
