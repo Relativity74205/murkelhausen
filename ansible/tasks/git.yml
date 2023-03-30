@@ -1,8 +1,9 @@
-- name: Update apt-get repo and cache
-  apt:
+- name: Add git repo
+  apt_repository:
+    repo: ppa:git-core/ppa
+    state: present
     update_cache: true
-  become: true
-  changed_when: false
+  become: True
 
 - name: install some system packages required for various stuff
   apt:
