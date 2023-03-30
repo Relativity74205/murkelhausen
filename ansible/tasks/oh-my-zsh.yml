@@ -9,31 +9,40 @@
 - name: clone oh-my-zsh for users
   command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/robbyrussell/oh-my-zsh.git .oh-my-zsh'
   args:
-    chdir: /home/{{ user }}
-    creates: /home/{{ user }}/.oh-my-zsh
+    chdir: '~'
+    creates: '~/.oh-my-zsh'
 
 - name: set permissions of oh-my-zsh for users
   file:
-    path: /home/{{ user }}/.oh-my-zsh
+    path: '~/.oh-my-zsh'
     mode: 'go-w'
     recurse: yes
 
 - name: set default shell for users
   become: true
   user:
-    name: '{{ user }}'
-    shell: /bin/zsh
+    name: '{{ ansible_user_id }}'
+    shell: '/bin/zsh'
 
 - name: create .zshrc
   template:
-    src: /home/{{ user}}/.oh-my-zsh/templates/zshrc.zsh-template
-    dest: /home/{{ user }}/.zshrc
+    src: '~/.oh-my-zsh/templates/zshrc.zsh-template'
+    dest: '~/.zshrc'
     backup: no
     mode: 'u=rw,go=r'
     force: no
 
+- name: add ~/local/bin to PATH in .zshrc
+  lineinfile:
+    path: '{{ item }}'
+    line: 'export PATH=~/.local/bin:$PATH'
+    create: yes
+    mode: 0644
+    insertafter: EOF
+  loop: '{{ source_files }}'
+
 - name: get current .zshrc plugins
-  shell: cat /home/{{ user }}/.zshrc | sed -n -e 's/^plugins=(\(.*\))/\1/p'
+  shell: cat '~/.zshrc' | sed -n -e 's/^plugins=(\(.*\))/\1/p'
   register: plugins_old
   changed_when: false
 
@@ -45,22 +54,16 @@
 
 - name: add default plugins to .zshrc
   replace:
-    path: /home/{{ user }}/.zshrc
+    path: '~/.zshrc'
     regexp: ^plugins=(.*)
     replace: plugins=({{ plugins_new.stdout }})
   changed_when: plugins_old.stdout != plugins_new.stdout
 
-- name: add /home/{{ user }}/local/bin to PATH in .zshrc
-  lineinfile:
-    path: /home/{{ user }}/.zshrc
-    line: 'export PATH=/home/arkadius/.local/bin:$PATH'
-    insertafter: EOF
-
 - name: zsh autosuggestions
-  command: 'git clone https://github.com/zsh-users/zsh-autosuggestions /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
+  command: 'git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
   args:
-    chdir: /home/{{ user }}
-    creates: /home/{{ user }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+    chdir: '~'
+    creates: '~/.oh-my-zsh/custom/plugins/zsh-autosuggestions'
 
 - name: add zsh-autosuggestions to .zshrc
   include_role:
@@ -71,6 +74,6 @@
 
 - name: add ZSH_AUTOSUGGEST_STRATEGY to .zshrc
   lineinfile:
-    path: /home/{{ user }}/.zshrc
+    path: '~/.zshrc'
     line: 'export ZSH_AUTOSUGGEST_STRATEGY=(history completion)'
     insertafter: EOF
