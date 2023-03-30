@@ -1,7 +1,7 @@
-- name: Add WSL Utilities from PPA
-  become: True
-  ansible.builtin.apt_repository:
-    repo: ppa:wslutilities/wslu
+#- name: Add WSL Utilities from PPA
+#  become: True
+#  ansible.builtin.apt_repository:
+#    repo: ppa:wslutilities/wslu
 
 - name: Update apt-get repo and cache
   apt:
@@ -12,8 +12,8 @@
 - name: Install some wsl GUI stuff like xdg-open
   apt:
     name:
-    - ubuntu-wsl
-    - wslu
+#    - ubuntu-wsl
+#    - wslu
     - libfuse2
     - xdg-utils
     - libxrender1
@@ -28,7 +28,6 @@
     - libpangocairo-1.0-0  # pycharm
     - libxkbcommon-x11-0  # pycharm
     - libatk-bridge2.0-0  # pycharm
-
     state: latest
   become: True
 
@@ -37,6 +36,6 @@
     path: '{{ item }}'
     create: yes
     mode: 0644
-#    line: export BROWSER="powershell.exe /C start"
-    line: export BROWSER=/usr/bin/wslview  # add sudo update-alternatives --config x-www-browser?
+#    line: export BROWSER="powershell.exe /C start"  # add sudo update-alternatives --config x-www-browser?
+    line: export BROWSER=/usr/bin/wslview
   loop: '{{ source_files }}'
