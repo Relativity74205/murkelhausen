@@ -19,19 +19,18 @@
       - nano
       - curl
       - wget
-      - zip
-      - screen
+      - jq
       - graphviz  # for python diagrams
       - libmysqlclient-dev  # e.g. for airflow
       - libpq-dev  # e.g. for airflow
-      - libsecret-1-0  # to store credentials e.g. for jetbrains products
-      - gnome-keyring  # to store credentials e.g. for jetbrains products
     state: latest
   become: True
 
-- name: add /home/{{ user }}/local/bin to PATH in .zshrc
+- name: add ~/local/bin to PATH in .bashrc
   lineinfile:
     path: '{{ item }}'
+    line: 'export PATH=~/.local/bin:$PATH'
     create: yes
-    line: 'export PATH=/home/{{ user }}/.local/bin:$PATH'
-  loop: '{{ source_files }}'
+    mode: 0644
+    insertafter: EOF
+  loop: '{{ source_files_bash }}'
