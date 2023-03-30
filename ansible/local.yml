@@ -1,8 +1,6 @@
 - name: My Ubuntu WSL setup
   hosts: localhost
   connection: local
-#  vars_files:
-#    - passwd.yml
   vars:
     user: 'arkadius'  # TODO needed? probably can be replaced with ~
     git:
@@ -12,6 +10,7 @@
     python:
       install: true
       versions:
+        - '3.11'
         - '3.10'
         - '3.9'
         - '3.8'
@@ -44,25 +43,23 @@
       packages:
         - k9s
     terraform:
-      install: false
+      install: true
       version: 1.2.9
+    wsl_gui:
+      install: true
     pycharm:
       install: false
-      version: 2022.2.1
+      version: 2023.1
     goland:
       install: false
-      version: 2022.2.2
+      version: 2022.3.4
     datagrip:
       install: false
-      version: 2022.2.2
-    taskwarrior:
-      install: false
-      version: 2.6.2
-      path: /mnt/c/Users/ArkadiusSchuchhardt/OneDrive - auxmoney GmbH/Dokumente/task_warrior
+      version: 2023.1
     go:
       install: false
-      main_version: 1.19.1
-      additional_versions: 1.18
+      main_version: 1.20.2
+      additional_versions: 1.19
     source_files_bash:
       - '/home/{{ user }}/.profile'
       - '/home/{{ user }}/.bash_profile'
@@ -74,9 +71,6 @@
     - name: Set source_files based on oh_my_zsh.install
       set_fact:
         source_files: "{{ source_files_bash + source_files_zsh if oh_my_zsh.install == true else source_files_bash}}"
-
-    - name: Modify Ubuntu22.04 config
-      import_tasks: tasks/ubuntu22.04.yml
 
     - name: Install common
       import_tasks: tasks/common.yml
@@ -99,7 +93,7 @@
     # must run after zsh setup
     - name: setup WSL GUI stuff
       import_tasks: tasks/wsl_gui.yml
-      # TODO check if some stuff should be installed optional
+      when: wsl_gui.install == true
       tags: wsl
 
     - name: Install atuin
