@@ -21,13 +21,15 @@
     creates: /usr/share/zsh/vendor-completions/_atuin
 
 - name: change atuin search to fulltext
-  replace:
+  lineinfile:
     path: ~/.config/atuin/config.toml
-    regexp: "^(.*)search_mode(.*)$"
-    replace: 'search_mode = "{{ atuin.search_mode }}"'
+    create: yes
+    mode: 0644
+    line: 'search_mode = "{{ atuin.search_mode }}"'
 
 - name: change atuin db_path
-  replace:
+  lineinfile:
     path: ~/.config/atuin/config.toml
-    regexp: "^(.*)db_path(.*)$"
-    replace: 'db_path = "{{ atuin.db_path }}"'
+    create: yes
+    mode: 0644
+    line: 'db_path = "{{ atuin.db_path }}"'
