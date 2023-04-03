@@ -5,7 +5,7 @@
     user: 'arkadius'  # TODO needed? probably can be replaced with ~
     git:
       fullname: Arkadius Schuchhardt
-      email: schuchhardt@auxmoney.com
+      email: arkadius@schuchhardt.com
       autocrlf: false
     python:
       install: true
@@ -140,8 +140,3 @@
       import_tasks: tasks/terraform.yml
       when: terraform.install == true
       tags: terraform
-
-    - name: Install taskwarrior
-      import_tasks: tasks/taskwarrior.yml
-      when: taskwarrior.install == true
-      tags: task
