@@ -17,6 +17,7 @@ POSTGRES_PATH = "/home/arkadius/postgres"
 POSTGRES_DATABASE_PREFIX = "murkelhausen_datastore"
 POSTGRES_GLOBALS_PREFIX = "globals"
 POSTGRES_SUPERSET_PREFIX = "superset"
+POSTGRES_APP_PREFIX = "murkelhausen_app"
 POSTGRES_BACKUP_LAST_COUNT = 5
 
 
@@ -68,6 +69,7 @@ def postgres_backup_cleanup():
     cleanup_backup_files(POSTGRES_DATABASE_PREFIX)
     cleanup_backup_files(POSTGRES_GLOBALS_PREFIX)
     cleanup_backup_files(POSTGRES_SUPERSET_PREFIX)
+    cleanup_backup_files(POSTGRES_APP_PREFIX)
 
 
 @task

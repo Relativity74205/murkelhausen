@@ -58,7 +58,8 @@
     go:
       install: true
       main_version: 1.20.2
-      additional_versions: 1.19
+      additional_versions: 
+      - 1.19
     source_files_bash:
       - '/home/{{ user }}/.profile'
       - '/home/{{ user }}/.bash_profile'
