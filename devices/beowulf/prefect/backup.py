@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from dateutil import relativedelta
 
+import docker
 from prefect import flow, task, get_run_logger
 from prefect_shell import shell_run_command
 from prefect.task_runners import ConcurrentTaskRunner
@@ -100,30 +101,25 @@ def backup_zigbee2mqtt():
 
 
 @task
-def monitor_docker_processes(app_name: str):
+def monitor_docker_processes():
     logger = get_run_logger()
-    processes = json.loads(
-        subprocess.check_output(
-            "docker compose ps --format json",
-            shell=True,
-            universal_newlines=True,
-            cwd=f"/home/arkadius/{app_name}",
-        )
-    )
+    client = docker.from_env()
+    containers = client.containers.list()
 
     all_good = True
-    for process in processes:
-        if process["Service"] == "superset-init":
+    for container in containers:
+        if container.name == "superset-init":
             continue
 
-        if "Up" in process["Status"] and "unhealthy" not in process["Status"]:
+        # container.attrs["State"]["Health"]["Status"] != "healthy"
+        if "running" in container.status:
             continue
 
         all_good = False
-        logger.info(f"{app_name} - container{process['Service']} has bad state: {process['STATUS']}.")
+        logger.info(f"container{container.name} has bad state: {container.status}.")
 
     if not all_good:
-        raise RuntimeError(f"At least one of the {app_name} processes is not 'Up'.")
+        raise RuntimeError(f"At least one of the processes is not 'Up'/'running'.")
 
 
 @task
@@ -147,13 +143,7 @@ def beowulf():
     backup_kafka.submit()
     backup_mosquitto.submit()
     backup_zigbee2mqtt.submit()
-    monitor_docker_processes.with_options(name="monitor_kafka_docker").submit("kafka")
-    monitor_docker_processes.with_options(name="monitor_postgres_docker").submit(
-        "postgres"
-    )
-    monitor_docker_processes.with_options(name="monitor_superset_docker").submit(
-        "superset"
-    )
+    monitor_docker_processes.submit()
     monitor_supervisor_processes.submit()
 
 
