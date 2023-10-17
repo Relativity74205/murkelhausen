@@ -108,6 +108,7 @@ def monitor_docker_processes():
 
     all_good = True
     for container in containers:
+        logger.info(f"{container.name=}: {container.status=}")
         if container.name == "superset-init":
             continue
 
