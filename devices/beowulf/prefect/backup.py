@@ -102,25 +102,54 @@ def backup_zigbee2mqtt():
 
 @task
 def monitor_docker_processes():
+    DOCKER_PROCESSES_SHOULD = (
+        "murkelhausen",
+        "postgres",
+        "portainer",
+        "zigbee2mqtt",
+        'mqtt',
+        'superset_worker',
+        'superset_worker_beat',
+        'superset_app',
+        'superset_cache',
+        'control-center',
+        'connect',
+        'rest-proxy',
+        'schema-registry',
+        'broker',
+        'zookeeper',
+    )
+
     logger = get_run_logger()
     client = docker.from_env()
     containers = client.containers.list()
 
-    all_good = True
+    all_healthy = True
     for container in containers:
-        logger.info(f"{container.name=}: {container.status=}")
+        logger.info(f"Running processes: {container.name=}: {container.status=}")
         if container.name == "superset-init":
             continue
 
         # container.attrs["State"]["Health"]["Status"] != "healthy"
         if "running" in container.status:
             continue
+        else:
+            all_healthy = False
+            logger.error(f"container{container.name} has bad state: {container.status}.")
 
-        all_good = False
-        logger.info(f"container{container.name} has bad state: {container.status}.")
+    missing_processes = []
+    for process in DOCKER_PROCESSES_SHOULD:
+        if not any(process in container.name for container in containers):
+            logger.error(f"Missing process: {process}")
+            missing_processes.append(process)
+        else:
+            logger.info(f"Found process: {process}")
 
-    if not all_good:
-        raise RuntimeError(f"At least one of the processes is not 'Up'/'running'.")
+    if not all_healthy:
+        raise RuntimeError(f"At least one of the processes is not 'running'.")
+
+    if missing_processes:
+        raise RuntimeError(f"Missing processes: {missing_processes}")
 
 
 @task
