@@ -101,7 +101,6 @@ class CeleryConfig(object):
 
 CELERY_CONFIG = CeleryConfig
 
-FEATURE_FLAGS = {"ALERT_REPORTS": True}
 ALERT_REPORTS_NOTIFICATION_DRY_RUN = True
 WEBDRIVER_BASEURL = "http://superset:8088/"
 # The base URL for the email report hyperlinks.
@@ -109,6 +108,10 @@ WEBDRIVER_BASEURL_USER_FRIENDLY = WEBDRIVER_BASEURL
 
 SQLLAB_CTAS_NO_LIMIT = True
 SESSION_COOKIE_SAMESITE = None
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_HTTPONLY = False
+WTF_CSRF_ENABLED = False
+TALISMAN_ENABLED = False
 
 #
 # Optionally import superset_config_docker.py (which will have been included on
@@ -123,3 +126,14 @@ try:
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+
+FEATURE_FLAGS = {
+    "ALERT_REPORTS": True,
+    # "GENERIC_CHART_AXES": True,
+    # "EMBEDDABLE_CHARTS": True,
+    # "EMBEDDED_SUPERSET": True,
+}
+SECRET_KEY = os.environ["SECRET_KEY"]
+CONTENT_SECURITY_POLICY_WARNING = False
+SQLALCHEMY_ECHO = True
