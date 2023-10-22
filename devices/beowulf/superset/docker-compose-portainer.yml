@@ -5,13 +5,13 @@ x-superset-depends-on:
 x-superset-volumes:
   # /app/pythonpath_docker will be appended to the PYTHONPATH in the final container
   &superset-volumes
-  - devices/beowulf/superset/docker-bootstrap.sh:/app/docker/docker-bootstrap.sh
-#  - ./docker-ci.sh:/app/docker-ci.sh
-#  - ./docker-frontend.sh:/app/docker-frontend.sh
-  - ${PWD}/docker-init.sh:/app/docker/docker-init.sh
-#  - ./frontend-mem-nag.sh:/app/frontend-mem-nag.sh
-#  - ./run-server.sh:/app/run-server.sh
-  - ${PWD}/superset_config.py:/app/pythonpath/superset_config.py
+  - ./docker-bootstrap.sh:/app/docker/docker-bootstrap.sh
+  - ./docker-ci.sh:/app/docker-ci.sh
+  - ./docker-frontend.sh:/app/docker-frontend.sh
+  - ./docker-init.sh:/app/docker/docker-init.sh
+  - ./frontend-mem-nag.sh:/app/frontend-mem-nag.sh
+  - ./run-server.sh:/app/run-server.sh
+  - ./superset_config.py:/app/pythonpath/superset_config.py
   - superset_home:/app/superset_home
 
 version: "3.7"
