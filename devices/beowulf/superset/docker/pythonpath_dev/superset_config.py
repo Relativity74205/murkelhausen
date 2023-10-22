@@ -99,8 +99,13 @@ FEATURE_FLAGS = {
     "ALERT_REPORTS": True,
     # "GENERIC_CHART_AXES": True,
     # "EMBEDDABLE_CHARTS": True,
-    # "EMBEDDED_SUPERSET": True,
+    "EMBEDDED_SUPERSET": True,
 }
 SECRET_KEY = os.environ["SECRET_KEY"]
 CONTENT_SECURITY_POLICY_WARNING = False
 SQLALCHEMY_ECHO = True
+PUBLIC_ROLE_LIKE = 'Gamma'  # https://superset.apache.org/docs/security/#public
+# see also https://superset.apache.org/docs/security/#managing-data-source-access-for-gamma-roles
+ENABLE_CORS = True  # https://superset.apache.org/docs/installation/networking-settings#cors
+FAB_API_SWAGGER_UI = False  # https://superset.apache.org/docs/frequently-asked-questions#does-superset-offer-a-public-api
+FAB_ADD_SECURITY_API = False  # https://superset.apache.org/docs/security/#rest-api-for-user--role-management
