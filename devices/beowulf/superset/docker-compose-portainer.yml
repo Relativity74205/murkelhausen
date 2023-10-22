@@ -20,6 +20,9 @@ services:
   superset:
     env_file:
       - .env
+    environment:
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     image: *superset-image
     container_name: superset_app
     command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
@@ -36,6 +39,9 @@ services:
     command: [ "/app/docker/docker-init.sh" ]
     env_file:
       - .env
+    environment:
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     depends_on: *superset-depends-on
     user: "root"
     volumes: *superset-volumes
@@ -48,6 +54,9 @@ services:
     command: [ "/app/docker/docker-bootstrap.sh", "worker" ]
     env_file:
       - .env
+    environment:
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     restart: always
     depends_on: *superset-depends-on
     user: "root"
@@ -65,6 +74,9 @@ services:
     command: [ "/app/docker/docker-bootstrap.sh", "beat" ]
     env_file:
       - .env
+    environment:
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     restart: always
     depends_on: *superset-depends-on
     user: "root"
